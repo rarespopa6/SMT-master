@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "smart-muelltonne",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [".claude/skills/scrollcraft/plugins/nateherk-design/skills/scroll-craft/scripts/serve.mjs", "--root", ".", "--port", "4500"],
+      "port": 4500
+    }
+  ]
+}

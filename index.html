@@ -1,0 +1,2199 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Mülltonne · Produktdesign</title>
+<meta name="description" content="SMT Urban und SMT Indoor: erkennen jeden Einwurf per Kamera, sortieren in vier Farben, pressen, versiegeln und melden, wann geleert werden muss.">
+<meta name="theme-color" content="#0B0F17">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:title" content="Smart Mülltonne · Produktdesign">
+<meta property="og:description" content="Sortiert. Gepresst. Versenkt. SMT Urban und SMT Indoor: KI-Erkennung, vier Fraktionen, versenkte Hubsäule, Meldung bei etwa 80 % Füllstand.">
+<meta property="og:image" content="assets/viz-alltag.jpg">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="875">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230B0F17'/><rect x='9' y='12' width='14' height='13' rx='1.5' fill='%2310B981'/><rect x='7' y='8' width='18' height='3' rx='1' fill='%2310B981'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Geist:wght@400..600&family=Geist+Mono:wght@400..500&display=swap">
+<link rel="stylesheet" href="assets/scrollcraft.css">
+<style>
+/* ==========================================================================
+   Smart Mülltonne · Schnitt-Bühne (scroll-craft, Split-Stage-Grammatik)
+   Links: eine durchgehende Schnitt-Welt (sticky). Rechts: das Dokument.
+   Clean-Tech: Dark Slate + ein Akzent (Emerald). Fraktionsfarben sind Inhalt.
+   ========================================================================== */
+:root{
+  --sc-canvas:#0B0F17; --sc-surface:#0F172A; --sc-ink:#E8EEF6; --sc-ink-soft:#9AA8BC;
+  --sc-accent:#10B981; --sc-accent-ink:#03140D;
+  --sc-font-display:"Archivo",system-ui,sans-serif;
+  --sc-font-text:"Geist",system-ui,sans-serif;
+  --sc-font-mono:"Geist Mono",ui-monospace,monospace;
+  --sc-shadow-color:222 47% 3%;
+
+  --body:#C6D1DE;          /* Fließtext, 12:1 auf Canvas */
+  --ink-faint:#7C8BA1;     /* Labels, 5.4:1 auf Canvas */
+  --raised:#121B2E;
+  --plate:#0E1729;
+  --line:rgba(148,163,184,.14);
+  --line-strong:rgba(148,163,184,.26);
+  --accent-hi:#34D399;
+  --gelb:#F2C014; --blau:#1D4FD6; --gruen:#23804A; --grau:#8B8B86;
+  --ok:#34D399; --mid:#FBBF24; --bad:#FB7185;
+  --r-sm:6px; --r:12px; --r-lg:20px;
+  --pad:max(1rem,env(safe-area-inset-left,0px));
+  color-scheme:dark;
+}
+html{background:var(--sc-canvas)}
+body{font-size:clamp(1rem,.97rem + .16vw,1.0625rem);line-height:1.66;letter-spacing:.002em}
+.page{overflow-x:clip}
+@supports not (overflow:clip){@media (max-width:1023.98px){.page{overflow-x:hidden}}}
+.defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.skip{position:absolute;left:-9999px;top:12px;z-index:90;background:var(--sc-accent);color:var(--sc-accent-ink);padding:.55rem .9rem;border-radius:var(--r-sm);font-weight:600;text-decoration:none}
+.skip:focus{left:16px}
+strong,b{color:var(--sc-ink);font-weight:600}
+p{margin:0}
+a{color:var(--sc-ink)}
+a:hover{color:var(--accent-hi)}
+
+/* ------------------------------------------------------------- split ---- */
+.split{display:block}
+.stage-col{display:none}
+@media (min-width:1024px){
+  .split{display:grid;grid-template-columns:minmax(0,44fr) minmax(0,56fr)}
+  .stage-col{display:block;position:relative;overflow-x:clip}
+  .stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:#0A1020;isolation:isolate}
+}
+.stage .world{position:absolute;inset:0;width:100%;height:100%}
+.stage::before,.stage::after{content:"";position:absolute;left:0;right:0;pointer-events:none;z-index:2}
+.stage::before{top:0;height:22%;background:linear-gradient(180deg,rgba(8,12,20,.82),rgba(8,12,20,0))}
+.stage::after{bottom:0;height:24%;background:linear-gradient(0deg,rgba(8,12,20,.85),rgba(8,12,20,0))}
+.stage-edge{position:absolute;top:0;bottom:0;right:0;width:1px;background:var(--line-strong);z-index:3}
+
+.hud{position:absolute;z-index:4;left:clamp(18px,2vw,30px);top:clamp(18px,3vh,30px);display:grid;gap:.35rem;pointer-events:none}
+.hud-k{font-family:var(--sc-font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+.hud-ch{font-family:var(--sc-font-display);font-weight:650;font-stretch:108%;font-size:clamp(1.15rem,1.4vw,1.5rem);letter-spacing:-.02em;color:var(--sc-ink);display:flex;align-items:baseline;gap:.55rem}
+.hud-ch i{font-style:normal;font-family:var(--sc-font-mono);font-size:.78rem;color:var(--accent-hi);letter-spacing:.04em}
+.hud-b{position:absolute;z-index:4;left:clamp(18px,2vw,30px);bottom:clamp(18px,3vh,30px);display:flex;gap:1.6rem;align-items:flex-end;pointer-events:none}
+.hud-row{display:grid;gap:.15rem}
+.hud-row span{font-family:var(--sc-font-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+.hud-row b{font-family:var(--sc-font-display);font-weight:650;font-size:1.35rem;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--sc-ink)}
+.hud-fill{opacity:0;transition:opacity var(--sc-d-base) var(--sc-ease-out)}
+.hud-fill.on{opacity:1}
+.hud-fill.hot b{color:var(--accent-hi)}
+.sim{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--sc-font-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-hi);border:1px solid rgba(52,211,153,.35);border-radius:var(--r-sm);padding:.3rem .55rem;background:rgba(6,20,15,.6)}
+.sim::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.hud-sim{opacity:0;transition:opacity var(--sc-d-base) var(--sc-ease-out);margin-bottom:.2rem}
+.hud-sim.on{opacity:1}
+
+.ruler{position:absolute;z-index:4;top:0;bottom:0;right:0;width:84px;pointer-events:none;overflow:hidden}
+.tk{position:absolute;right:0;top:0;display:flex;align-items:center;gap:8px;will-change:transform}
+.tk span{font-family:var(--sc-font-mono);font-size:.64rem;letter-spacing:.04em;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.tk::after{content:"";width:16px;height:1px;background:var(--line-strong)}
+.tk.m::after{width:8px}
+.tk.z span{color:var(--accent-hi)}
+.tk.z::after{background:var(--sc-accent);width:22px}
+
+/* ------------------------------------------------------------- world ---- */
+.world{display:block;overflow:hidden}
+.world *{vector-effect:non-scaling-stroke}
+.world text{font-family:var(--sc-font-mono)}
+.w-tag text{font-size:11px;letter-spacing:.06em;text-transform:uppercase;fill:#D3DCE8;paint-order:stroke;stroke:#08101C;stroke-width:3.5px;stroke-linejoin:round}
+.w-tag line{stroke:#5F708A;stroke-width:1}
+.w-tag circle{fill:#34D399}
+.w-tag.plain text{fill:#AEBBCC}
+.w-ray{stroke-dasharray:3 15;animation:ray 1.4s linear infinite}
+@keyframes ray{to{stroke-dashoffset:-36}}
+.w-pulse circle{fill:none;stroke:#34D399;stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center}
+.w-pulse.on circle{animation:pulse 1.8s cubic-bezier(.23,1,.32,1) infinite}
+.w-pulse.on circle:nth-child(2){animation-delay:.6s}
+.w-pulse.on circle:nth-child(3){animation-delay:1.2s}
+@keyframes pulse{0%{transform:scale(.35);opacity:.95}100%{transform:scale(3);opacity:0}}
+.w-radio path{fill:none;stroke:#34D399;stroke-width:1.6;animation:radio 1.5s ease-out infinite}
+.w-radio path:nth-child(2){animation-delay:.25s}
+.w-radio path:nth-child(3){animation-delay:.5s}
+@keyframes radio{0%,100%{opacity:.15}40%{opacity:1}}
+.w-warn.blink{animation:blink .7s steps(2,jump-none) infinite}
+@keyframes blink{50%{opacity:.25}}
+.w-sig1,.w-sig2{vector-effect:none}
+@media (prefers-reduced-motion:reduce){
+  .w-ray,.w-radio path,.w-warn.blink{animation:none}
+  .w-pulse.on circle{animation:none;opacity:.8;transform:scale(1.6)}
+  .w-pulse.on circle+circle{opacity:0}
+}
+
+/* ----------------------------------------------------------- content ---- */
+.content{padding-inline:var(--pad) max(1rem,env(safe-area-inset-right,0px));min-width:0}
+@media (min-width:640px){.content{padding-inline:2rem}}
+@media (min-width:1024px){.content{padding-inline:clamp(2.5rem,4.6vw,4.75rem) clamp(4rem,5.6vw,5.5rem)}}
+
+.kick{font-family:var(--sc-font-mono);font-size:.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+.h2{font-family:var(--sc-font-display);font-weight:700;font-stretch:104%;font-size:clamp(1.85rem,1.05rem + 2.4vw,3.35rem);letter-spacing:-.035em;line-height:1;text-wrap:balance;hyphens:auto;margin:0;color:var(--sc-ink)}
+.h3{font-family:var(--sc-font-display);font-weight:650;font-size:1.18rem;letter-spacing:-.012em;line-height:1.2;margin:0;color:var(--sc-ink)}
+.blk{padding-top:clamp(4rem,8vw,7rem);display:grid;gap:1.4rem;min-width:0}
+.blk > p{max-width:64ch;color:var(--body);text-wrap:pretty}
+.blk > .h3{margin-top:1.2rem}
+.hrow{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.6rem 2rem;padding-top:1.1rem;border-top:1px solid var(--line);margin-bottom:.35rem}
+.hrow .kick{text-align:right;max-width:24ch}
+@media (max-width:640px){.hrow{flex-direction:column-reverse;align-items:flex-start}.hrow .kick{text-align:left;max-width:none}}
+.fine{font-size:.85rem;color:var(--ink-faint);max-width:64ch}
+
+/* hero */
+.hero{min-height:100vh;min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto;gap:2rem;padding-block:clamp(1.25rem,3vh,2.25rem) clamp(2.5rem,7vh,4.5rem)}
+.hero-top{display:flex;justify-content:space-between;gap:1rem 2rem;flex-wrap:wrap;font-family:var(--sc-font-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);line-height:1.6}
+.hero-top .date{text-align:right;color:var(--sc-ink-soft)}
+.hero-main{align-self:end;display:grid;gap:clamp(1.25rem,3vh,2rem)}
+.h1{font-family:var(--sc-font-display);font-weight:780;font-stretch:112%;font-size:clamp(2.6rem,1.2rem + 4.6vw,6.2rem);letter-spacing:-.045em;line-height:.9;margin:0;color:var(--sc-ink)}
+.h1 .ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.h1 .ln > span{display:inline-block;animation:rise 1s var(--sc-ease-out) both;animation-delay:calc(var(--i,0) * 110ms + 120ms)}
+.sub{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}
+.sub-t{font-family:var(--sc-font-display);font-weight:650;font-stretch:108%;font-size:clamp(1.3rem,.9rem + 1.5vw,2.1rem);letter-spacing:-.025em;line-height:1.02}
+.sub-t span{display:block;animation:rise .9s var(--sc-ease-out) both;animation-delay:calc(var(--i,0) * 90ms + 420ms)}
+.sub-t span:last-child{color:var(--accent-hi)}
+.blocks{display:flex;gap:6px;align-items:flex-end;height:70px}
+.blocks i{display:block;width:clamp(22px,2.6vw,36px);border-radius:3px 3px 0 0;transform-origin:bottom;animation:grow 1.1s var(--sc-ease-out) both;animation-delay:calc(var(--i) * 80ms + 600ms)}
+@keyframes rise{from{transform:translateY(105%);opacity:0}}
+@keyframes grow{from{transform:scaleY(.08);opacity:0}}
+.lede{font-size:clamp(1.05rem,.98rem + .35vw,1.25rem);line-height:1.6;color:var(--body);max-width:56ch;text-wrap:pretty}
+.team{font-size:.86rem;color:var(--ink-faint);max-width:60ch;line-height:1.7}
+@media (prefers-reduced-motion:reduce){
+  .h1 .ln > span,.sub-t span,.blocks i{animation-name:fadein;animation-duration:.4s}
+  @keyframes fadein{from{opacity:0}}
+}
+
+/* chapter opener */
+.opener{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;gap:1.1rem;padding-bottom:clamp(3rem,12vh,7rem);position:relative}
+.opener-k{display:flex;align-items:center;gap:.8rem}
+.opener-k .kick{color:var(--accent-hi)}
+.opener-title{font-family:var(--sc-font-display);font-weight:760;font-stretch:118%;font-size:clamp(2.7rem,1.1rem + 5vw,7rem);letter-spacing:-.05em;line-height:.9;margin:0;color:var(--sc-ink);hyphens:auto;text-wrap:balance}
+.opener-rule{height:1px;background:var(--line);position:relative;overflow:hidden}
+.opener-rule::after{content:"";position:absolute;inset:0;background:var(--sc-accent);transform-origin:left;transform:scaleX(var(--op,0))}
+.opener-list{font-family:var(--sc-font-mono);font-size:.74rem;letter-spacing:.06em;color:var(--sc-ink-soft);text-transform:uppercase;line-height:1.8}
+@media (max-width:1023.98px){
+  .opener{min-height:auto;padding-block:clamp(4.5rem,14vw,6rem) 0;justify-content:flex-start}
+  .opener-title{font-size:clamp(2.4rem,1.2rem + 6vw,4.2rem)}
+}
+
+/* scenes (mobile copies of the world) */
+.scene{display:none}
+@media (max-width:1023.98px){
+  .scene{display:block;position:relative;width:100%;aspect-ratio:4/5;max-height:72vh;max-height:72dvh;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:#0A1020;box-shadow:var(--sc-e2)}
+  .scene--hero{aspect-ratio:auto;height:52vh;height:52dvh;min-height:300px;margin-inline:calc(var(--pad) * -1);width:auto;border-radius:0;border-inline:0;border-top:0}
+  .scene .world{position:absolute;inset:0;width:100%;height:100%}
+  .scene .sim{position:absolute;left:12px;top:12px;z-index:2}
+  .scene[data-scene-track]{aspect-ratio:1/1;max-height:46vh;max-height:46dvh;position:sticky;top:max(8px,env(safe-area-inset-top,0px));z-index:3}
+  .hero{display:flex;flex-direction:column;gap:1.75rem;padding-top:0}
+  .hero-top .date{text-align:left}
+}
+
+/* ------------------------------------------------------------ tracks ---- */
+.track{position:relative;overflow-x:clip}
+.track__pin{display:grid;gap:1.25rem;padding-top:clamp(3.5rem,8vw,5rem)}
+@media (min-width:1024px){
+  .track--scan{height:300vh}
+  .track--fall{height:240vh}
+  .track--alert{height:260vh}
+  .track__pin{position:sticky;top:0;height:100vh;height:100dvh;padding:0;align-content:center}
+}
+.console{background:linear-gradient(180deg,#101A2E,#0C1424);border:1px solid var(--line-strong);border-radius:var(--r-lg);box-shadow:var(--sc-e3),var(--sc-edge);padding:clamp(1.1rem,2vw,1.6rem);display:grid;gap:1.1rem;max-width:40rem;min-width:0}
+.console__head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.console__title{font-family:var(--sc-font-display);font-weight:680;font-stretch:106%;font-size:clamp(1.35rem,1rem + 1vw,1.85rem);letter-spacing:-.03em;line-height:1.05;margin:.35rem 0 0;color:var(--sc-ink)}
+.chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.35rem .5rem}
+.chips li{font-family:var(--sc-font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);padding:.32rem .55rem;border-radius:var(--r-sm);border:1px solid var(--line);transition:color var(--sc-d-fast) var(--sc-ease-out),border-color var(--sc-d-fast) var(--sc-ease-out),background-color var(--sc-d-fast) var(--sc-ease-out)}
+.chips li.on{color:var(--sc-ink);border-color:var(--line-strong)}
+.chips li.cur{color:var(--sc-accent-ink);background:var(--sc-accent);border-color:var(--sc-accent)}
+.meter{display:grid;gap:.5rem}
+.meter__row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.meter__row span{font-family:var(--sc-font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sc-ink-soft)}
+.meter__val{font-family:var(--sc-font-display);font-weight:700;font-size:clamp(2rem,1.5rem + 1.6vw,2.9rem);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--sc-ink);line-height:1}
+.meter__val.hot{color:var(--accent-hi)}
+.meter__bar{position:relative;height:8px;border-radius:99px;background:#1A2539;overflow:visible}
+.meter__fill{position:absolute;inset:0;border-radius:99px;background:var(--sc-accent);transform-origin:left;transform:scaleX(0)}
+.meter__th{position:absolute;top:-5px;bottom:-5px;width:2px;left:calc(var(--th) * 100%);background:var(--sc-ink);border-radius:2px}
+.meter__cap{font-size:.84rem;color:var(--sc-ink-soft);line-height:1.5}
+.meter__cap b{color:var(--sc-ink);font-weight:500}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:.18rem;font-family:var(--sc-font-mono);font-size:.78rem;line-height:1.5}
+.log li{display:grid;grid-template-columns:4.2rem 1fr;gap:.6rem;color:var(--sc-ink-soft);opacity:.34;transition:opacity var(--sc-d-base) var(--sc-ease-out),color var(--sc-d-base) var(--sc-ease-out)}
+.log li .ts{color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.log li.on{opacity:1;color:var(--body)}
+.log li.cur{color:var(--sc-ink)}
+.log li.cur .ts{color:var(--accent-hi)}
+.log--plain li{grid-template-columns:1rem 1fr}
+.log--plain li .ts::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;vertical-align:middle}
+
+.stepper{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.st-btn{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--sc-ink);font-family:var(--sc-font-text);font-weight:550;font-size:.92rem;padding:.65rem 1rem;min-height:44px;border-radius:var(--r);cursor:pointer;display:inline-flex;align-items:center;gap:.45rem;white-space:nowrap;transition:background-color 140ms var(--sc-ease-out),border-color 140ms var(--sc-ease-out),transform 120ms var(--sc-ease-out)}
+.st-btn svg{width:16px;height:16px}
+.st-btn:active{transform:translateY(1px) scale(.98)}
+.st-btn:disabled{opacity:.38;cursor:not-allowed;transform:none}
+.st-next{background:var(--sc-accent);border-color:var(--sc-accent);color:var(--sc-accent-ink)}
+@media (hover:hover) and (pointer:fine){
+  .st-btn:not(:disabled):hover{border-color:var(--sc-ink-soft);background:rgba(148,163,184,.08)}
+  .st-next:not(:disabled):hover{background:var(--accent-hi);border-color:var(--accent-hi)}
+}
+.st-lbl{font-family:var(--sc-font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-left:auto}
+.st-range{flex:1 1 100%;order:3;accent-color:var(--sc-accent);height:28px;margin:0}
+@media (min-width:1024px){.st-range{display:none}}
+
+/* fall-track step list */
+.fsteps{list-style:none;margin:0;padding:0;counter-reset:f;display:grid}
+.fsteps li{counter-increment:f;display:grid;grid-template-columns:2.4rem 1fr;gap:.2rem .8rem;padding:.42rem 0;border-top:1px solid var(--line);color:var(--ink-faint);transition:color var(--sc-d-base) var(--sc-ease-out)}
+.fsteps li::before{content:counter(f,decimal-leading-zero);font-family:var(--sc-font-mono);font-size:.74rem;padding-top:.22rem;color:inherit}
+.fsteps h3{font-family:var(--sc-font-display);font-weight:620;font-size:1rem;letter-spacing:-.01em;margin:0;color:inherit;line-height:1.35}
+.fsteps p{grid-column:2;font-size:.9rem;line-height:1.55;color:var(--body);max-width:56ch}
+.fsteps li:not(.cur) p{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.fsteps li.done{color:var(--sc-ink-soft)}
+.fsteps li.done::before{color:var(--accent-hi)}
+.fsteps li.cur{color:var(--sc-ink)}
+.fsteps li.cur::before{color:var(--accent-hi)}
+
+/* ------------------------------------------------------------ tables ---- */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,#0F172A,#0C1322);max-width:100%;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
+.tbl.narrow table{min-width:0}
+th,td{text-align:left;vertical-align:top;padding:.78rem 1rem;border-bottom:1px solid var(--line)}
+th{font-family:var(--sc-font-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:500;background:rgba(10,16,30,.6);border-bottom-color:var(--line-strong)}
+td{color:var(--body);line-height:1.5}
+td strong{color:var(--sc-ink)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--sc-font-mono);font-size:.84rem;font-variant-numeric:tabular-nums}
+tr.pick td{background:rgba(16,185,129,.075)}
+tr.pick .kick{color:var(--accent-hi);letter-spacing:.1em}
+.ok{color:var(--ok);font-weight:550}.mid{color:var(--mid);font-weight:550}.bad{color:var(--bad);font-weight:550}
+td.ok,td.mid,td.bad{font-weight:500}
+@media (hover:hover) and (pointer:fine){tbody tr:hover td{background:rgba(148,163,184,.045)}tbody tr.pick:hover td{background:rgba(16,185,129,.1)}}
+
+/* ------------------------------------------------------- the pieces ---- */
+.viz{display:grid;gap:1rem}
+.viz figure{margin:0;display:grid;gap:.6rem;position:relative}
+.viz .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:640px){.viz .row{grid-template-columns:1fr}}
+.shot{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:var(--sc-e2);background:#0A1020}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;transition:transform 600ms var(--sc-ease-out)}
+@media (hover:hover) and (pointer:fine){.shot:hover img{transform:scale(1.025)}}
+figcaption{font-size:.88rem;line-height:1.5;color:var(--sc-ink-soft);display:grid;gap:.1rem}
+figcaption b{font-family:var(--sc-font-display);font-weight:650;font-size:1rem;color:var(--sc-ink)}
+
+.zoom{position:absolute;top:8px;right:8px;z-index:2;display:grid;place-items:center;width:32px;height:32px;padding:0;color:var(--sc-ink);background:rgba(8,12,20,.66);border:1px solid var(--line-strong);border-radius:var(--r-sm);cursor:pointer;opacity:.8;transition:background-color 140ms var(--sc-ease-out),border-color 140ms var(--sc-ease-out),opacity 140ms var(--sc-ease-out)}
+.zoom svg{width:14px;height:14px}
+.zoom:focus-visible{opacity:1}
+@media (hover:hover) and (pointer:fine){.zoom:hover{opacity:1;background:rgba(16,185,129,.2);border-color:var(--sc-accent)}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+
+.chain{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));row-gap:1.6rem;position:relative}
+@media (min-width:761px){.chain li:nth-child(4)::after{display:none}}
+@media (min-width:1680px){.chain{grid-template-columns:repeat(7,minmax(0,1fr))}.chain li:nth-child(4)::after{display:block}}
+.chain li{position:relative;display:grid;gap:.55rem;align-content:start;padding:0 .75rem 0 0;font-weight:500;font-size:.88rem;line-height:1.25;color:var(--sc-ink-soft);hyphens:auto;overflow-wrap:break-word;min-width:0}
+.chain li::after{content:"";position:absolute;left:24px;right:4px;top:9px;height:1px;background:var(--line-strong)}
+.chain li:last-child::after{display:none}
+.chain li::before{content:"";width:19px;height:19px;border-radius:50%;background:var(--sc-canvas);border:1px solid #475569;position:relative;z-index:1}
+.chain .n{font-family:var(--sc-font-mono);font-size:.68rem;color:var(--ink-faint)}
+.chain li.now{color:var(--sc-ink)}
+.chain li.now::before{background:var(--sc-accent);border-color:var(--sc-accent);box-shadow:0 0 0 5px rgba(16,185,129,.16)}
+.chain .here{font-family:var(--sc-font-mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-hi)}
+@media (max-width:760px){
+  .chain{grid-template-columns:1fr;row-gap:.9rem;padding-left:.1rem}
+  .chain li{grid-template-columns:19px 2rem 1fr;align-items:center;gap:.75rem}
+  .chain li::after{left:9px;right:auto;top:19px;height:calc(100% + .9rem - 19px);width:1px}
+  .chain .here{grid-column:3}
+}
+
+.note{padding:1rem 1.15rem;border-radius:var(--r);background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.22);font-size:.95rem;line-height:1.6;color:var(--body);max-width:68ch}
+.note strong{color:var(--accent-hi)}
+
+.fractions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.frac{background:var(--sc-surface);padding:1.1rem 1rem 1.2rem;display:grid;gap:.9rem;align-content:start;position:relative}
+.frac .bin{width:38px;height:42px;color:var(--c)}
+.frac .t{font-family:var(--sc-font-mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+.frac b{display:block;font-family:var(--sc-font-display);font-weight:760;font-stretch:110%;font-size:1.7rem;letter-spacing:-.035em;line-height:1;color:var(--sc-ink);margin-bottom:.45rem}
+.frac small{display:block;font-size:.86rem;line-height:1.5;color:var(--body)}
+.frac::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--c);opacity:.9}
+.f-gelb{--c:var(--gelb)}.f-blau{--c:#3B6BF0}.f-gruen{--c:#2FA35E}.f-grau{--c:var(--grau)}
+@media (max-width:860px){.fractions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1024px) and (max-width:1280px){.fractions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.grid2{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+@media (min-width:640px){
+  .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2:has(> :nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+.cell{background:var(--sc-canvas);padding:1.1rem 1.15rem 1.25rem;display:grid;gap:.55rem;align-content:start;min-width:0}
+.cell p,.cell li{color:var(--body);font-size:.95rem;line-height:1.6}
+.cell ul{margin:0;padding-left:1.05em;display:grid;gap:.35rem}
+.cell li::marker{color:var(--sc-accent)}
+
+.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid}
+.steps li{counter-increment:s;display:grid;grid-template-columns:3.4rem minmax(0,1fr);gap:1rem;padding:1.05rem 0;border-bottom:1px solid var(--line)}
+.steps li:first-child{border-top:1px solid var(--line)}
+.steps li::before{content:counter(s,decimal-leading-zero);font-family:var(--sc-font-display);font-weight:700;font-stretch:110%;font-size:1.7rem;line-height:.95;letter-spacing:-.04em;color:#3E4C62}
+.steps h3{font-family:var(--sc-font-display);font-weight:650;font-size:1.12rem;letter-spacing:-.012em;margin:0 0 .3rem;color:var(--sc-ink)}
+.steps p{color:var(--body);max-width:62ch}
+.tag{display:inline-block;font-family:var(--sc-font-mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .45rem;margin-left:.5rem;vertical-align:middle;border-radius:var(--r-sm);background:#1E293B;color:#CBD5E1;font-weight:500}
+.tag.in{background:transparent;box-shadow:inset 0 0 0 1px #475569}
+
+.legend{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.55rem 1.6rem;font-size:.92rem;color:var(--body)}
+.legend li{display:grid;grid-template-columns:24px 1fr;gap:.7rem;align-items:start;line-height:1.5}
+.legend i{font-style:normal;display:grid;place-items:center;width:22px;height:22px;border-radius:5px;background:var(--sc-accent);color:var(--sc-accent-ink);font-family:var(--sc-font-mono);font-size:.7rem;font-weight:500;margin-top:1px}
+.legend.open i{background:transparent;color:var(--accent-hi);box-shadow:inset 0 0 0 1px rgba(52,211,153,.5)}
+
+.decision{background:linear-gradient(160deg,#0F1E1B 0%,#0E1626 55%);border:1px solid rgba(16,185,129,.28);border-radius:var(--r-lg);padding:clamp(1.25rem,3vw,2rem);display:grid;gap:1rem;box-shadow:var(--sc-e2)}
+.decision .kick{color:var(--accent-hi)}
+.decision h3{font-family:var(--sc-font-display);font-weight:740;font-stretch:108%;font-size:clamp(1.45rem,1rem + 1.5vw,2.15rem);letter-spacing:-.035em;line-height:1.02;margin:0;color:var(--sc-ink);text-wrap:balance}
+.decision p{color:var(--body);max-width:66ch}
+
+.seq{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.seq figure{margin:0;background:var(--plate);display:grid;align-content:start;position:relative}
+.seq svg{display:block;width:100%;height:auto}
+.seq figcaption{padding:.75rem .9rem 1rem;background:var(--sc-canvas);border-top:1px solid var(--line)}
+
+.src{display:grid;gap:.25rem;font-size:.84rem}
+.src a{color:var(--sc-ink-soft);overflow-wrap:anywhere;text-underline-offset:.22em}
+.src a:hover{color:var(--accent-hi)}
+
+/* --------------------------------------------- technical drawings ---- */
+.plate{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow-x:auto;overflow-y:hidden;background-color:var(--plate);background-image:linear-gradient(rgba(148,163,184,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.045) 1px,transparent 1px);background-size:24px 24px;box-shadow:var(--sc-e2)}
+.plate > svg.doc{display:block;width:100%;height:auto}
+.plate.wide > svg.doc{min-width:680px}
+.js .plate > svg.doc{clip-path:inset(0 0 100% 0);transition:clip-path 1.1s var(--sc-ease-out)}
+.js .plate.drawn > svg.doc{clip-path:inset(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){.js .plate > svg.doc{clip-path:none}}
+svg.doc text{font-family:var(--sc-font-mono)}
+svg.doc [stroke="#111"]{stroke:#8E9FB7}
+svg.doc [fill="#111"]{fill:#26344A}
+svg.doc text[fill="#111"],svg.doc [fill="#111"] text{fill:#CBD5E1}
+svg.doc [fill="#f6f5f2"]{fill:#16233A}
+svg.doc text[fill="#f6f5f2"],svg.doc [fill="#f6f5f2"] text{fill:#E8EEF6}
+svg.doc [stroke="#f6f5f2"]{stroke:#0E1729}
+svg.doc [fill="#dcdad3"]{fill:#0A121E}
+svg.doc [stroke="#c9c7bf"]{stroke:#16233A}
+svg.doc [fill="#c4c2ba"]{fill:#2A3850}
+svg.doc [fill="#7a7975"]{fill:#0B1320}
+svg.doc [fill="#555"]{fill:#2B394E}
+svg.doc [fill="#6f6e69"]{fill:#3A4A61}
+svg.doc [fill="#5b5b58"]{fill:#475569}
+svg.doc [fill="#999"]{fill:#64748B}
+svg.doc [stroke="#999"]{stroke:#64748B}
+svg.doc [fill="#ebeae6"]{fill:#1B2940}
+svg.doc [fill="#e3e1db"]{fill:#111C30}
+svg.doc [fill="#9fb8c8"]{fill:#2E5E86}
+svg.doc [fill="#b4b4af"]{fill:#64748B}
+svg.doc [fill="#d7261e"]{fill:#10B981}
+svg.doc [stroke="#d7261e"]{stroke:#10B981}
+svg.doc text[fill="#d7261e"]{fill:#34D399}
+svg.doc g[fill="#fff"] > text{fill:#03140D}
+svg.doc .ink,svg.doc .ink text{fill:#111}
+
+/* -------------------------------------------------------------- close ---- */
+.close{position:relative;padding:clamp(5rem,12vw,9rem) var(--pad) clamp(3rem,6vw,5rem);border-top:1px solid var(--line-strong);background:radial-gradient(120% 70% at 10% 0%,rgba(16,185,129,.09),transparent 60%),var(--sc-canvas)}
+@media (min-width:640px){.close{padding-inline:2rem}}
+@media (min-width:1024px){.close{padding-inline:clamp(2.5rem,5vw,6rem)}}
+.close-in{max-width:88rem;margin:0 auto;display:grid;gap:2rem}
+.close .h2{font-size:clamp(2.4rem,1.2rem + 4.4vw,6rem);font-stretch:116%;letter-spacing:-.05em}
+.verdict{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+@media (min-width:860px){.verdict{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.verdict .cell{padding:1.5rem 1.4rem 1.7rem;gap:.9rem}
+.verdict h3{font-family:var(--sc-font-display);font-weight:700;font-size:1.45rem;letter-spacing:-.025em;margin:0;display:flex;align-items:center;gap:.6rem;color:var(--sc-ink)}
+.sq{display:inline-block;width:.62em;height:.62em;border-radius:3px;background:var(--c,var(--sc-accent))}
+.verdict .cell:nth-child(1){--c:var(--ok)}.verdict .cell:nth-child(2){--c:var(--mid)}.verdict .cell:nth-child(3){--c:#94A3B8}
+.foot{max-width:88rem;margin:clamp(3rem,7vw,5rem) auto 0;display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;padding-top:1.1rem;border-top:1px solid var(--line);padding-bottom:max(4.5rem,calc(env(safe-area-inset-bottom,0px) + 4.5rem))}
+.foot .k{font-family:var(--sc-font-display);font-weight:800;font-stretch:120%;font-size:clamp(3rem,8vw,5.5rem);line-height:.8;letter-spacing:-.06em;color:#2A3850}
+.foot a{font-family:var(--sc-font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sc-ink-soft)}
+@media (min-width:1024px){.foot{padding-bottom:0}}
+
+/* ---------------------------------------------------------- dot nav ---- */
+.dots{position:fixed;z-index:60;display:flex;gap:2px;padding:6px;border-radius:999px;background:rgba(9,13,22,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--line-strong);box-shadow:var(--sc-e2)}
+.dots a{position:relative;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;text-decoration:none;color:var(--sc-ink-soft)}
+.dots .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid #64748B;transition:transform 180ms var(--sc-ease-out),background-color 180ms var(--sc-ease-out),border-color 180ms var(--sc-ease-out)}
+.dots a[aria-current="true"] .dot{background:var(--sc-accent);border-color:var(--sc-accent);transform:scale(1.3)}
+.dots .lbl{position:absolute;white-space:nowrap;font-family:var(--sc-font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--sc-ink);background:rgba(9,13,22,.92);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:.35rem .55rem;pointer-events:none;opacity:0;transition:opacity 160ms var(--sc-ease-out),transform 160ms var(--sc-ease-out)}
+.dots a:focus-visible{outline-offset:1px}
+.ap{position:relative;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sc-ink);cursor:pointer;transition:color 160ms var(--sc-ease-out),transform 120ms var(--sc-ease-out)}
+.ap:active{transform:scale(.94)}
+.ap-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ap-ring circle{fill:none;stroke-width:2}
+.ap-ring circle:first-child{stroke:var(--line-strong)}
+.ap-prog{stroke:var(--sc-accent);stroke-dasharray:100;stroke-dashoffset:100;stroke-linecap:round}
+.ap-ico{position:relative;width:15px;height:15px}
+.ap-pause{display:none}
+.ap[aria-pressed="true"]{color:var(--accent-hi)}
+.ap[aria-pressed="true"] .ap-play{display:none}
+.ap[aria-pressed="true"] .ap-pause{display:block}
+.ap-time{font-family:var(--sc-font-mono);font-size:.58rem;letter-spacing:.03em;color:var(--sc-ink-soft);font-variant-numeric:tabular-nums;line-height:1;text-align:center}
+.ap-sep{display:block;background:var(--line-strong)}
+@media (min-width:1024px){
+  .dots{right:max(14px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);flex-direction:column}
+  .dots .lbl{right:calc(100% + 10px);transform:translateX(6px)}
+  .dots a:hover .lbl,.dots a:focus-visible .lbl,.ap:hover .lbl,.ap:focus-visible .lbl{opacity:1;transform:none}
+  .dots{align-items:center}
+  .ap .lbl{right:calc(100% + 10px);transform:translateX(6px)}
+  .ap-time{padding:3px 0 1px}
+  .ap-sep{width:18px;height:1px;margin:6px 0 4px}
+}
+@media (max-width:1023.98px){
+  .dots{left:50%;bottom:max(12px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);flex-direction:row;align-items:center;padding:4px 6px}
+  .dots a{width:40px;height:40px}
+  .ap .lbl{display:none}
+  .ap-time{padding:0 2px 0 4px}
+  .ap-sep{width:1px;height:22px;margin:0 4px 0 6px}
+  .dots .now{font-family:var(--sc-font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--sc-ink);padding:0 .7rem 0 .45rem;white-space:nowrap;border-left:1px solid var(--line);margin-left:2px}
+}
+@media (min-width:1024px){.dots .now{display:none}}
+
+/* ---------------------------------------------------------- lightbox ---- */
+.lb{width:min(96vw,1440px);max-width:none;max-height:92vh;max-height:92dvh;padding:0;border:1px solid var(--line-strong);border-radius:var(--r-lg);background:#0B1220;color:var(--sc-ink);box-shadow:var(--sc-e3);overflow:hidden}
+.lb::backdrop{background:rgba(3,6,12,.8)}
+.lb-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.7rem .8rem .7rem 1.1rem;border-bottom:1px solid var(--line)}
+.lb-head p{font-family:var(--sc-font-display);font-weight:650;font-size:1.05rem;letter-spacing:-.01em}
+.lb-body{overflow:auto;max-height:calc(92dvh - 60px);padding:clamp(.5rem,2vw,1.5rem);background-color:var(--plate);background-image:linear-gradient(rgba(148,163,184,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.045) 1px,transparent 1px);background-size:24px 24px}
+.lb-body svg{display:block;width:100%;height:auto;min-width:760px;margin:0 auto;max-height:calc(92dvh - 110px)}
+.lb-body img{display:block;width:100%;height:auto;max-height:calc(92dvh - 110px);object-fit:contain;border-radius:var(--r)}
+.lb-x{min-height:40px}
+</style>
+</head>
+<body>
+<span data-sc-progress></span>
+<div class="sc-grain" aria-hidden="true"></div>
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<!-- Gemeinsame Definitionen für alle Kopien der Welt (nicht display:none, sonst rendern Verläufe nicht). -->
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gSky" gradientUnits="userSpaceOnUse" x1="0" y1="-1700" x2="0" y2="0">
+      <stop offset="0" stop-color="#060A12"/><stop offset=".55" stop-color="#0B1324"/><stop offset="1" stop-color="#1A2943"/>
+    </linearGradient>
+    <radialGradient id="gHalo"><stop offset="0" stop-color="#FFD98A" stop-opacity=".34"/><stop offset=".3" stop-color="#F7B955" stop-opacity=".1"/><stop offset="1" stop-color="#F7B955" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gSoil" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="900">
+      <stop offset="0" stop-color="#121B29"/><stop offset="1" stop-color="#080D16"/>
+    </linearGradient>
+    <pattern id="pSoil" patternUnits="userSpaceOnUse" width="96" height="72">
+      <circle cx="12" cy="14" r="2.2" fill="#1C2738"/><circle cx="58" cy="9" r="1.4" fill="#18222F"/><circle cx="80" cy="40" r="2.6" fill="#19243A"/>
+      <circle cx="34" cy="50" r="1.6" fill="#1C2738"/><circle cx="70" cy="64" r="1.2" fill="#18222F"/><circle cx="6" cy="58" r="1.4" fill="#18222F"/>
+      <path d="M20 30 h18 M64 24 h12 M44 66 h20" stroke="#162031" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="gAlu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCE3EC"/><stop offset="1" stop-color="#A9B4C3"/></linearGradient>
+    <linearGradient id="gPV" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#22418F"/><stop offset="1" stop-color="#14245A"/></linearGradient>
+    <linearGradient id="gRay" gradientUnits="userSpaceOnUse" x1="470" y1="-580" x2="240" y2="-268"><stop offset="0" stop-color="#FFE3A3"/><stop offset=".55" stop-color="#FFE3A3" stop-opacity=".7"/><stop offset="1" stop-color="#34D399"/></linearGradient>
+    <linearGradient id="gFan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34D399" stop-opacity=".05"/><stop offset="1" stop-color="#34D399" stop-opacity=".38"/></linearGradient>
+    <linearGradient id="gConc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#28354B"/><stop offset="1" stop-color="#1C2738"/></linearGradient>
+    <linearGradient id="gPit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D1626"/><stop offset="1" stop-color="#080D17"/></linearGradient>
+    <linearGradient id="gTruck" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4EAF2"/><stop offset="1" stop-color="#B9C4D2"/></linearGradient>
+    <pattern id="pThread" patternUnits="userSpaceOnUse" width="6" height="7"><rect width="6" height="7" fill="#475569"/><path d="M0 6 L6 2" stroke="#1E293B" stroke-width="1.2"/></pattern>
+    <pattern id="pTread" patternUnits="userSpaceOnUse" width="12" height="10"><path d="M2 3 l4 4 M8 3 l-3 4" stroke="#5D6C82" stroke-width=".9" fill="none"/></pattern>
+  </defs>
+</svg>
+
+<nav class="dots" aria-label="Kapitel">
+  <button class="ap" type="button" aria-pressed="false" aria-label="Autoplay starten (Leertaste)">
+    <svg class="ap-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><circle class="ap-prog" cx="18" cy="18" r="16" pathLength="100"/></svg>
+    <svg class="ap-ico ap-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.6 12z" fill="currentColor"/></svg>
+    <svg class="ap-ico ap-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.5h3.6v13H7zM13.4 5.5H17v13h-3.6z" fill="currentColor"/></svg>
+    <span class="lbl">Autoplay · Leertaste</span>
+  </button>
+  <span class="ap-time" aria-hidden="true">4:00</span>
+  <span class="ap-sep" aria-hidden="true"></span>
+  <a href="#k1" data-k="0"><span class="dot"></span><span class="lbl">1. Oberfläche</span></a>
+  <a href="#k2" data-k="1"><span class="dot"></span><span class="lbl">2. KI-Scan</span></a>
+  <a href="#k3" data-k="2"><span class="dot"></span><span class="lbl">3. Untergrund</span></a>
+  <a href="#k4" data-k="3"><span class="dot"></span><span class="lbl">4. 80 %-Logistik</span></a>
+  <a href="#k5" data-k="4"><span class="dot"></span><span class="lbl">5. Business Model</span></a>
+  <span class="now" aria-hidden="true">1. Oberfläche</span>
+</nav>
+
+<div class="page">
+<div class="split">
+
+  <!-- ============================================== STAGE (desktop) === -->
+  <div class="stage-col" aria-hidden="true">
+    <div class="stage" id="stage">
+      <div class="hud">
+        <p class="hud-k">SMT Urban · Schnitt</p>
+        <p class="hud-ch"><i class="hud-n">1</i><span class="hud-name">Oberfläche</span></p>
+      </div>
+      <div class="hud-b">
+        <div class="hud-row"><span>Niveau</span><b class="hud-lvl">+1,90 m</b></div>
+        <div class="hud-row hud-fill"><span>Tonne Gelb</span><b class="hud-fv">38 %</b></div>
+        <span class="sim hud-sim">Simulation</span>
+      </div>
+      <div class="ruler"></div>
+      <div class="stage-edge"></div>
+    </div>
+  </div>
+
+  <!-- ============================================== DOCUMENT ========== -->
+  <main class="content" id="inhalt">
+
+  <!-- ========================================== 1 · OBERFLÄCHE ======= -->
+  <section id="k1" class="chapter" aria-label="1. Oberfläche">
+
+    <header class="hero">
+      <div class="scene scene--hero" data-scene="0.62"></div>
+      <div class="hero-top">
+        <div>FABIZ · ASE Bukarest<br>Antreprenoriat social<br>Accenture Circular Value Chain</div>
+        <div class="date">Produktdesign<br>Stand 14.10.2026</div>
+      </div>
+      <div class="hero-main">
+        <h1 class="h1"><span class="ln"><span style="--i:0">Smart</span></span><span class="ln"><span style="--i:1">Müll&shy;tonne</span></span></h1>
+        <div class="sub">
+          <p class="sub-t"><span style="--i:0">Sortiert.</span><span style="--i:1">Gepresst.</span><span style="--i:2">Versenkt.</span></p>
+          <div class="blocks" aria-hidden="true"><i style="--i:0;height:44px;background:var(--gelb)"></i><i style="--i:1;height:66px;background:var(--blau)"></i><i style="--i:2;height:52px;background:var(--gruen)"></i><i style="--i:3;height:34px;background:var(--grau)"></i><i style="--i:4;height:70px;background:var(--sc-accent)"></i></div>
+        </div>
+        <p class="lede">Zwei Produkte auf einer Technik. <strong>SMT Urban</strong> steht im öffentlichen Raum, daneben eine versenkte Hubsäule mit vier Standardtonnen. <strong>SMT Indoor</strong> steht in Gebäuden. Beide erkennen jeden Einwurf per Kamera, sortieren ihn in vier Farben, pressen, versiegeln und melden, wann geleert werden muss. Geleert wird mit den Müllfahrzeugen, die Bukarest schon hat.</p>
+        <p class="team">Paula Bratu · Andreea Olaru · Sarah Riesz · Rareș Popa · Denisa Schiopăta · Malina Pop · Alexia Beșe · Alesia</p>
+      </div>
+    </header>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">So sieht es aus</h2><span class="kick">Visualisierung · Parcul Regele Mihai I</span></div>
+      <div class="viz">
+        <figure>
+          <div class="shot"><img src="assets/viz-alltag.jpg" width="1400" height="875" alt="Sortiertonne mit Solardach auf einer Allee im Park, daneben die geschlossene, bündige Bodenklappe" decoding="async"><button class="zoom" type="button" title="Vergrößern" data-zoom="Im Alltag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button></div>
+          <figcaption><b>Im Alltag</b>Sortiertonne mit Solardach und Partnerfläche an der Seite, daneben die bündige Klappe mit dem Trichter in der Mitte. Fläche ca. 3,4 × 1,9 m.</figcaption>
+        </figure>
+        <div class="row">
+          <figure>
+            <div class="shot"><img src="assets/viz-leeren.jpg" width="1400" height="875" alt="Hubsäule angehoben, vier farbige Standardtonnen auf Gehwegniveau, Mitarbeiter daneben" loading="lazy" decoding="async"><button class="zoom" type="button" title="Vergrößern" data-zoom="Beim Leeren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button></div>
+            <figcaption><b>Beim Leeren</b>Die Säule hebt vier Standardtonnen auf Gehwegniveau.</figcaption>
+          </figure>
+          <figure>
+            <div class="shot"><img src="assets/viz-schnitt.jpg" width="1400" height="875" alt="Schnitt durch den Boden: Schacht neben der Tonne mit Tonnen und Spindeln" loading="lazy" decoding="async"><button class="zoom" type="button" title="Vergrößern" data-zoom="Im Schnitt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button></div>
+            <figcaption><b>Im Schnitt</b>Schacht ca. 2 m tief. Unter dem Trichter verteilt die Weiche (rot) die Säcke auf die Tonnen.</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p class="fine">Vereinfachte 3D-Visualisierung mit den Maßen aus diesem Dokument, kein Foto.</p>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Schritt 1 von 7</h2><span class="kick">Einordnung</span></div>
+      <ol class="chain">
+        <li class="now"><span class="n">01</span>Produktdesign<span class="here">Wir sind hier</span></li>
+        <li><span class="n">02</span>Beschaffung</li>
+        <li><span class="n">03</span>Produktion</li>
+        <li><span class="n">04</span>Logistik</li>
+        <li><span class="n">05</span>Vertrieb &amp; Marketing</li>
+        <li><span class="n">06</span>Nutzung</li>
+        <li><span class="n">07</span>Rücknahme &amp; Recycling</li>
+      </ol>
+      <p>Konzept und Value Proposition stehen. Prototyp, Lieferanten und Pilotstandort fehlen noch. Dieses Dokument legt fest, was gebaut wird.</p>
+    </section>
+
+    <section class="blk" id="solar" data-t="1" data-sc-in data-sc-stagger="50">
+      <div class="hrow"><h2 class="h2">Solar&shy;system</h2><span class="kick">Energie</span></div>
+      <p>Das Urban-Modell versorgt sich selbst: Solardach, Akku, Laderegler. Entscheidend ist nicht die Panelgröße, sondern dass das Gerät fast immer schläft und nur bei einem Einwurf aufwacht.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Baustein</th><th>Auslegung</th><th>Warum</th></tr></thead>
+        <tbody>
+          <tr><td>Solarmodul</td><td>Monokristallin, ca. 300 W, auf dem Dach mit Überstand ca. 1,6 m², 15–20° nach Süden geneigt</td><td>Mehr Fläche gibt das Dach nicht her; die Neigung lässt Laub und Regen abrutschen</td></tr>
+          <tr><td>Akku</td><td>LiFePO4, ca. 2,5 kWh, im Gerät gedämmt und belüftet</td><td>Sicher, langlebig, verträgt Kälte besser als andere Lithium-Akkus</td></tr>
+          <tr><td>Laderegler</td><td>MPPT</td><td>Holt bei bewölktem Himmel und Teilschatten mehr Energie heraus</td></tr>
+          <tr><td>Reserve</td><td>Nachladen nachts über das Netz der Parkbeleuchtung</td><td>Billiger als ein doppelt so großes Panel; sichert den Winter unter Bäumen ab</td></tr>
+        </tbody>
+      </table></div>
+      <h3 class="h3">Energiebedarf an einem vollen Tag (ca. 500 Einwürfe)</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Verbraucher</th><th>Annahme</th><th>Wh/Tag</th></tr></thead>
+        <tbody>
+          <tr><td>Ruhemodus: Steuerung, Mobilfunk, Sensoren</td><td class="num">3 W × 24 h</td><td class="num">72</td></tr>
+          <tr><td>E-Ink-Display</td><td class="num">ca. 1 W im Mittel</td><td class="num">24</td></tr>
+          <tr><td>Erkennung: Kamera + KI</td><td class="num">15 W × 4 s × 500</td><td class="num">8</td></tr>
+          <tr><td>Klappe, Kippboden, Drehtrichter</td><td class="num">40 W × 2 s × 500</td><td class="num">11</td></tr>
+          <tr><td>Pressen</td><td class="num">250 W × 40 s × 30 Hübe</td><td class="num">83</td></tr>
+          <tr><td>Siegelbalken, Weiche</td><td class="num">ca. 8 Säcke</td><td class="num">5</td></tr>
+          <tr><td>LED-Licht am Einwurf (nur bei Bewegung)</td><td class="num">5 W × 4 h</td><td class="num">20</td></tr>
+          <tr><td>Hubsäule, einmal heben und senken</td><td class="num">ca. 500 W × 60 s</td><td class="num">10</td></tr>
+          <tr><td><strong>Summe</strong></td><td></td><td class="num"><strong>≈ <span data-sc-count="0 235" data-sc-count-ms="1200">235</span></strong></td></tr>
+        </tbody>
+      </table></div>
+      <div class="grid2">
+        <div class="cell"><h3 class="h3">Sommer</h3><p>Ein 300-W-Modul liefert in Bukarest an einem klaren Sommertag grob 1,3–1,5 kWh. Mehr als genug.</p></div>
+        <div class="cell"><h3 class="h3">Winter</h3><p>Im Dezember eher 0,2–0,3 kWh, im Schatten von Bäumen weniger. Das reicht an vollen Tagen nicht ganz. Der Akku überbrückt etwa eine Woche, danach lädt die Parkbeleuchtung nach.</p></div>
+        <div class="cell"><h3 class="h3">Standortregel</h3><p>Das Gerät steht so, dass das Dach mittags Sonne hat. Die Erträge für den genauen Standort prüfen wir mit dem EU-Tool PVGIS.</p></div>
+      </div>
+      <h3 class="h3">Wenn keine Sonne scheint</h3>
+      <ol class="steps">
+        <li><div><h3>Akku</h3><p>Reicht allein für etwa eine Woche voller Tage ohne Sonne.</p></div></li>
+        <li><div><h3>Parkbeleuchtung</h3><p>Ein kurzes Kabel zum nächsten Laternenmast lädt den Akku nachts, wenn die Leitung ohnehin Strom führt. Die günstigste Lösung für den Winter unter Bäumen.</p></div></li>
+        <li><div><h3>Sparmodus</h3><p>Wird der Akku trotzdem knapp, presst das Gerät nur noch kurz vor „voll“ und dimmt das Display. Im schlimmsten Fall geht alles ungepresst in Grau. Die Tonne bleibt immer benutzbar.</p></div></li>
+      </ol>
+      <p class="fine">Alle Werte sind Schätzungen für den Entwurf und werden am Prototyp gemessen.</p>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Wenig Kosten, viel Wirkung</h2><span class="kick">Extras</span></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Extra</th><th>Was es bringt</th><th>Kosten</th></tr></thead>
+        <tbody>
+          <tr><td><strong>E-Ink-Display</strong></td><td>Braucht fast keinen Strom, ist in der Sonne lesbar, zeigt Rückmeldung und Hinweise</td><td class="ok">gering</td></tr>
+          <tr><td><strong>Nachladen über Parkbeleuchtung</strong></td><td>Sichert den Winter, statt Panel und Akku zu verdoppeln</td><td class="ok">gering</td></tr>
+          <tr><td><strong>Luftqualitäts- und Temperatursensor</strong></td><td>Jeder Standort wird zur Messstation für Feinstaub und Hitze im Park. Daten für die Primărie über dieselbe Verbindung</td><td class="ok">gering</td></tr>
+          <tr><td><strong>Regenwasser vom Dach</strong></td><td>Dachrinne in ein Pflanzbeet an der Rückseite. Das Beet bewässert sich selbst, kühlt und lässt den Standort grün wirken</td><td class="ok">gering</td></tr>
+          <tr><td><strong>QR-Code mit Live-Zähler</strong></td><td>„Hier diesen Monat getrennt: 1,2 t“. Macht den Effekt sichtbar, ohne App</td><td class="ok">gering</td></tr>
+          <tr><td><strong>Werbe- und Partnerfläche</strong></td><td>Beide Seitenflächen des Geräts, je ca. 0,8 × 1,0 m, bedruckt und UV-beständig. Für lokale Cafés und Geschäfte, CSR-Partner großer Firmen oder Kampagnen der Primărie. Austausch z. B. pro Quartal. Kein Bildschirm, kein Strom</td><td class="ok">Einnahme</td></tr>
+          <tr><td><strong>Second-Life-Akkus</strong></td><td>Aufbereitete Module aus E-Autos statt neuer Zellen. Günstiger und kreislauffähig, braucht aber geprüfte Sicherheit</td><td class="mid">mittel</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Bewusst weggelassen:</strong> USB-Ladestationen und WLAN-Hotspot. Beides frisst den Solarstrom, den die Sortierung braucht, und zieht Menschen zum Verweilen an das Gerät.</div>
+    </section>
+  </section>
+
+  <!-- ========================================== 2 · KI-SCAN ========== -->
+  <section id="k2" class="chapter" aria-label="2. KI-Scan">
+    <header class="opener" data-t="1.3 2">
+      <div class="opener-k"><span class="kick">Kapitel 2</span></div>
+      <h2 class="opener-title">KI-Scan</h2>
+      <div class="opener-rule"></div>
+      <p class="opener-list">Einwurf · Fraktionen · Innenleben · Ablauf</p>
+    </header>
+
+    <section class="track track--scan" id="scan" data-track="scan" data-t="2 3" data-stops="0 .16 .42 .6 .72 1" aria-labelledby="scan-h">
+      <div class="track__pin">
+        <div class="scene" data-scene-track><span class="sim">Simulation</span></div>
+        <div class="console">
+          <div class="console__head">
+            <div><p class="kick">Simulation eines Einwurfs</p><h3 class="console__title" id="scan-h">Einwurf, Erkennung, Fach</h3></div>
+            <span class="sim">Edge-KI</span>
+          </div>
+          <ol class="chips">
+            <li data-at="0">Einwurf</li><li data-at=".2">Erkennung</li><li data-at=".48">Konfidenz</li><li data-at=".64">Entscheidung</li><li data-at=".76">Sortiert</li>
+          </ol>
+          <div class="meter" data-meter="conf">
+            <div class="meter__row"><span>Konfidenz</span><output class="meter__val">0,0 %</output></div>
+            <div class="meter__bar"><i class="meter__fill"></i><i class="meter__th" style="--th:.85" title="Sicherheitswert"></i></div>
+            <p class="meter__cap"><b>Unsicher heißt Grau.</b> Unter einem festgelegten Sicherheitswert geht der Gegenstand in den Restmüll.</p>
+          </div>
+          <ol class="log">
+            <li data-at="0"><span class="ts">0,00 s</span>Näherungssensor weckt das Gerät</li>
+            <li data-at=".08"><span class="ts">0,12 s</span>Klappe öffnet berührungslos · ein Gegenstand</li>
+            <li data-at=".2"><span class="ts">0,40 s</span>Kamera mit LED-Licht · Bild in der Kammer</li>
+            <li data-at=".3"><span class="ts">0,55 s</span>Wägezelle · Gewicht erfasst</li>
+            <li data-at=".38"><span class="ts">0,70 s</span>Induktiver Metallsensor · kein Metall</li>
+            <li data-at=".48"><span class="ts">1,10 s</span>Edge-KI · PET-Flasche erkannt</li>
+            <li data-at=".56"><span class="ts">1,30 s</span>Konfidenz 99,4 % · über dem Sicherheitswert</li>
+            <li data-at=".64"><span class="ts">1,45 s</span>Fach 1 · Gelb · Kunststoff &amp; Metall</li>
+            <li data-at=".76"><span class="ts">1,80 s</span>Kippboden und Drehtrichter · ins Fach</li>
+          </ol>
+          <div class="stepper">
+            <button class="st-btn st-prev" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Zurück</button>
+            <button class="st-btn st-next" type="button">Nächster Schritt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+            <span class="st-lbl">Einwurf</span>
+            <input class="st-range" type="range" min="0" max="1000" value="0" aria-label="Fortschritt der Simulation">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Vier Farben</h2><span class="kick">Fraktionen</span></div>
+      <p>Gewählt nach dem, was Menschen im Park und auf der Straße wirklich wegwerfen: Flaschen und Dosen, Kaffeebecher, Snackverpackungen, Pizzakartons, Bierflaschen aus Glas, Essensreste. Kunststoff und Metall teilen sich in Rumänien Gelb. Bioabfall von der Straße ist meist verschmutzt und gering in der Menge, er geht in Grau. Dafür bekommt Glas ein eigenes Fach, weil es im Park häufig ist und den besten Recyclingwert hat.</p>
+      <div class="note"><strong>Rumänischer Farbcode eingehalten:</strong> Gelb für Kunststoff und Metall, Blau für Papier und Karton, Grün für Glas, Grau bzw. Schwarz für Restmüll. Säcke, Fächer und Tonnen tragen dieselbe Farbe.</div>
+      <div class="fractions">
+        <div class="frac f-gelb"><svg class="bin" viewBox="0 0 40 44" aria-hidden="true"><path d="M6 11h28l-3 31H9z" fill="currentColor" opacity=".9"/><rect x="3" y="5" width="34" height="5" rx="1.5" fill="currentColor"/><rect x="15" y="1" width="10" height="4" rx="1" fill="currentColor"/></svg><span class="t">Fach 1</span><div><b>Gelb</b><small>Kunststoff &amp; Metall. PET-Flaschen, Dosen, Folien, Snacktüten. Wird gepresst.</small></div></div>
+        <div class="frac f-blau"><svg class="bin" viewBox="0 0 40 44" aria-hidden="true"><path d="M6 11h28l-3 31H9z" fill="currentColor" opacity=".9"/><rect x="3" y="5" width="34" height="5" rx="1.5" fill="currentColor"/><rect x="15" y="1" width="10" height="4" rx="1" fill="currentColor"/></svg><span class="t">Fach 2</span><div><b>Blau</b><small>Papier &amp; Karton. Pizzakartons, Zeitungen, Tüten. Wird gepresst.</small></div></div>
+        <div class="frac f-gruen"><svg class="bin" viewBox="0 0 40 44" aria-hidden="true"><path d="M6 11h28l-3 31H9z" fill="currentColor" opacity=".9"/><rect x="3" y="5" width="34" height="5" rx="1.5" fill="currentColor"/><rect x="15" y="1" width="10" height="4" rx="1" fill="currentColor"/></svg><span class="t">Fach 3</span><div><b>Grün</b><small>Glas. Bier- und Getränkeflaschen. Nicht gepresst, gedämpfter Fall über Gummilamellen.</small></div></div>
+        <div class="frac f-grau"><svg class="bin" viewBox="0 0 40 44" aria-hidden="true"><path d="M6 11h28l-3 31H9z" fill="currentColor" opacity=".9"/><rect x="3" y="5" width="34" height="5" rx="1.5" fill="currentColor"/><rect x="15" y="1" width="10" height="4" rx="1" fill="currentColor"/></svg><span class="t">Fach 4</span><div><b>Grau</b><small>Rest. Kaffeebecher, Essensreste, Hundekotbeutel und alles, was die KI nicht sicher erkennt. Wird gepresst.</small></div></div>
+      </div>
+      <div class="grid2">
+        <div class="cell"><h3 class="h3">Getränkereste</h3><p>Ein Trichter mit Gitter oben am Gerät: „Becher hier leeren“. Die Flüssigkeit läuft in einen kleinen Tank in der Hubsäule und wird mit den Tonnen geleert. So bleiben Papier und Rest trocken.</p></div>
+        <div class="cell"><h3 class="h3">Zigaretten</h3><p>Aschenbecher mit Löschsand oben am Dach. Keine Glut gelangt in die Mechanik.</p></div>
+        <div class="cell"><h3 class="h3">Batterien</h3><p>Ein kleiner, abschließbarer Einwurf an der Seite. Wird selten geleert und an eine Sammelstelle für Altbatterien übergeben.</p></div>
+      </div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Innenleben</h2><span class="kick">Zeichnung B · Mittelmodul · Schnitt</span></div>
+      <div class="plate">
+      <button class="zoom" type="button" title="Vergrößern" data-zoom="Zeichnung B · Innenleben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button>
+      <svg class="doc" viewBox="0 0 760 520" role="img" aria-label="Schnitt durch das Mittelmodul: Einwurf, Kamera, Erkennungskammer mit Waage, Drehtrichter, vier Fächer mit Presse, Siegelbalken, Schieber zu den Rutschen">
+        <rect x="170" y="60" width="420" height="420" fill="#f6f5f2" stroke="#111" stroke-width="3"/>
+        <polygon points="150,48 610,22 610,40 150,66" fill="#1d4fd6" stroke="#111" stroke-width="2"/>
+        <rect x="300" y="80" width="160" height="16" fill="#111"/>
+        <line x1="300" y1="96" x2="460" y2="96" stroke="#d7261e" stroke-width="5"/>
+        <line x1="300" y1="112" x2="380" y2="104" stroke="#111" stroke-width="4"/>
+        <line x1="460" y1="112" x2="380" y2="104" stroke="#111" stroke-width="4"/>
+        <rect x="470" y="104" width="34" height="22" fill="#111"/><circle cx="487" cy="126" r="6" fill="#d7261e"/>
+        <path d="M487 132 L420 196 M487 132 L470 196" stroke="#d7261e" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <rect x="300" y="118" width="160" height="84" fill="none" stroke="#111" stroke-width="2"/>
+        <rect x="364" y="150" width="16" height="44" rx="5" fill="#2f8f4e" stroke="#111" stroke-width="2"/><rect x="368" y="140" width="8" height="12" fill="#2f8f4e" stroke="#111" stroke-width="2"/>
+        <rect x="300" y="198" width="160" height="10" fill="#f2c014" stroke="#111" stroke-width="2"/>
+        <circle cx="300" cy="203" r="6" fill="#111"/>
+        <polygon points="290,232 470,232 420,282 340,282" fill="#ebeae6" stroke="#111" stroke-width="2.5"/>
+        <circle cx="380" cy="282" r="7" fill="#111"/>
+        <path d="M404 296 a30 14 0 1 0 -48 0" fill="none" stroke="#111" stroke-width="1.5"/>
+        <path d="M352 292 l4 6 l6 -5" fill="none" stroke="#111" stroke-width="1.5"/>
+        <g stroke="#111" stroke-width="2.5">
+          <rect x="190" y="320" width="92" height="120" fill="#1d4fd6"/>
+          <rect x="288" y="320" width="92" height="120" fill="#f2c014"/>
+          <rect x="386" y="320" width="92" height="120" fill="#8b8b86"/>
+          <rect x="484" y="320" width="92" height="120" fill="#2f8f4e"/>
+        </g>
+        <g fill="#111"><rect x="196" y="326" width="80" height="10"/><rect x="294" y="326" width="80" height="10"/><rect x="392" y="326" width="80" height="10"/></g>
+        <g stroke="#111" stroke-width="3"><line x1="236" y1="306" x2="236" y2="326"/><line x1="334" y1="306" x2="334" y2="326"/><line x1="432" y1="306" x2="432" y2="326"/></g>
+        <rect x="186" y="446" width="394" height="8" fill="#d7261e" stroke="#111" stroke-width="1.5"/>
+        <rect x="186" y="458" width="394" height="16" fill="#ebeae6" stroke="#111" stroke-width="2"/>
+        <path d="M590 466 L640 490" stroke="#d7261e" stroke-width="4"/>
+        <text x="610" y="510" font-size="11" fill="#111">zur Hubsäule</text>
+        <rect x="500" y="150" width="76" height="120" fill="#ebeae6" stroke="#111" stroke-width="2"/>
+        <rect x="510" y="160" width="56" height="40" fill="#111"/>
+        <text x="538" y="185" font-size="10" fill="#f6f5f2" text-anchor="middle">KI</text>
+        <rect x="510" y="208" width="56" height="52" fill="#f2c014" stroke="#111" stroke-width="1.5"/>
+        <text class="ink" x="538" y="238" font-size="10" fill="#111" text-anchor="middle">AKKU</text>
+        <rect x="186" y="120" width="96" height="62" fill="#111"/>
+        <text x="234" y="148" font-size="11" fill="#f2c014" text-anchor="middle">GLAS</text>
+        <text x="234" y="166" font-size="9" fill="#f6f5f2" text-anchor="middle">erkannt · danke</text>
+        <rect x="186" y="194" width="22" height="14" fill="#111"/>
+        <path d="M180 201 q-12 -10 0 -20 M172 206 q-18 -15 0 -30" fill="none" stroke="#111" stroke-width="1.5"/>
+        <g stroke="#111" stroke-width="1"><line x1="460" y1="88" x2="660" y2="88"/><line x1="504" y1="115" x2="660" y2="122"/><line x1="460" y1="160" x2="660" y2="160"/><line x1="460" y1="203" x2="660" y2="203"/><line x1="470" y1="250" x2="660" y2="250"/><line x1="576" y1="210" x2="660" y2="210"/><line x1="576" y1="340" x2="660" y2="340"/><line x1="580" y1="450" x2="660" y2="436"/><line x1="186" y1="150" x2="90" y2="150"/><line x1="186" y1="201" x2="90" y2="210"/><line x1="190" y1="380" x2="90" y2="380"/></g>
+        <g font-size="12" font-weight="500" fill="#fff">
+          <rect x="660" y="78" width="20" height="20" fill="#d7261e"/><text x="670" y="92" text-anchor="middle">1</text>
+          <rect x="660" y="112" width="20" height="20" fill="#d7261e"/><text x="670" y="126" text-anchor="middle">2</text>
+          <rect x="660" y="150" width="20" height="20" fill="#d7261e"/><text x="670" y="164" text-anchor="middle">3</text>
+          <rect x="684" y="193" width="20" height="20" fill="#d7261e"/><text x="694" y="207" text-anchor="middle">4</text>
+          <rect x="660" y="193" width="20" height="20" fill="#d7261e" transform="translate(0,22)"/><text x="670" y="229" text-anchor="middle">5</text>
+          <rect x="660" y="240" width="20" height="20" fill="#d7261e"/><text x="670" y="254" text-anchor="middle">6</text>
+          <rect x="660" y="330" width="20" height="20" fill="#d7261e"/><text x="670" y="344" text-anchor="middle">7</text>
+          <rect x="660" y="426" width="20" height="20" fill="#d7261e"/><text x="670" y="440" text-anchor="middle">8</text>
+          <rect x="70" y="140" width="20" height="20" fill="#d7261e"/><text x="80" y="154" text-anchor="middle">9</text>
+          <rect x="70" y="200" width="20" height="20" fill="#d7261e"/><text x="80" y="214" text-anchor="middle">10</text>
+          <rect x="70" y="370" width="20" height="20" fill="#d7261e"/><text x="80" y="384" text-anchor="middle">11</text>
+        </g>
+      </svg>
+      </div>
+      <ul class="legend">
+        <li><i>1</i><span>Einwurfschlitz, ein Gegenstand pro Einwurf</span></li>
+        <li><i>2</i><span>Kamera mit LED-Licht, blickt in die geschlossene Kammer</span></li>
+        <li><i>3</i><span>Erkennungskammer: Die Hand erreicht nie die Mechanik</span></li>
+        <li><i>4</i><span>Wägezelle und induktiver Metallsensor</span></li>
+        <li><i>5</i><span>Steuerung, Edge-KI, Akku</span></li>
+        <li><i>6</i><span>Kippboden und Drehtrichter (Schrittmotor)</span></li>
+        <li><i>7</i><span>Presse für Gelb, Blau, Grau; Glas fällt gedämpft über Gummilamellen</span></li>
+        <li><i>8</i><span>Heißsiegelbalken und Schieber zur Rutsche in die Hubsäule</span></li>
+        <li><i>9</i><span>Display mit Rückmeldung</span></li>
+        <li><i>10</i><span>Näherungssensor weckt das Gerät</span></li>
+        <li><i>11</i><span>Vier Fächer mit Sackrollen in vier Farben</span></li>
+      </ul>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="40">
+      <div class="hrow"><h2 class="h2">Vom Becher zur Tonne</h2><span class="kick">Ablauf</span></div>
+      <ol class="steps">
+        <li><div><h3>Aufwachen</h3><p>Ein Näherungssensor weckt das Gerät, sonst schläft es.</p></div></li>
+        <li><div><h3>Becher leeren</h3><p>Das Display bittet zuerst um Getränkereste in den Trichter. Trockener Müll lässt sich besser sortieren und recyceln.</p></div></li>
+        <li><div><h3>Einwurf</h3><p>Die Klappe öffnet berührungslos. Ein Gegenstand, eine geschlossene Kammer.</p></div></li>
+        <li><div><h3>Erkennung</h3><p>Kamera, Gewicht und Metallsensor. Die KI läuft im Gerät, ohne Internet, in unter 2 Sekunden.</p></div></li>
+        <li><div><h3>Unsicher heißt Grau</h3><p>Unter einem festgelegten Sicherheitswert geht der Gegenstand in den Restmüll. Saubere Wertstoffe sind unser Qualitätsversprechen.</p></div></li>
+        <li><div><h3>Sortieren und Pressen</h3><p>Der Drehtrichter lenkt ins Fach. Gelb, Blau und Grau werden gepresst, Glas fällt gedämpft und bleibt ganz.</p></div></li>
+        <li><div><h3>Versiegeln</h3><p>Ist ein Fach voll, verschweißt der Siegelbalken den Sack. Die Weiche unter der Klappe stellt sich auf die Rutsche zur Tonne mit der richtigen Farbe.</p></div></li>
+        <li><div><h3>Ab in die Säule <span class="tag">Urban</span></h3><p>Der Schieber wirft den Sack über die Rutsche in die Tonne seiner Farbe. Fraktionen werden nie gemischt.</p></div></li>
+        <li><div><h3>Entnahme <span class="tag in">Indoor</span></h3><p>Das Facility-Team bekommt eine Nachricht, öffnet die Fronttür und rollt die Tonnen zum Müllraum.</p></div></li>
+        <li><div><h3>Meldung</h3><p>Ist eine Tonne zu etwa 80 % voll, geht eine Meldung an den Entsorger, mit Standort und Prognose für die Route.</p></div></li>
+      </ol>
+    </section>
+  </section>
+
+  <!-- ========================================== 3 · UNTERGRUND ======= -->
+  <section id="k3" class="chapter" aria-label="3. Untergrund">
+    <header class="opener" data-t="3 3.65">
+      <div class="opener-k"><span class="kick">Kapitel 3</span></div>
+      <h2 class="opener-title">Untergrund</h2>
+      <div class="opener-rule"></div>
+      <p class="opener-list">SMT Urban · Weg eines Sacks · Sicher und sauber</p>
+    </header>
+
+    <section class="blk" id="urban" data-t="3.85" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">SMT Urban</h2><span class="kick">Zeichnung A · Schnitt + Draufsicht</span></div>
+      <p>Zwei Teile nebeneinander: die Sortiertonne und direkt daneben eine versenkte Hubsäule unter einer flachen Bodenklappe. In der Säule stehen vier Standard-Mülltonnen à 240 l fest im Quadrat 2 × 2. Der volle, versiegelte Sack rutscht in einen Trichter in der Mitte der Klappe. Darunter verteilt eine Weiche mit zwei Klappen den Sack in eine von vier kurzen Rutschen, eine pro Tonne. Nichts Schweres bewegt sich. Gesamtfläche: rund 3,4 × 1,9 m.</p>
+      <div class="plate wide">
+      <button class="zoom" type="button" title="Vergrößern" data-zoom="Zeichnung A · SMT Urban"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button>
+      <svg class="doc" viewBox="0 0 1000 560" role="img" aria-label="Schnitt: Sortiertonne links, daneben versenkte Hubsäule mit Vierwege-Weiche und Standardtonnen, Spindelantrieb, Bodenklappe. Draufsicht rechts.">
+        <defs><pattern id="earthB" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#dcdad3"/><line x1="0" y1="11" x2="12" y2="11" stroke="#c9c7bf" stroke-width="1"/></pattern></defs>
+        <text x="20" y="34" font-size="12" fill="#111" font-weight="500">SCHNITT</text>
+        <text x="690" y="34" font-size="12" fill="#111" font-weight="500">DRAUFSICHT</text>
+        <rect x="0" y="292" width="640" height="268" fill="url(#earthB)"/>
+        <rect x="250" y="292" width="210" height="208" fill="#c4c2ba" stroke="#111" stroke-width="2"/>
+        <rect x="262" y="292" width="186" height="196" fill="#7a7975"/>
+        <rect x="340" y="488" width="30" height="16" fill="#555" stroke="#111" stroke-width="1.5"/>
+        <g stroke="#111" stroke-width="4"><line x1="270" y1="300" x2="270" y2="486"/><line x1="440" y1="300" x2="440" y2="486"/></g>
+        <g stroke="#f6f5f2" stroke-width="1">
+          <path d="M266 310 l8 4 M266 322 l8 4 M266 334 l8 4 M266 346 l8 4 M266 358 l8 4 M266 370 l8 4 M266 382 l8 4 M266 394 l8 4 M266 406 l8 4 M266 418 l8 4 M266 430 l8 4 M266 442 l8 4 M266 454 l8 4 M266 466 l8 4"/>
+          <path d="M436 310 l8 4 M436 322 l8 4 M436 334 l8 4 M436 346 l8 4 M436 358 l8 4 M436 370 l8 4 M436 382 l8 4 M436 394 l8 4 M436 406 l8 4 M436 418 l8 4 M436 430 l8 4 M436 442 l8 4 M436 454 l8 4 M436 466 l8 4"/>
+        </g>
+        <rect x="258" y="474" width="24" height="12" fill="#d7261e" stroke="#111" stroke-width="1.5"/>
+        <rect x="428" y="474" width="24" height="12" fill="#d7261e" stroke="#111" stroke-width="1.5"/>
+        <rect x="276" y="458" width="158" height="10" fill="#6f6e69" stroke="#111" stroke-width="2"/>
+        <g fill="none" stroke="#111" stroke-width="1.2" stroke-dasharray="4 3" opacity=".7"><rect x="300" y="344" width="58" height="108"/><rect x="364" y="344" width="58" height="108"/></g>
+        <g stroke="#111" stroke-width="2.5">
+          <path d="M286 352 h60 l-3 100 h-54 z" fill="#f2c014"/>
+          <path d="M366 352 h60 l-3 100 h-54 z" fill="#8b8b86"/>
+        </g>
+        <g fill="#111"><rect x="284" y="346" width="64" height="8"/><rect x="364" y="346" width="64" height="8"/><circle cx="296" cy="455" r="5"/><circle cx="376" cy="455" r="5"/></g>
+        <rect x="430" y="404" width="22" height="48" fill="#9fb8c8" stroke="#111" stroke-width="1.5"/>
+        <rect x="262" y="284" width="186" height="12" fill="#5b5b58" stroke="#111" stroke-width="2"/>
+        <rect x="340" y="282" width="30" height="4" fill="#111"/>
+        <path d="M340 296 L370 296 L362 312 L348 312 Z" fill="#999" stroke="#111" stroke-width="1.5"/>
+        <path d="M350 312 L318 344 M360 312 L392 344" stroke="#d7261e" stroke-width="5" stroke-linecap="round"/>
+        <path d="M355 312 L355 330" stroke="#111" stroke-width="2"/>
+        <rect x="400" y="298" width="14" height="10" fill="#111"/>
+        <path d="M407 310 v26" stroke="#111" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <rect x="452" y="276" width="8" height="8" fill="#f2c014" stroke="#111"/>
+        <g fill="none" stroke="#d7261e" stroke-width="1.5" stroke-dasharray="7 5"><rect x="262" y="160" width="186" height="124"/></g>
+        <text x="355" y="152" font-size="11" fill="#d7261e" text-anchor="middle">angehoben: Tonnen auf Gehwegniveau</text>
+        <line x1="0" y1="292" x2="640" y2="292" stroke="#111" stroke-width="3"/>
+        <rect x="90" y="132" width="140" height="160" fill="#f6f5f2" stroke="#111" stroke-width="3"/>
+        <polygon points="76,122 244,108 244,120 76,134" fill="#1d4fd6" stroke="#111" stroke-width="2"/>
+        <rect x="96" y="114" width="22" height="9" fill="#111"/>
+        <rect x="112" y="146" width="84" height="30" fill="#111"/>
+        <line x1="112" y1="176" x2="196" y2="176" stroke="#d7261e" stroke-width="4"/>
+        <rect x="200" y="146" width="24" height="16" fill="#9fb8c8" stroke="#111" stroke-width="1.5"/>
+        <polygon points="122,190 186,190 166,208 142,208" fill="#ebeae6" stroke="#111" stroke-width="2"/>
+        <g stroke="#111" stroke-width="1.5"><rect x="96" y="216" width="30" height="58" fill="#f2c014"/><rect x="128" y="216" width="30" height="58" fill="#1d4fd6"/><rect x="160" y="216" width="30" height="58" fill="#2f8f4e"/><rect x="192" y="216" width="30" height="58" fill="#8b8b86"/></g>
+        <rect x="94" y="276" width="132" height="6" fill="#d7261e"/>
+        <path d="M230 262 L346 284" stroke="#d7261e" stroke-width="6" stroke-linecap="round"/>
+        <g fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"><circle cx="560" cy="134" r="11"/><path d="M560 145 v74 M560 219 l-14 70 M560 219 l14 70 M560 168 l-18 36 M560 168 l18 36"/></g>
+        <text x="560" y="114" font-size="11" fill="#111" text-anchor="middle">1,75 m</text>
+        <g stroke="#111" stroke-width="1" fill="#111" font-size="11">
+          <line x1="486" y1="292" x2="486" y2="500"/><line x1="480" y1="292" x2="492" y2="292"/><line x1="480" y1="500" x2="492" y2="500"/>
+          <text x="496" y="400" stroke="none">2,0 m</text>
+          <line x1="66" y1="132" x2="66" y2="292"/><line x1="60" y1="132" x2="72" y2="132"/><line x1="60" y1="292" x2="72" y2="292"/>
+          <text x="58" y="216" text-anchor="end" stroke="none">1,6 m</text>
+          <line x1="90" y1="532" x2="460" y2="532"/><line x1="90" y1="526" x2="90" y2="538"/><line x1="460" y1="526" x2="460" y2="538"/>
+          <text x="275" y="550" text-anchor="middle" stroke="none">ca. 3,4 m</text>
+        </g>
+        <g font-size="12" font-weight="500" fill="#fff">
+          <rect x="248" y="96" width="20" height="20" fill="#d7261e"/><text x="258" y="110" text-anchor="middle">1</text>
+          <rect x="200" y="166" width="20" height="20" fill="#d7261e" transform="translate(30,0)"/><text x="240" y="180" text-anchor="middle">2</text>
+          <rect x="62" y="236" width="20" height="20" fill="#d7261e"/><text x="72" y="250" text-anchor="middle">3</text>
+          <rect x="240" y="236" width="20" height="20" fill="#d7261e"/><text x="250" y="250" text-anchor="middle">4</text>
+          <rect x="314" y="258" width="20" height="20" fill="#d7261e"/><text x="324" y="272" text-anchor="middle">5</text>
+          <rect x="300" y="390" width="20" height="20" fill="#d7261e"/><text x="310" y="404" text-anchor="middle">6</text>
+          <rect x="236" y="430" width="20" height="20" fill="#d7261e"/><text x="246" y="444" text-anchor="middle">7</text>
+          <rect x="390" y="470" width="20" height="20" fill="#d7261e" transform="translate(-74,8)"/><text x="326" y="492" text-anchor="middle">8</text>
+          <rect x="418" y="312" width="20" height="20" fill="#d7261e"/><text x="428" y="326" text-anchor="middle">9</text>
+          <rect x="456" y="392" width="20" height="20" fill="#d7261e" transform="translate(-24,-30)"/><text x="442" y="376" text-anchor="middle">10</text>
+        </g>
+        <text x="6" y="286" font-size="10" fill="#111">±0,00</text>
+        <rect x="680" y="110" width="310" height="300" fill="#e3e1db"/>
+        <rect x="700" y="196" width="104" height="72" fill="#f6f5f2" stroke="#111" stroke-width="3"/>
+        <rect x="712" y="206" width="56" height="12" fill="#111"/>
+        <rect x="816" y="164" width="150" height="136" fill="#5b5b58" stroke="#111" stroke-width="3"/>
+        <g stroke="#111" stroke-width="1.5"><rect x="836" y="176" width="46" height="54" fill="#f2c014"/><rect x="900" y="176" width="46" height="54" fill="#1d4fd6"/><rect x="836" y="236" width="46" height="54" fill="#8b8b86"/><rect x="900" y="236" width="46" height="54" fill="#2f8f4e"/></g>
+        <path d="M804 232 h75" stroke="#d7261e" stroke-width="5"/>
+        <g stroke="#d7261e" stroke-width="3"><line x1="891" y1="232" x2="866" y2="206"/><line x1="891" y1="232" x2="916" y2="206"/><line x1="891" y1="232" x2="866" y2="260"/><line x1="891" y1="232" x2="916" y2="260"/></g>
+        <rect x="879" y="220" width="24" height="24" fill="#111" stroke="#d7261e" stroke-width="2"/>
+        <path d="M752 330 v-46" stroke="#d7261e" stroke-width="3"/><path d="M744 290 l8 -10 l8 10" fill="#d7261e"/>
+        <text x="752" y="348" font-size="11" fill="#111" text-anchor="middle">Einwurfseite</text>
+        <path d="M891 360 v-46" stroke="#111" stroke-width="2"/><path d="M883 320 l8 -10 l8 10" fill="#111"/>
+        <text x="891" y="378" font-size="11" fill="#111" text-anchor="middle">Seite für Entsorger</text>
+        <g stroke="#111" stroke-width="1" fill="#111" font-size="11"><line x1="700" y1="440" x2="966" y2="440"/><line x1="700" y1="434" x2="700" y2="446"/><line x1="966" y1="434" x2="966" y2="446"/><text x="833" y="462" text-anchor="middle" stroke="none">ca. 3,4 × 1,9 m = 6,5 m²</text></g>
+      </svg>
+      </div>
+      <ul class="legend">
+        <li><i>1</i><span>Solardach ca. 300 W, LiFePO4-Akku ca. 2,5 kWh</span></li>
+        <li><i>2</i><span>Trichter für Getränkereste, Aschenbecher auf dem Dach</span></li>
+        <li><i>3</i><span>Vier Fächer mit Presse; Glas ohne Presse, mit gedämpftem Fall</span></li>
+        <li><i>4</i><span>Siegelbalken und seitlicher Auswurf</span></li>
+        <li><i>5</i><span>Rutsche in die Einwurföffnung der Bodenklappe</span></li>
+        <li><i>6</i><span>Vier Standardtonnen 240 l (EN 840) mit Säcken in Fraktionsfarbe</span></li>
+        <li><i>7</i><span>Vierwege-Weiche unter der Klappe: zwei Klappen lenken den Sack in eine von vier Rutschen</span></li>
+        <li><i>8</i><span>Zwei elektrische Spindeln: kein Hydrauliköl im Boden</span></li>
+        <li><i>9</i><span>Füllstand- und Temperatursensor unter der Klappe</span></li>
+        <li><i>10</i><span>Tank für Getränkereste, Drainage mit Pumpe im Schachtboden</span></li>
+      </ul>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Vom Fach in die Tonne</h2><span class="kick">Zeichnung D · Weg eines Sacks</span></div>
+      <p>Alles läuft automatisch und immer nur ein Sack auf einmal. Die Steuerung prüft jeden Schritt mit einem Sensor, bevor der nächste beginnt.</p>
+    </section>
+
+    <section class="track track--fall" id="fall" data-track="fall" data-t="4 5" data-stops=".04 .19 .29 .36 .48 .56 .66 .8 1" aria-label="Weg eines Sacks, Schritt für Schritt">
+      <div class="track__pin">
+        <div class="scene" data-scene-track></div>
+        <div class="console">
+          <div class="console__head">
+            <div><p class="kick">Weg eines Sacks</p><h3 class="console__title">Neun Schritte, ein Sack</h3></div>
+            <span class="sim">Ablauf</span>
+          </div>
+          <ol class="fsteps">
+            <li data-at="0"><h3>Folienrolle</h3><p>Über jedem Fach sitzt eine Rolle Schlauchfolie in der Farbe des Fachs. Daraus entsteht der Sack.</p></li>
+            <li data-at=".08"><h3>Sack füllt sich</h3><p>Der Drehtrichter wirft erkannte Gegenstände in den offenen Sack.</p></li>
+            <li data-at=".2"><h3>Pressen</h3><p>Die Presse drückt von oben, wenn der Füllstand eine Marke erreicht. Glas wird nicht gepresst.</p></li>
+            <li data-at=".3"><h3>Versiegeln und neuer Sack</h3><p>Ist der Sack voll, verschweißt und trennt der Siegelbalken oben. Dieselbe Naht ist der Boden des nächsten Sacks. Niemand muss Säcke wechseln, nur ab und zu eine neue Rolle einsetzen.</p></li>
+            <li data-at=".4"><h3>Weg vorbereiten</h3><p>Bevor sich etwas öffnet, stellt sich die Weiche unter der Klappe auf die Rutsche zur Tonne mit der passenden Farbe. In der Zeichnung stehen die Tonnen zur Vereinfachung in einer Reihe, in Wirklichkeit 2 × 2.</p></li>
+            <li data-at=".5"><h3>Bodenklappe</h3><p>Der Boden des Fachs klappt auf, der versiegelte Sack fällt auf eine Rampe im Sockel des Geräts.</p></li>
+            <li data-at=".58"><h3>Seitenklappe</h3><p>Die Rampe führt zur Seite. Die Seitenklappe öffnet nur für diesen Sack.</p></li>
+            <li data-at=".68"><h3>Trichter in der Bodenplatte</h3><p>Der Sack rutscht über die kurze Außenrutsche in den Trichter in der Mitte der Bodenklappe.</p></li>
+            <li data-at=".82"><h3>In die richtige Tonne</h3><p>Der Sack fällt durch den Trichter, die Weiche lenkt ihn in die Rutsche seiner Farbe, er landet in der offenen Tonne etwa 0,7 m tiefer. Die Lichtschranke meldet den Durchgang, alle Klappen schließen. Erst dann darf der nächste Sack folgen.</p></li>
+          </ol>
+          <div class="stepper">
+            <button class="st-btn st-prev" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Zurück</button>
+            <button class="st-btn st-next" type="button">Nächster Schritt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+            <span class="st-lbl">Folienrolle</span>
+            <input class="st-range" type="range" min="0" max="1000" value="0" aria-label="Weg des Sacks">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="grid2">
+        <div class="cell"><h3 class="h3">Ein Trichter in der Mitte</h3><p>Die Rutsche vom Gerät endet in einem Trichter in der Mitte der Bodenklappe. Die vier Tonnen stehen fest darunter, 2 × 2 im Quadrat.</p></div>
+        <div class="cell"><h3 class="h3">Weiche statt Drehteller</h3><p>Unter dem Trichter sitzt eine Weiche mit zwei Klappen, wie bei einer Weiche für Züge. Sie lenkt den Sack in eine von vier kurzen, steilen Rutschen, je eine pro Tonne. Bewegt wird nur eine leichte Klappe, nie 400 kg Tonnen.</p></div>
+        <div class="cell"><h3 class="h3">Kontrolle</h3><p>Jede Rutsche hat eine Lichtschranke. Sie meldet, dass der Sack in der richtigen Tonne angekommen ist.</p></div>
+        <div class="cell"><h3 class="h3">Deckel offen</h3><p>Im Schacht sind die Tonnendeckel nach hinten eingehakt, damit die Säcke hineinfallen. Beim Herausrollen klappt der Mitarbeiter sie zu.</p></div>
+      </div>
+      <div class="plate wide">
+      <button class="zoom" type="button" title="Vergrößern" data-zoom="Zeichnung D · Weg eines Sacks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button>
+      <svg class="doc" viewBox="0 0 1000 470" role="img" aria-label="Schema: Folienrolle, Sack im Fach, Presse, Siegelbalken, Bodenklappe, Rampe, Seitenklappe, Trichter mit Weiche in der Bodenplatte, gelbe Tonne darunter">
+        <defs>
+          <pattern id="earthD" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#dcdad3"/><line x1="0" y1="11" x2="12" y2="11" stroke="#c9c7bf" stroke-width="1"/></pattern>
+          <marker id="arD" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d7261e"/></marker>
+        </defs>
+        <rect x="0" y="330" width="1000" height="140" fill="url(#earthD)"/>
+        <rect x="80" y="30" width="330" height="300" fill="#f6f5f2" stroke="#111" stroke-width="3"/>
+        <circle cx="245" cy="68" r="22" fill="#f2c014" stroke="#111" stroke-width="2"/><circle cx="245" cy="68" r="7" fill="#111"/>
+        <rect x="190" y="96" width="110" height="10" fill="#111"/><line x1="245" y1="96" x2="245" y2="80" stroke="#111" stroke-width="4"/>
+        <path d="M180 112 L180 238 M310 112 L310 238" stroke="#e0b00e" stroke-width="4"/>
+        <rect x="182" y="140" width="126" height="96" fill="#f8d65a" opacity=".85"/>
+        <g fill="#fff" stroke="#111" stroke-width="1.2"><rect x="196" y="190" width="22" height="40" rx="6"/><rect x="226" y="200" width="40" height="22" rx="6"/><rect x="272" y="186" width="24" height="44" rx="6"/></g>
+        <rect x="168" y="124" width="154" height="8" fill="#d7261e" stroke="#111" stroke-width="1.5"/>
+        <path d="M180 240 L248 240" stroke="#111" stroke-width="5"/><path d="M248 240 L300 262" stroke="#111" stroke-width="5"/>
+        <circle cx="180" cy="240" r="4" fill="#111"/>
+        <rect x="250" y="262" width="56" height="34" rx="12" fill="#f8d65a" stroke="#111" stroke-width="1.5" transform="rotate(14 278 279)"/>
+        <path d="M150 300 L410 318" stroke="#555" stroke-width="7"/>
+        <rect x="406" y="286" width="8" height="40" fill="#d7261e" stroke="#111" stroke-width="1.5"/>
+        <path d="M414 316 L520 344" stroke="#999" stroke-width="10" stroke-linecap="round"/>
+        <path d="M414 316 L520 344" stroke="#111" stroke-width="1" fill="none"/>
+        <line x1="0" y1="330" x2="1000" y2="330" stroke="#111" stroke-width="3"/>
+        <rect x="490" y="330" width="420" height="130" fill="#7a7975" stroke="#111" stroke-width="2"/>
+        <rect x="490" y="322" width="420" height="12" fill="#5b5b58" stroke="#111" stroke-width="2"/>
+        <rect x="512" y="320" width="56" height="6" fill="#d7261e"/>
+        <rect x="500" y="446" width="400" height="8" fill="#6f6e69" stroke="#111"/>
+        <g stroke="#111" stroke-width="2"><path d="M512 350 h56 l-3 96 h-50 z" fill="#f2c014"/><path d="M600 350 h56 l-3 96 h-50 z" fill="#1d4fd6"/><path d="M688 350 h56 l-3 96 h-50 z" fill="#2f8f4e"/><path d="M776 350 h56 l-3 96 h-50 z" fill="#8b8b86"/></g>
+        <path d="M540 334 L540 346" stroke="#d7261e" stroke-width="3" marker-end="url(#arD)"/><path d="M552 334 C 600 336 620 340 628 346" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="4 3"/><path d="M552 334 C 640 336 700 340 716 346" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="4 3"/><path d="M552 334 C 680 336 790 340 804 346" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="4 3"/>
+        <rect x="540" y="352" width="4" height="8" fill="#111"/>
+        <path d="M332 70 C 370 70 370 180 330 190" fill="none" stroke="#d7261e" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arD)"/>
+        <g font-size="12" font-weight="500" fill="#fff">
+          <rect x="272" y="52" width="20" height="20" fill="#d7261e"/><text x="282" y="66" text-anchor="middle">1</text>
+          <rect x="150" y="174" width="20" height="20" fill="#d7261e"/><text x="160" y="188" text-anchor="middle">2</text>
+          <rect x="312" y="88" width="20" height="20" fill="#d7261e"/><text x="322" y="102" text-anchor="middle">3</text>
+          <rect x="140" y="118" width="20" height="20" fill="#d7261e"/><text x="150" y="132" text-anchor="middle">4</text>
+          <rect x="140" y="230" width="20" height="20" fill="#d7261e"/><text x="150" y="244" text-anchor="middle">5</text>
+          <rect x="200" y="274" width="20" height="20" fill="#d7261e"/><text x="210" y="288" text-anchor="middle">6</text>
+          <rect x="420" y="264" width="20" height="20" fill="#d7261e"/><text x="430" y="278" text-anchor="middle">7</text>
+          <rect x="580" y="296" width="20" height="20" fill="#d7261e"/><text x="590" y="310" text-anchor="middle">8</text>
+          <rect x="860" y="404" width="20" height="20" fill="#d7261e"/><text x="870" y="418" text-anchor="middle">9</text>
+        </g>
+        <text x="245" y="22" font-size="11" fill="#111" text-anchor="middle">ein Fach von vier, vergrößert</text>
+      </svg>
+      </div>
+      <div class="note"><strong>Glas:</strong> Ein Glassack fällt etwa 1 m. Flaschen dürfen brechen, das stört das Recycling nicht. Damit Scherben den Sack nicht aufschlitzen: dickere Folie für Grün und eine flachere Rampe. Wird im Prototyp getestet.</div>
+      <div class="note"><strong>Beim Leeren:</strong> Jede Farbe kommt in das Fahrzeug ihrer Fraktion, wie bei der getrennten Sammlung, die es heute schon gibt. Würde ein einziges Fahrzeug alle vier Tonnen leeren, wäre alles wieder gemischt. Deshalb meldet der Sensor jede Tonne einzeln.</div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Sicher und sauber</h2><span class="kick">Alltag</span></div>
+      <div class="grid2">
+        <div class="cell"><h3 class="h3">Sicherheit</h3><ul><li>Eine einzige bündige, rutschfeste Klappe, keine Stolperkanten</li><li>Säule füllt die Öffnung beim Heben: nie ein offenes Loch</li><li>Heben nur mit Karte und gedrücktem Taster</li><li>Hand erreicht keine bewegten Teile im Gerät</li></ul></div>
+        <div class="cell"><h3 class="h3">Hygiene</h3><ul><li>Berührungslose Klappe</li><li>Versiegelte Säcke, geschlossene Säule</li><li>Getränkereste getrennt, kein Saft am Boden</li><li>Keine Tiere im Müll</li></ul></div>
+        <div class="cell"><h3 class="h3">Robustheit</h3><ul><li>IP65, frostfest bis −20 °C</li><li>Drainage und Pumpe gegen Regenwasser</li><li>Wasserstandssensor meldet Störungen</li><li>Akkureserve für bewölkte Wintertage</li></ul></div>
+        <div class="cell"><h3 class="h3">Bei Ausfall</h3><ul><li>KI aus: alles in Grau, Tonne bleibt nutzbar</li><li>Hub aus: Notkurbel für die Spindeln</li><li>Fernwartung meldet Fehler zuerst</li></ul></div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ========================================== 4 · LOGISTIK ========= -->
+  <section id="k4" class="chapter" aria-label="4. 80 %-Logistik">
+    <header class="opener" data-t="5 5.4">
+      <div class="opener-k"><span class="kick">Kapitel 4</span></div>
+      <h2 class="opener-title">80 %-Logistik</h2>
+      <div class="opener-rule"></div>
+      <p class="opener-list">Füllstand · Meldung · Route · Entleerung</p>
+    </header>
+
+    <section class="track track--alert" id="alarm" data-track="alert" data-t="5.4 7" data-stops="0 .4 .54 .66 .8 1" aria-labelledby="alert-h">
+      <div class="track__pin">
+        <div class="scene" data-scene-track><span class="sim">Simulation</span></div>
+        <div class="console">
+          <div class="console__head">
+            <div><p class="kick">Simulation · Tonne Gelb</p><h3 class="console__title" id="alert-h">Vom Füllstand zur Route</h3></div>
+            <span class="sim">NB-IoT / LTE-M</span>
+          </div>
+          <ol class="chips">
+            <li data-at="0">Füllstand</li><li data-at=".35">Meldung</li><li data-at=".45">Funk</li><li data-at=".58">Route</li><li data-at=".86">Hochfahren</li>
+          </ol>
+          <div class="meter" data-meter="fill">
+            <div class="meter__row"><span>Füllstand Tonne Gelb</span><output class="meter__val">38 %</output></div>
+            <div class="meter__bar"><i class="meter__fill"></i><i class="meter__th" style="--th:.8" title="Meldung bei etwa 80 %"></i></div>
+            <p class="meter__cap"><b>Meldung bei etwa 80 %.</b> Der Sensor meldet jede Tonne einzeln, mit Standort und Prognose für die Route.</p>
+          </div>
+          <ol class="log log--plain">
+            <li data-at="0"><span class="ts"></span>Füllstandsensor unter der Klappe misst die Tonne</li>
+            <li data-at=".35"><span class="ts"></span>Etwa 80 % voll · Meldung an den Entsorger</li>
+            <li data-at=".45"><span class="ts"></span>NB-IoT / LTE-M · mit Standort</li>
+            <li data-at=".58"><span class="ts"></span>Die Software plant eine Route für alle vollen Standorte</li>
+            <li data-at=".72"><span class="ts"></span>Fahrzeug der Fraktion Gelb vor Ort · nur volle Tonnen</li>
+            <li data-at=".86"><span class="ts"></span>Karte + Taster · Säule hebt die Tonnen auf Gehwegniveau</li>
+          </ol>
+          <div class="stepper">
+            <button class="st-btn st-prev" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Zurück</button>
+            <button class="st-btn st-next" type="button">Nächster Schritt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+            <span class="st-lbl">Füllstand</span>
+            <input class="st-range" type="range" min="0" max="1000" value="0" aria-label="Fortschritt der Simulation">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Wie geleert wird</h2><span class="kick">Entleerung · Entscheidung</span></div>
+      <p>Kriterien: Sicherheit im öffentlichen Raum, einfache Bedienung, Nachhaltigkeit und vor allem Kompatibilität mit den Fahrzeugen, die Bukarest schon hat. Die fahren mit Schüttungen am Heck, die Standardtonnen greifen und kippen.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Variante</th><th>Sicherheit</th><th>Fläche &amp; Kosten</th><th>Nachhaltig</th><th>Kompatibel</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A · Ein Schacht für alle Säcke</strong></td><td class="ok">gut</td><td class="ok">klein</td><td class="bad">Presswagen zerdrückt Säcke, alles mischt sich</td><td class="bad">Sortierung nach Farbe nötig</td></tr>
+          <tr><td><strong>B · Vier Unterflurcontainer, Kran</strong></td><td class="ok">gut</td><td class="bad">ca. 25 m², vier große Gruben</td><td class="ok">keine Technik im Boden</td><td class="bad">braucht Kranfahrzeuge</td></tr>
+          <tr><td><strong>C · Hubsäule unter der Tonne</strong></td><td class="ok">gut</td><td class="ok">klein</td><td class="mid">Gerät steht auf der Mechanik</td><td class="ok">Standardtonnen</td></tr>
+          <tr class="pick"><td><strong>D · Hubsäule neben der Tonne</strong><br><span class="kick">unsere Wahl</span></td><td class="ok">Klappe bündig, Säule füllt die Öffnung beim Heben</td><td class="ok">ca. 6,5 m², eine kleine Grube</td><td class="ok">elektrische Spindel, kein Öl, Solarstrom</td><td class="ok">240-l-Tonnen, jedes Müllfahrzeug</td></tr>
+        </tbody>
+      </table></div>
+      <div class="decision">
+        <span class="kick">Entscheidung</span>
+        <h3>Hubsäule neben der Tonne, vier Standardtonnen, jedes Müllfahrzeug.</h3>
+        <p>Daneben statt darunter, weil die Sortiertonne dann fest auf eigenem Fundament steht und nie mitbewegt wird. Elektronik und Hubmechanik sind getrennt und unabhängig voneinander zu warten. Die ganze Klappenfläche steht für die Tonnen zur Verfügung, und der Entsorger arbeitet an der freien Seite, ohne um das Gerät herum zu müssen.</p>
+        <p>Die Klappe ist eine einzige, bündige, rutschfeste Stahlplatte, auf der man laufen kann. Beim Heben füllt die Säule die Öffnung komplett aus, es entsteht nie ein offenes Loch. Heben geht nur mit Schlüssel oder NFC-Karte des Entsorgers und nur, solange der Taster gedrückt wird. Gelbe Warnleuchte, Signalton, Klemmschutzleisten.</p>
+        <p>Energie: Vier volle Tonnen 1,2 m anzuheben braucht nur einige Wattstunden. Das schafft der Solarakku problemlos.</p>
+      </div>
+      <div class="tbl narrow"><table>
+        <thead><tr><th>Zugang zur Hubsäule</th><th>Lösung</th></tr></thead>
+        <tbody>
+          <tr><td>Von außen</td><td>Keine Griffe, kein sichtbares Schloss. Die Stahlklappe wiegt über 100 kg und lässt sich nur mit dem Motor bewegen.</td></tr>
+          <tr><td>Selbsthemmung</td><td>Die Spindeln halten die Klappe von selbst fest. Aufhebeln oder Hochdrücken ist mechanisch nicht möglich.</td></tr>
+          <tr><td>Bedienfeld</td><td>Hinter einer kleinen Klappe an der Geräteseite zur Säule, verschlossen mit einem Spezialschlüssel des Entsorgers.</td></tr>
+          <tr><td>Freigabe</td><td>NFC-Mitarbeiterkarte antippen, alternativ die App per Bluetooth direkt am Gerät. Ohne gültige Karte passiert nichts.</td></tr>
+          <tr><td>Heben</td><td>Taster gedrückt halten, ca. 60 s bis oben. Loslassen stoppt sofort.</td></tr>
+          <tr><td>Protokoll</td><td>Jede Öffnung wird mit Karte, Zeit und Dauer gespeichert.</td></tr>
+          <tr><td>Manipulation</td><td>Erschütterungs- und Neigungssensor meldet Aufbruchversuche sofort an die Zentrale.</td></tr>
+          <tr><td>Stromausfall</td><td>Notkurbel für die Spindeln, nur mit Spezialschlüssel erreichbar.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="seq">
+        <figure>
+          <svg class="doc" viewBox="0 0 240 220" role="img" aria-label="Säule versenkt, Sensor meldet volle Tonne">
+            <rect x="0" y="120" width="240" height="100" fill="#dcdad3"/>
+            <rect x="90" y="122" width="110" height="92" fill="#7a7975" stroke="#111" stroke-width="2"/>
+            <g stroke="#111" stroke-width="1.5"><path d="M100 140 h40 l-2 64 h-36 z" fill="#8b8b86"/><path d="M150 140 h40 l-2 64 h-36 z" fill="#f2c014"/></g>
+            <rect x="88" y="114" width="114" height="8" fill="#5b5b58" stroke="#111" stroke-width="2"/>
+            <line x1="0" y1="120" x2="240" y2="120" stroke="#111" stroke-width="2.5"/>
+            <rect x="18" y="60" width="60" height="60" fill="#f6f5f2" stroke="#111" stroke-width="2"/>
+            <polygon points="12,58 84,52 84,58 12,64" fill="#1d4fd6" stroke="#111"/>
+            <path d="M150 104 q12 -12 0 -24 M160 110 q22 -22 0 -44" fill="none" stroke="#d7261e" stroke-width="2.5"/>
+            <rect x="182" y="12" width="44" height="72" rx="6" fill="#111"/><rect x="188" y="22" width="32" height="50" fill="#f6f5f2"/>
+            <text x="204" y="44" font-size="12" text-anchor="middle" fill="#d7261e" font-weight="500">82%</text>
+            <text x="204" y="60" font-size="8" text-anchor="middle" fill="#111">GRAU</text>
+          </svg>
+          <figcaption><b>1 · Voll</b>Der Sensor meldet die graue Tonne. Die Software plant eine Route für alle vollen Standorte.</figcaption>
+        </figure>
+        <figure>
+          <svg class="doc" viewBox="0 0 240 220" role="img" aria-label="Säule fährt hoch, Tonnen stehen auf Gehwegniveau">
+            <rect x="0" y="150" width="240" height="70" fill="#dcdad3"/>
+            <line x1="0" y1="150" x2="240" y2="150" stroke="#111" stroke-width="2.5"/>
+            <rect x="18" y="90" width="60" height="60" fill="#f6f5f2" stroke="#111" stroke-width="2"/>
+            <polygon points="12,88 84,82 84,88 12,94" fill="#1d4fd6" stroke="#111"/>
+            <g stroke="#111" stroke-width="2"><line x1="96" y1="46" x2="96" y2="150"/><line x1="206" y1="46" x2="206" y2="150"/></g>
+            <rect x="90" y="38" width="122" height="10" fill="#5b5b58" stroke="#111" stroke-width="2"/>
+            <rect x="96" y="146" width="110" height="6" fill="#6f6e69" stroke="#111" stroke-width="1.5"/>
+            <g stroke="#111" stroke-width="1.5"><path d="M102 64 h46 l-2 80 h-42 z" fill="#8b8b86"/><path d="M154 64 h46 l-2 80 h-42 z" fill="#f2c014"/></g>
+            <rect x="208" y="28" width="10" height="10" fill="#f2c014" stroke="#111"/>
+            <path d="M222 22 l8 -6 M224 32 l10 0" stroke="#f2c014" stroke-width="2"/>
+            <g fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"><circle cx="228" cy="94" r="6"/><path d="M228 100 v24 M228 124 l-6 24 M228 124 l6 24 M228 106 l-14 8"/></g>
+          </svg>
+          <figcaption><b>2 · Hochfahren</b>Der Fahrer hält Taster und Karte, die Säule hebt die Tonnen auf Gehwegniveau. Die Öffnung bleibt geschlossen.</figcaption>
+        </figure>
+        <figure>
+          <svg class="doc" viewBox="0 0 240 220" role="img" aria-label="Tonne wird zum Müllfahrzeug gerollt">
+            <rect x="0" y="150" width="240" height="70" fill="#dcdad3"/>
+            <line x1="0" y1="150" x2="240" y2="150" stroke="#111" stroke-width="2.5"/>
+            <rect x="120" y="58" width="112" height="84" fill="#f6f5f2" stroke="#111" stroke-width="2.5"/>
+            <rect x="120" y="58" width="16" height="84" fill="#d7261e" stroke="#111" stroke-width="2"/>
+            <rect x="108" y="118" width="14" height="22" fill="#6f6e69" stroke="#111" stroke-width="1.5"/>
+            <circle cx="150" cy="150" r="10" fill="#111"/><circle cx="214" cy="150" r="10" fill="#111"/>
+            <g stroke="#111" stroke-width="1.5"><path d="M52 84 h42 l-2 60 h-38 z" fill="#8b8b86" transform="rotate(-8 72 144)"/></g>
+            <circle cx="62" cy="146" r="5" fill="#111"/>
+            <g fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"><circle cx="30" cy="88" r="6"/><path d="M30 94 v28 M30 122 l-6 26 M30 122 l6 26 M30 100 l22 -6"/></g>
+            <path d="M70 70 h30" stroke="#d7261e" stroke-width="2.5"/><path d="M98 64 l8 6 l-8 6 z" fill="#d7261e"/>
+          </svg>
+          <figcaption><b>3 · Rausrollen</b>Die Tonnen rollen wie jede normale Tonne zum Fahrzeug. Nur die vollen werden geholt.</figcaption>
+        </figure>
+        <figure>
+          <svg class="doc" viewBox="0 0 240 220" role="img" aria-label="Heckschüttung des Müllfahrzeugs kippt die Tonne">
+            <rect x="0" y="150" width="240" height="70" fill="#dcdad3"/>
+            <line x1="0" y1="150" x2="240" y2="150" stroke="#111" stroke-width="2.5"/>
+            <rect x="70" y="40" width="160" height="102" fill="#f6f5f2" stroke="#111" stroke-width="2.5"/>
+            <rect x="70" y="40" width="18" height="102" fill="#d7261e" stroke="#111" stroke-width="2"/>
+            <circle cx="104" cy="150" r="10" fill="#111"/><circle cx="208" cy="150" r="10" fill="#111"/>
+            <g stroke="#111" stroke-width="1.5"><path d="M34 34 h40 l-2 56 h-36 z" fill="#8b8b86" transform="rotate(150 54 62)"/></g>
+            <path d="M60 90 L72 120" stroke="#111" stroke-width="4"/>
+            <g fill="#b4b4af" stroke="#111" stroke-width="1"><rect x="66" y="58" width="16" height="10" rx="4"/></g>
+            <path d="M40 120 a24 24 0 0 1 20 -40" fill="none" stroke="#d7261e" stroke-width="2" stroke-dasharray="4 3"/>
+          </svg>
+          <figcaption><b>4 · Leeren</b>Die Heckschüttung kippt die Tonne wie jede andere. Zurück auf die Plattform, Säule senkt sich. Wenige Minuten pro Standort.</figcaption>
+        </figure>
+      </div>
+    </section>
+  </section>
+
+  <!-- ========================================== 5 · BUSINESS MODEL === -->
+  <section id="k5" class="chapter" aria-label="5. Business Model">
+    <header class="opener" data-t="7 8">
+      <div class="opener-k"><span class="kick">Kapitel 5</span></div>
+      <h2 class="opener-title">Business Model</h2>
+      <div class="opener-rule"></div>
+      <p class="opener-list">SMT Indoor · Vergleich · Komponenten · Pilot · Pitch · Kreislauf · Machbarkeit · Fahrplan</p>
+      <div class="scene" data-scene="8"></div>
+    </header>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">SMT Indoor</h2><span class="kick">Zeichnung C · Ansicht vorn</span></div>
+      <p>Gleiche Technik ohne Hubsäule und ohne Solar: Strom aus der Steckdose, vier 120-l-Tonnen hinter der Fronttür, die das Hauspersonal herausrollt. Gedacht für Malls, Büros, Wohnblocks, Universitäten.</p>
+      <div class="plate">
+      <button class="zoom" type="button" title="Vergrößern" data-zoom="Zeichnung C · SMT Indoor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button>
+      <svg class="doc" viewBox="0 0 760 440" role="img" aria-label="Vorderansicht SMT Indoor mit Display, Einwurf und vier farbigen Fronttüren">
+        <rect x="0" y="390" width="760" height="50" fill="#dcdad3"/>
+        <line x1="0" y1="390" x2="760" y2="390" stroke="#111" stroke-width="2.5"/>
+        <rect x="230" y="60" width="300" height="326" fill="#f6f5f2" stroke="#111" stroke-width="3"/>
+        <rect x="230" y="60" width="300" height="20" fill="#111"/>
+        <rect x="252" y="98" width="110" height="64" fill="#111"/>
+        <text x="307" y="126" font-size="12" fill="#f2c014" text-anchor="middle">PAPIER</text>
+        <text x="307" y="146" font-size="9" fill="#f6f5f2" text-anchor="middle">erkannt · danke</text>
+        <rect x="380" y="104" width="130" height="50" fill="#111"/>
+        <line x1="380" y1="154" x2="510" y2="154" stroke="#d7261e" stroke-width="5"/>
+        <circle cx="498" cy="94" r="6" fill="#111"/>
+        <g stroke="#111" stroke-width="2.5">
+          <rect x="244" y="190" width="64" height="186" fill="#f2c014"/>
+          <rect x="314" y="190" width="64" height="186" fill="#1d4fd6"/>
+          <rect x="384" y="190" width="64" height="186" fill="#2f8f4e"/>
+          <rect x="454" y="190" width="64" height="186" fill="#8b8b86"/>
+        </g>
+        <g fill="#111"><rect x="296" y="270" width="4" height="26"/><rect x="366" y="270" width="4" height="26"/><rect x="436" y="270" width="4" height="26"/><rect x="506" y="270" width="4" height="26"/></g>
+        <g fill="#111"><rect x="252" y="350" width="48" height="6"/><rect x="322" y="350" width="22" height="6"/><rect x="392" y="350" width="36" height="6"/><rect x="462" y="350" width="44" height="6"/></g>
+        <g class="ink" font-size="10" fill="#111"><text x="276" y="210" text-anchor="middle">GELB</text></g>
+        <g font-size="10" fill="#f6f5f2"><text x="346" y="210" text-anchor="middle">BLAU</text><text x="416" y="210" text-anchor="middle">GLAS</text></g>
+        <g class="ink" font-size="10" fill="#111"><text x="486" y="210" text-anchor="middle">REST</text></g>
+        <path d="M530 360 h60 v30" fill="none" stroke="#111" stroke-width="2.5"/>
+        <rect x="582" y="374" width="16" height="16" fill="#111"/>
+        <g stroke="#111" stroke-width="1" fill="#111" font-size="11">
+          <line x1="200" y1="60" x2="200" y2="390"/><line x1="194" y1="60" x2="206" y2="60"/><line x1="194" y1="390" x2="206" y2="390"/>
+          <text x="190" y="230" text-anchor="end" stroke="none">1,20 m</text>
+          <line x1="230" y1="30" x2="530" y2="30"/><line x1="230" y1="24" x2="230" y2="36"/><line x1="530" y1="24" x2="530" y2="36"/>
+          <text x="380" y="22" text-anchor="middle" stroke="none">1,00 m · Tiefe 0,55 m</text>
+        </g>
+        <g font-size="12" font-weight="500" fill="#fff">
+          <rect x="560" y="120" width="20" height="20" fill="#d7261e"/><text x="570" y="134" text-anchor="middle">1</text>
+          <rect x="150" y="120" width="20" height="20" fill="#d7261e"/><text x="160" y="134" text-anchor="middle">2</text>
+          <rect x="560" y="270" width="20" height="20" fill="#d7261e"/><text x="570" y="284" text-anchor="middle">3</text>
+          <rect x="150" y="342" width="20" height="20" fill="#d7261e"/><text x="160" y="356" text-anchor="middle">4</text>
+          <rect x="620" y="340" width="20" height="20" fill="#d7261e"/><text x="630" y="354" text-anchor="middle">5</text>
+        </g>
+        <g stroke="#111" stroke-width="1"><line x1="510" y1="130" x2="560" y2="130"/><line x1="252" y1="130" x2="170" y2="130"/><line x1="518" y1="280" x2="560" y2="280"/><line x1="252" y1="353" x2="170" y2="352"/><line x1="598" y1="374" x2="620" y2="356"/></g>
+      </svg>
+      </div>
+      <ul class="legend">
+        <li><i>1</i><span>Einwurf mit Kamera, Kammer und Drehtrichter wie bei Urban</span></li>
+        <li><i>2</i><span>Display mit Rückmeldung und Hinweisen</span></li>
+        <li><i>3</i><span>Vier abschließbare Fronttüren in Fraktionsfarbe</span></li>
+        <li><i>4</i><span>Füllanzeige pro Fach, gleichzeitig in der App</span></li>
+        <li><i>5</i><span>230 V Netzanschluss mit Pufferakku</span></li>
+      </ul>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Zwei Produkte</h2><span class="kick">Vergleich</span></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Merkmal</th><th>SMT Urban</th><th>SMT Indoor</th></tr></thead>
+        <tbody>
+          <tr><td>Einsatzort</td><td>Parks, Fußgängerzonen, Plätze, Vorplätze</td><td>Malls, Büros, Wohnblocks, Universitäten</td></tr>
+          <tr><td>Kunde</td><td>Primărie, Sektorverwaltung, Entsorger</td><td>Facility Management, Mall-Betreiber, Asociații de proprietari</td></tr>
+          <tr><td>Energie</td><td>Solar + Akku, netzunabhängig</td><td>230 V + Pufferakku</td></tr>
+          <tr><td>Lagerung</td><td>Vier 240-l-Tonnen in versenkter Hubsäule</td><td>Vier 120-l-Tonnen hinter der Fronttür</td></tr>
+          <tr><td>Entleerung</td><td>Säule hebt, Tonnen zum Müllfahrzeug</td><td>Hauspersonal rollt Tonnen zum Müllraum</td></tr>
+          <tr><td>Schutzart</td><td>IP65, vandalismussicher, frostfest</td><td>IP44</td></tr>
+          <tr><td>Maße Gerät (H × B × T)</td><td class="num">ca. 1,60 × 1,40 × 0,90 m</td><td class="num">ca. 1,30 × 1,20 × 0,70 m</td></tr>
+          <tr><td>Gesamtfläche</td><td class="num">ca. 3,4 × 1,9 m</td><td class="num">ca. 1,2 × 0,7 m</td></tr>
+          <tr><td>Kapazität</td><td class="num">4 × 240 l gepresst, etwa 40–60 normale Parkeimer</td><td class="num">4 × 120 l</td></tr>
+        </tbody>
+      </table></div>
+      <p class="fine">Alle Maße und Leistungswerte sind Entwurfswerte und werden im Prototyp geprüft.</p>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Komponenten</h2><span class="kick">Stückliste</span></div>
+      <div class="tbl"><table>
+        <thead><tr><th>Baugruppe</th><th>Lösung</th><th>Kreislauf</th></tr></thead>
+        <tbody>
+          <tr><td>Gehäuse</td><td>Recycling-Aluminium, Anti-Graffiti-Beschichtung (Urban); recycelte HDPE-Paneele (Indoor)</td><td>Lokal in Bukarest gefertigt, verschraubt statt verklebt</td></tr>
+          <tr><td>Energie</td><td>Solar ca. 300 W, MPPT-Regler, LiFePO4 ca. 2,5 kWh, Nachladen über Parkbeleuchtung (Urban); 230 V (Indoor)</td><td>Netzunabhängig im Alltag, kein eigenes Stromkabel</td></tr>
+          <tr><td>Erkennung</td><td>Kamera, LED, Wägezelle, Metallsensor, Edge-KI</td><td>Updates aus der Ferne</td></tr>
+          <tr><td>Mechanik oben</td><td>Klappe, Kippboden, Drehtrichter, drei Pressen, Gummilamellen für Glas, Siegelbalken, Schieber</td><td>Modulare Einschübe</td></tr>
+          <tr><td>Hubsäule</td><td>Betonschacht innen ca. 1,8 × 1,7 × 2,0 m, zwei elektrische Spindeln, Vierwege-Weiche mit vier Rutschen, bündige Stahlklappe, Drainage + Pumpe</td><td>Kein Hydrauliköl, Teile einzeln tauschbar</td></tr>
+          <tr><td>Tonnen</td><td>4 × 240 l nach EN 840, Farben Gelb, Blau, Grün, Grau</td><td>Recycling-HDPE, kompatibel mit jedem Müllfahrzeug</td></tr>
+          <tr><td>Extras</td><td>Trichter + Tank für Getränkereste, Aschenbecher mit Löschsand, Batterieeinwurf</td><td>Trockener Müll, bessere Recyclingqualität</td></tr>
+          <tr><td>Sensorik</td><td>Füllstand je Tonne, Temperatur, Wasserstand im Schacht, Näherung</td><td>Brand- und Hochwasserwarnung</td></tr>
+          <tr><td>Sicherheit</td><td>Totmann-Taster, NFC-Freigabe, Warnleuchte, Signalton, Klemmschutzleisten</td><td>Heben nur mit Personal vor Ort</td></tr>
+          <tr><td>Säcke</td><td>Rollen in vier Farben</td><td>Recyceltes LDPE</td></tr>
+          <tr><td>Display</td><td>E-Ink, beleuchtet nur bei Bewegung</td><td>Fast kein Stromverbrauch</td></tr>
+          <tr><td>Umweltsensor</td><td>Feinstaub (PM2.5/PM10), Temperatur, Luftfeuchte</td><td>Messdaten für die Stadt</td></tr>
+          <tr><td>Kommunikation</td><td>NB-IoT/LTE-M (Urban), WLAN oder LTE (Indoor)</td><td>Geringer Energiebedarf</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Bukarest, Parcul Regele Mihai I</h2><span class="kick">Pilot</span></div>
+      <p>Wir starten nur in Bukarest, an einem Ort mit sehr hoher Besucherzahl und bekannten Müllproblemen.</p>
+      <div class="grid2">
+        <div class="cell"><h3 class="h3">Warum hier</h3><ul><li>Sehr viele Besucher, vor allem am Wochenende</li><li>Bekannte Müllprobleme: 2022 hat die Garda de Mediu zwei Institutionen der Primăria Capitalei, darunter ALPAB, wegen Müllbergen im Park mit je 50.000 Lei bestraft</li><li>Ansprechpartner sind deshalb Primăria Capitalei und ALPAB, nicht nur der Sektor</li><li>Platz für eine kleine Grube, keine Altstadt-Archäologie</li></ul></div>
+        <div class="cell"><h3 class="h3">Warum jetzt (Sektor 1)</h3><ul><li>Im Sektor 1 hat Blue Planet am 1. Juli 2026 Romprest abgelöst, mit einem Übergangsvertrag von bis zu 12 Monaten</li><li>Der Sektor plant rund 98 Mio. Lei für Fahrzeuge und Ausrüstung und vergibt die Hausmüllsammlung neu</li><li>Fahrzeuge und Verträge werden jetzt entschieden; unser System braucht keine neuen. Relevant für Straßen im Sektor 1, für den Park ist zu klären, wer sammelt</li></ul></div>
+        <div class="cell"><h3 class="h3">Nicht für Urban</h3><ul><li>Centrul Vechi: Archäologie im Boden. Gut für Indoor in Lokalen</li><li>Unirii, Universitate: Metro und Leitungen im Boden</li></ul></div>
+      </div>
+      <div class="note"><strong>Vor dem Pitch:</strong> zwei Wochenenden lang überfüllte Mülleimer im Park fotografieren, mit Uhrzeit und Ort. Eigene Daten überzeugen mehr als Argumente.</div>
+      <div class="src">
+        <a href="https://www.economica.net/strazile-din-sectorul-1-vor-fi-curatate-de-un-nou-operator-de-salubritate-primaria-incheie-definitiv-contractul-cu-romprest-si-atribuie-pentru-un-an-aceste-servicii-unei-alte-companii_949273.html/amp" target="_blank" rel="noopener">Economica: neuer Betreiber im Sektor 1</a>
+        <a href="https://hotnews.ro/sectorul-1-isi-face-firma-de-salubrizare-si-va-achizitiona-utilaje-de-100-milioane-de-lei-din-2027-cetatenii-vor-plati-o-taxa-pentru-gunoiul-menajer-2209176" target="_blank" rel="noopener">HotNews: Sektor 1 gründet eigene Firma</a>
+        <a href="https://spotmedia.ro/stiri/mediu/garda-de-mediu-a-amendat-doua-institutii-ale-primariei-capitalei-pentru-muntii-de-gunoaie-din-herastrau" target="_blank" rel="noopener">SpotMedia: Strafe für Müllberge im Herăstrău</a>
+      </div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Warum die Stadt das will</h2><span class="kick">Pitch · Primărie</span></div>
+      <div class="grid2">
+        <div class="cell"><h3 class="h3">Kompatibel</h3><p>Standardtonnen, geleert mit den Fahrzeugen, die Bukarest schon hat. Keine neuen Fahrzeuge, kein neues Personal.</p></div>
+        <div class="cell"><h3 class="h3">Umwelt</h3><p>Sortenreine Wertstoffe statt Mischmüll, Glas getrennt, Getränkereste getrennt. Weniger Deponie.</p></div>
+        <div class="cell"><h3 class="h3">Stadtbild</h3><p>Ein Gerät statt mehrerer überfüllter Eimer. Der Müll verschwindet sichtbar unter die Erde, Vögel und Ratten kommen nicht ran.</p></div>
+        <div class="cell"><h3 class="h3">Kosten</h3><p>Abholung nur bei Bedarf, deutlich seltener als bei normalen Parkeimern. Bezahlt als Abo mit Wartung (Product-as-a-Service).</p></div>
+      </div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Was das Design festlegt</h2><span class="kick">Kreislauf</span></div>
+      <div class="tbl narrow"><table>
+        <thead><tr><th>Schritt</th><th>Entscheidung im Produktdesign</th></tr></thead>
+        <tbody>
+          <tr><td>Beschaffung</td><td>Recycelte Materialien, Lieferanten in und um Bukarest</td></tr>
+          <tr><td>Produktion</td><td>Eine Plattform, zwei Gehäuse, lokale Montage</td></tr>
+          <tr><td>Logistik</td><td>Abholung nach Füllstand mit vorhandenen Fahrzeugen, Routenplanung</td></tr>
+          <tr><td>Vertrieb &amp; Marketing</td><td>Product-as-a-Service: Gerät bleibt unser Eigentum, Kunde zahlt Abo</td></tr>
+          <tr><td>Nutzung</td><td>Fernwartung, Updates, Austausch einzelner Module</td></tr>
+          <tr><td>Rücknahme &amp; Recycling</td><td>Module werden aufbereitet, Gehäuse recycelt</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Der Prototyp muss zeigen</h2><span class="kick">Offen</span></div>
+      <ul class="legend open" style="grid-template-columns:1fr">
+        <li><i>?</i><span>Erkennungsgenauigkeit pro Farbe und Anteil „unsicher → Grau“</span></li>
+        <li><i>?</i><span>Ob Glas über die Gummilamellen ganz bleibt</span></li>
+        <li><i>?</i><span>Dichtigkeit des Schachts bei Starkregen und Frost</span></li>
+        <li><i>?</i><span>Energiebilanz im Bukarester Winter</span></li>
+        <li><i>?</i><span>Welche Tonnengröße die Fahrzeuge des Betreibers im Sektor 1 greifen (240 l oder 360 l)</span></li>
+        <li><i>?</i><span>Genehmigungen für den Schacht im Park (Primăria Capitalei, ALPAB, Versorger)</span></li>
+        <li><i>?</i><span>Herstellkosten pro Standort und Höhe des monatlichen Abos</span></li>
+      </ul>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60">
+      <div class="hrow"><h2 class="h2">Wie realistisch</h2><span class="kick">Machbarkeit</span></div>
+      <p>Jede Komponente gibt es bereits einzeln in der Industrie. Schwierig ist, alles zusammen draußen und über Jahre zuverlässig laufen zu lassen.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Teil</th><th>Schwierigkeit</th><th>Warum</th></tr></thead>
+        <tbody>
+          <tr><td>Solar, Akku, Füllstandssensoren, Mobilfunk, Dashboard</td><td class="ok">einfach</td><td>Standardteile, fertig zu kaufen</td></tr>
+          <tr><td>Weiche und Rutschen</td><td class="ok">einfach</td><td>Einfache Mechanik</td></tr>
+          <tr><td>Werbefläche, E-Ink, Umweltsensor</td><td class="ok">einfach</td><td>Fertige Bauteile</td></tr>
+          <tr><td>Pressen</td><td class="mid">mittel</td><td>Gibt es bereits in solarbetriebenen Presstonnen</td></tr>
+          <tr><td>Hubsäule mit Klappe</td><td class="mid">mittel</td><td>Ähnliche Hebesysteme für versenkte Mülltonnen sind auf dem Markt</td></tr>
+          <tr><td>KI-Erkennung</td><td class="mid">mittel bis schwer</td><td>Funktioniert im Labor. Auf der Straße sind Gegenstände schmutzig, nass, gemischt: Die echte Genauigkeit ist die große Frage</td></tr>
+          <tr><td>Sack automatisch formen und versiegeln</td><td class="bad">schwer</td><td>Größtes technisches Risiko: Schmutz und Feuchtigkeit an der Naht schwächen die Versiegelung</td></tr>
+          <tr><td>Vandalismus und Winter</td><td class="bad">schwer</td><td>Viel Feldtest, wenig Theorie</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Kosten:</strong> Nach unserer Schätzung liegt ein Urban-Standort mit Schacht, Hubsäule und Mechatronik im Bereich von mehreren zehntausend Euro, ein normaler Parkeimer bei wenigen hundert. Die Rechnung, was dafür eingespart wird (Fahrten, Reinigung, Recyclingerlös, Werbeeinnahmen), ist der nächste Schritt.</div>
+    </section>
+
+    <section class="blk" data-sc-in data-sc-stagger="60" style="padding-bottom:clamp(4rem,10vw,8rem)">
+      <div class="hrow"><h2 class="h2">In drei Stufen</h2><span class="kick">Fahrplan</span></div>
+      <ol class="steps">
+        <li><div><h3>Indoor ohne Schacht</h3><p>Erkennung und Sortierung in einem Gebäude testen, Säcke werden noch von Hand gewechselt. Ziel: echte Erkennungsgenauigkeit messen, erster Umsatz mit Facility-Kunden. Etwa 6 Monate.</p></div></li>
+        <li><div><h3>Urban-Pilot im Parcul Regele Mihai I</h3><p>Ein Standort mit Hubsäule, Weiche, Solar und Werbefläche, noch ohne automatische Versiegelung. Ziel: Wetter, Vandalismus, Energiebilanz und Abholung mit dem Entsorger testen. Etwa 6–12 Monate.</p></div></li>
+        <li><div><h3>Automatische Versiegelung und Serie</h3><p>Erst wenn alles andere zuverlässig läuft. Danach weitere Standorte in Bukarest, bezahlt als Abo mit Wartung und mitfinanziert durch Partnerflächen.</p></div></li>
+      </ol>
+    </section>
+  </section>
+
+  </main>
+</div>
+
+<!-- ============================================== CLOSE ============== -->
+<section class="close" id="fazit" aria-labelledby="fazit-h">
+  <div class="close-in">
+    <div class="hrow" data-sc-in><h2 class="h2" id="fazit-h">Wo wir stehen</h2><span class="kick">Ehrliche Einschätzung</span></div>
+    <div class="verdict" data-sc-in data-sc-stagger="90">
+      <div class="cell"><h3><span class="sq"></span>Stark</h3><ul>
+        <li>Echtes, sichtbares Problem an einem konkreten Ort</li>
+        <li>Kompatibel mit Tonnen und Fahrzeugen, die es schon gibt</li>
+        <li>„Unsicher heißt Grau“: klares Qualitätsversprechen</li>
+        <li>Daten für Stadt und Entsorger als zweiter Nutzen</li>
+      </ul></div>
+      <div class="cell"><h3><span class="sq"></span>Riskant</h3><ul>
+        <li>Viel Mechanik im öffentlichen Raum: Vandalismus, Wartung, Ausfälle</li>
+        <li>Ein Gegenstand pro Einwurf ist langsam. Bei Andrang landet Müll neben dem Gerät</li>
+        <li>Grube im Park braucht Genehmigungen. Der Park gehört zur Primăria Capitalei (ALPAB), nicht zum Sektor 1. Wer dort den Müll abholt, müssen wir klären</li>
+        <li>Alle technischen Werte sind Annahmen, nichts ist gemessen</li>
+      </ul></div>
+      <div class="cell"><h3><span class="sq"></span>Fehlt noch</h3><ul>
+        <li><strong>Kosten:</strong> Herstellkosten pro Standort gegen Einsparungen (Fahrten, Reinigung, Recyclingerlös). Ohne diese Rechnung überzeugt der Pitch keinen Investor</li>
+        <li><strong>Soziale Wirkung:</strong> für Antreprenoriat social zentral. Vorschläge: Wartungs- und Kontrolljobs für Menschen aus benachteiligten Gruppen über eine Sozialfirma oder ein ONG; Programm für Schulen im Park</li>
+        <li><strong>Schnellmodus:</strong> mehrere Gegenstände auf einmal, die KI sortiert nacheinander</li>
+        <li><strong>Erster Umsatz:</strong> Indoor ist schneller verkäuflich und finanziert den Urban-Piloten</li>
+      </ul></div>
+    </div>
+  </div>
+  <footer class="foot">
+    <div class="kick">Smart Mülltonne · Produktdesign · FABIZ 2026</div>
+    <a href="#k1">Nach oben</a>
+    <div class="k" aria-hidden="true">SM</div>
+  </footer>
+</section>
+</div>
+
+<dialog class="lb" aria-labelledby="lb-t">
+  <div class="lb-head"><p id="lb-t">Zeichnung</p><button class="st-btn lb-x" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Schließen</button></div>
+  <div class="lb-body"></div>
+</dialog>
+
+<!-- scrollcraft engine · MIT License, Copyright (c) 2026 Nate Herk · siehe assets/scrollcraft.LICENSE.txt -->
+<script src="assets/scrollcraft.js"></script>
+<script>
+/* ==========================================================================
+   Schnitt-Welt: eine SVG-Welt in Weltkoordinaten (1 m = 150 Einheiten,
+   Gehweg y = 0). Zustand ist eine reine Funktion von t (0..8):
+   0 Oberfläche · 1 Solar · 2–3 Scan · 3–3.65 Schnitt öffnet · 4–5 Sack fällt
+   5.4–7 Füllstand, Meldung, Fahrzeug, Hubsäule · 7–8 Überblick.
+   Desktop: t folgt dem Scroll (sticky Bühne). Touch: eigene Kopien je Kapitel,
+   Schritt-Buttons und Schieberegler statt Scroll-Hijacking.
+   ========================================================================== */
+(() => {
+'use strict';
+const doc = document;
+doc.documentElement.classList.add('js');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mqDesk = matchMedia('(min-width: 1024px)');
+const fine = matchMedia('(hover: hover) and (pointer: fine)');
+const ALERT_AT = 0.80;   // Meldung bei etwa 80 % Füllstand (laut Dokument)
+const CONF = 99.4;       // Konfidenz EINES simulierten Einwurfs, keine gemessene Genauigkeit
+
+const clamp = (x, a, b) => x < a ? a : x > b ? b : x;
+const c01 = x => clamp(x, 0, 1);
+const sm = x => { x = c01(x); return x * x * (3 - 2 * x); };
+const lerp = (a, b, t) => a + (b - a) * t;
+const win = (x, a, b, f = 0.05) => sm((x - a) / f) * (1 - sm((x - (b - f)) / f));
+const tri = x => 1 - Math.abs((x % 2) - 1);
+const de = (v, d = 1) => v.toFixed(d).replace('.', ',');
+const r1 = v => Math.round(v * 10) / 10;
+
+/* ------------------------------------------------------------ markup -- */
+const FR = ['#F2C014', '#1D4FD6', '#2F8F4E', '#8B8B86'];
+const CX = [130, 178, 226, 274];
+
+// Callouts: [x, y, dx, dy, Text, t0, t1, art]. Anker in Weltkoordinaten,
+// Versatz in Bildschirm-Pixeln. Anker 'bottle' / 'truck' / 'col' folgen Objekten.
+const TAGS = [
+  [225, -268, -40, -44, 'Solardach ca. 300 W', -1, 1.55],
+  [330, -150, 46, 26, 'LiFePO4-Akku ca. 2,5 kWh', .3, 1.55],
+  [-21, -470, 34, -30, 'Reserve: Parkbeleuchtung', .12, .58],
+  [96, -120, -10, 0, '1,6 m', -1, 1.5, 'plain'],
+  [60, -5, -12, -16, '±0,00', -1, .7, 'plain'],
+  [271, -202, 50, -36, 'Einwurfschlitz', 1.72, 2.3],
+  [305, -183, 50, -24, 'Kamera mit LED-Licht', 2.12, 2.52],
+  [271, -132, 54, 28, 'Wägezelle und Metallsensor', 2.28, 2.6],
+  ['bottle', 0, 46, -34, 'PET-Flasche · 99,4 %', 2.56, 2.72],
+  [271, -110, 54, 22, 'Drehtrichter', 2.66, 3.04],
+  [151, -56, -42, 30, 'Fach 1 · Gelb', 2.86, 3.3],
+  [151, -86, -44, -30, 'Folienrolle', 3.98, 4.1],
+  [151, -66, -46, -22, 'Presse', 4.18, 4.31],
+  [226, -32, 44, 32, 'Siegelbalken', 4.29, 4.42],
+  [520, 34, 50, 22, 'Vierwege-Weiche', 4.38, 4.52],
+  [151, -30, -44, 30, 'Bodenklappe', 4.49, 4.6],
+  [330, -21, 34, -40, 'Seitenklappe', 4.58, 4.7],
+  [505, -4, 34, -40, 'Trichter', 4.68, 4.86],
+  [462, 122, 56, 18, 'Lichtschranke', 4.88, 5.06],
+  [448, 210, -66, 26, 'Standardtonne 240 l', 3.62, 4.02],
+  [389, 120, -48, -24, 'Elektrische Spindel', 3.62, 4.02],
+  [352, 181, -10, 0, '2,0 m', 3.6, 5.15, 'plain'],
+  [448, 10, -56, -34, 'Füllstandsensor', 5.35, 5.95],
+  [346, -324, 30, -50, 'NB-IoT / LTE-M', 6.0, 6.5],
+  ['truck', 0, -24, -64, 'Müllfahrzeug mit Heckschüttung', 6.5, 7.05],
+  ['col', 0, 60, 70, 'Tonnen auf Gehwegniveau', 6.88, 7.38],
+  [225, -292, -36, -40, 'SMT Urban', 7.7, 99],
+  [520, 250, 80, 30, 'Hubsäule · 4 × 240 l', 7.7, 99],
+  [96, -120, -10, 0, '1,6 m', 7.7, 99, 'plain'],
+  [352, 181, -10, 0, '2,0 m', 7.7, 99, 'plain'],
+  [394, 356, 0, 22, 'ca. 3,4 m', 7.7, 99, 'plain'],
+  [-21, -470, 34, -30, 'Parkbeleuchtung', 7.7, 99]
+];
+const DIMS = [['dev', [[-1, 1.5], [7.7, 99]]], ['shaft', [[3.6, 5.15], [7.7, 99]]], ['width', [[7.7, 99]]]];
+
+function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+const f1 = n => (Math.round(n * 10) / 10).toString();
+
+function worldMarkup() {
+  const R = rng(11);
+  let o = '';
+  // Himmel und Sonne (fernste Ebene)
+  o += `<g class="w-far0"><rect x="-2600" y="-3000" width="6600" height="3500" fill="url(#gSky)"/>
+    <circle cx="470" cy="-580" r="300" fill="url(#gHalo)"/><circle cx="470" cy="-580" r="52" fill="#FFD98A" opacity=".18"/><circle cx="470" cy="-580" r="40" fill="#FFE7B0"/></g>`;
+  // Stadtsilhouette
+  let bl = '', wn = '';
+  for (let x = -2600; x < 3900;) {
+    const w = 46 + R() * 96, tall = R() < .14, h = tall ? 230 + R() * 170 : 60 + R() * 150;
+    bl += `<rect x="${f1(x)}" y="${f1(-h)}" width="${f1(w - 5)}" height="${f1(h + 600)}"/>`;
+    if (R() < .5) { const n = 2 + Math.floor(R() * 5); for (let i = 0; i < n; i++) wn += `<rect x="${f1(x + 6 + R() * (w - 22))}" y="${f1(-h + 10 + R() * (h - 26))}" width="4" height="6"/>`; }
+    x += w;
+  }
+  o += `<g class="w-far1"><g fill="#0D1525">${bl}</g><g fill="#24364F" opacity=".55">${wn}</g></g>`;
+  // Parkbäume
+  const TR = [[-1800, 1], [-1500, 1.1], [-1220, .95], [-940, 1.2], [-680, .9], [-420, 1.1], [-190, 1.05], [740, 1.15], [1000, .9], [1260, 1.2], [1560, 1], [1860, 1.1], [2160, .95], [2460, 1.15], [2760, 1]];
+  let tr = '';
+  for (const [x, s] of TR) {
+    const h = 190 * s;
+    tr += `<rect x="${f1(x - 7 * s)}" y="${f1(-h)}" width="${f1(14 * s)}" height="${f1(h + 500)}" fill="#0A131D"/>` +
+      `<circle cx="${f1(x - 62 * s)}" cy="${f1(-h - 18 * s)}" r="${f1(70 * s)}" fill="#0C1924"/>` +
+      `<circle cx="${f1(x + 66 * s)}" cy="${f1(-h - 26 * s)}" r="${f1(76 * s)}" fill="#10212E"/>` +
+      `<circle cx="${f1(x)}" cy="${f1(-h - 72 * s)}" r="${f1(100 * s)}" fill="#0E1D29"/>`;
+  }
+  o += `<g class="w-mid">${tr}</g>`;
+  // Sonnenstrahlen aufs Solardach (Endpunkte folgen der Sonne)
+  o += '<g class="w-rays" opacity="0">' + [0, 1, 2, 3].map(() => '<line class="w-rayb" stroke="url(#gRay)" stroke-width="1" opacity=".3"/><line class="w-ray" stroke="url(#gRay)" stroke-width="1.6" stroke-linecap="round"/>').join('') + '</g>';
+  // Boden im Schnitt, Fundament, Kabel zur Parkbeleuchtung, Gehweg
+  o += `<g class="w-ground"><rect x="-2600" y="0" width="6600" height="2800" fill="url(#gSoil)"/><rect x="-2600" y="0" width="6600" height="2800" fill="url(#pSoil)"/>
+    <rect x="112" y="0" width="226" height="46" fill="#1A2535" stroke="#2B3A52"/>
+    <path d="M-21 0 V64 H176 V46" fill="none" stroke="#10B981" stroke-width="1.2" stroke-dasharray="5 6" opacity=".55"/>
+    <rect x="-2600" y="-5" width="6600" height="5" fill="#1A2436"/><line x1="-2600" y1="-5" x2="4000" y2="-5" stroke="#34465F"/></g>`;
+  // Laternenmast
+  o += `<g><rect x="-26" y="-566" width="10" height="561" fill="#182436"/><rect x="-26" y="-584" width="78" height="7" rx="3" fill="#182436"/><rect x="34" y="-587" width="24" height="10" rx="3" fill="#2B3B55"/></g>`;
+
+  // ---- Hubsäule im Schacht
+  const binPath = (x, y) => `M${x} ${y} H${x + 87} L${x + 83} ${y + 152} H${x + 4} Z`;
+  let col = '';
+  col += `<line x1="381" y1="6" x2="381" y2="284" stroke="#2B3A52"/><line x1="659" y1="6" x2="659" y2="284" stroke="#2B3A52"/>`;
+  col += `<path d="${binPath(421, 112)}" fill="none" stroke="#3B6BF0" stroke-dasharray="4 4" opacity=".65"/>`;
+  col += `<path d="${binPath(564, 112)}" fill="none" stroke="#2FA35E" stroke-dasharray="4 4" opacity=".65"/>`;
+  col += `<rect x="380" y="280" width="280" height="8" fill="#334155"/>`;
+  col += `<rect x="506" y="212" width="28" height="62" fill="#122033" stroke="#2B3A52"/><rect x="508" y="240" width="24" height="32" fill="#1E4A72"/>`;
+  [[405, 0], [548, 3]].forEach(([x, i], k) => {
+    col += `<rect x="${x - 6}" y="58" width="6" height="68" rx="1.5" fill="${FR[i]}" opacity=".8"/>`;
+    col += `<path d="${binPath(x, 124)}" fill="${FR[i]}" fill-opacity=".07" stroke="${FR[i]}" stroke-width="2"/>`;
+    col += `<g class="w-bf" data-k="${k}"><rect class="w-bfr" x="${x + 6}" width="75" y="230" height="44" fill="${FR[i]}" opacity=".72"/>` +
+      `<path class="w-bfb" d="M${x + 6} 1 Q${x + 18.5} -9 ${x + 31} 1 Q${x + 43.5} -9 ${x + 56} 1 Q${x + 68.5} -9 ${x + 81} 1 Z" fill="${FR[i]}" opacity=".72"/></g>`;
+    col += `<circle cx="${x + 10}" cy="277" r="4.5" fill="#0B0F17" stroke="#475569"/>`;
+  });
+  col += `<polygon points="512,38 520,44 456,116 446,110" fill="#243146" stroke="#475569"/>`;
+  col += `<polygon points="528,38 520,44 584,116 594,110" fill="#243146" stroke="#475569"/>`;
+  col += `<line class="w-chL" x1="516" y1="42" x2="451" y2="113" stroke="#34D399" stroke-width="2" opacity="0"/>`;
+  col += `<polygon points="502,5 538,5 528,28 512,28" fill="#243146" stroke="#5B6B82"/>`;
+  col += `<g class="w-blade"><line x1="520" y1="33" x2="520" y2="52" stroke="#10B981" stroke-width="2.5"/><line x1="520" y1="33" x2="527" y2="47" stroke="#10B981" stroke-width="1.5" opacity=".7"/></g><circle cx="520" cy="33" r="3" fill="#34D399"/>`;
+  col += `<line x1="448" y1="15" x2="448" y2="118" stroke="#10B981" stroke-dasharray="3 5" opacity=".3"/><line x1="591" y1="15" x2="591" y2="118" stroke="#10B981" stroke-dasharray="3 5" opacity=".3"/>`;
+  col += `<rect x="440" y="6" width="16" height="7" fill="#1E293B" stroke="#64748B"/><circle class="w-sled" cx="448" cy="14" r="2.2" fill="#34D399" opacity=".4"/>`;
+  col += `<rect x="583" y="6" width="16" height="7" fill="#1E293B" stroke="#64748B"/><circle cx="591" cy="14" r="2.2" fill="#34D399" opacity=".4"/>`;
+  col += `<rect x="402" y="119" width="5" height="7" fill="#475569"/><rect x="490" y="119" width="5" height="7" fill="#475569"/><line class="w-ls" x1="407" y1="122.5" x2="490" y2="122.5" stroke="#34D399" stroke-width="1.5" opacity="0"/>`;
+  col += `<g class="w-pulse" transform="translate(448 12)"><circle r="16"/><circle r="16"/><circle r="16"/></g>`;
+  col += `<rect x="378" y="-5" width="284" height="10" fill="#475569"/><rect x="378" y="-5" width="284" height="10" fill="url(#pTread)"/><rect x="505" y="-5" width="30" height="5" fill="#05080D"/><line x1="378" y1="-5" x2="662" y2="-5" stroke="#7B8AA0"/>`;
+  col += `<rect class="w-warn" x="652" y="-13" width="9" height="8" rx="1.5" fill="#F2C014"/>`;
+  o += `<g class="w-shaft"><rect x="364" y="0" width="312" height="316" fill="url(#gConc)"/><rect x="378" y="0" width="284" height="302" fill="url(#gPit)"/>
+    <rect x="506" y="302" width="28" height="10" fill="#070B12" stroke="#2B3A52"/>
+    <rect x="386" y="6" width="6" height="292" fill="url(#pThread)"/><rect x="648" y="6" width="6" height="292" fill="url(#pThread)"/>
+    <rect x="382" y="292" width="14" height="9" fill="#1E293B"/><rect x="644" y="292" width="14" height="9" fill="#1E293B"/>
+    <g class="w-col">${col}</g></g>`;
+  // Erdabdeckung, öffnet sich in Kapitel 3
+  o += `<g class="w-cover"><rect class="cv" x="350" y="6" width="342" height="326" fill="url(#gSoil)"/><rect class="cv" x="350" y="6" width="342" height="326" fill="url(#pSoil)"/>
+    <line class="w-cut" x1="350" y1="6" x2="692" y2="6" stroke="#34D399" stroke-width="1.5" opacity="0"/></g>`;
+
+  // ---- Sortiertonne (Gerät)
+  let inner = '';
+  inner += `<rect x="226" y="-194" width="90" height="60" fill="#0A1120" stroke="#3A4A62"/>`;
+  inner += `<g class="w-flapL"><line x1="237" y1="-196" x2="270" y2="-196" stroke="#94A3B8" stroke-width="2"/></g><g class="w-flapR"><line x1="305" y1="-196" x2="272" y2="-196" stroke="#94A3B8" stroke-width="2"/></g>`;
+  inner += `<rect x="298" y="-193" width="15" height="8" rx="1.5" fill="#1E293B" stroke="#64748B"/><circle class="w-led" cx="305" cy="-183" r="2.4" fill="#34D399" opacity=".25"/>`;
+  inner += `<g class="w-laser" opacity="0"><polygon class="w-fan" points="305,-183 230,-170 312,-170" fill="url(#gFan)"/><line class="w-beam" x1="229" y1="-170" x2="313" y2="-170" stroke="#34D399" stroke-width="1.5"/></g>`;
+  inner += `<g class="w-box" opacity="0" fill="none" stroke="#34D399" stroke-width="1.2"><path d="M257 -172 v-6 h6 M279 -178 h6 v6 M285 -138 v6 h-6 M263 -132 h-6 v-6"/></g>`;
+  inner += `<g class="w-kipp"><rect x="228" y="-134" width="86" height="4" fill="#64748B"/><circle cx="229" cy="-132" r="2.4" fill="#94A3B8"/></g><rect x="300" y="-129" width="12" height="4" fill="#334155"/>`;
+  inner += `<rect x="136" y="-172" width="66" height="76" rx="3" fill="#0E1829" stroke="#2E3D55"/><rect x="144" y="-164" width="50" height="22" rx="2" fill="#0B1322" stroke="#10B981" stroke-width=".8"/>
+    <text x="169" y="-150" font-size="7" text-anchor="middle" fill="#9AA8BC">EDGE-KI</text>
+    <rect x="144" y="-134" width="50" height="28" rx="2" fill="none" stroke="#475569"/><rect class="w-batt" x="146" y="-132" width="46" height="24" fill="#10B981" opacity=".5"/>
+    <text x="169" y="-116" font-size="7" text-anchor="middle" fill="#E2E8F0">AKKU</text>`;
+  inner += `<polygon points="222,-124 320,-124 288,-106 254,-106" fill="#172235" stroke="#5B6B82"/><g class="w-spout"><rect x="265" y="-106" width="12" height="16" fill="#233149" stroke="#5B6B82"/></g>`;
+  for (let i = 0; i < 4; i++) {
+    const cx = CX[i] + 21.5;
+    inner += `<circle cx="${cx}" cy="-86" r="4" fill="none" stroke="${FR[i]}" opacity=".85"/>`;
+    if (i !== 2) inner += `<g class="w-press" data-i="${i}"><line x1="${cx}" y1="-90" x2="${cx}" y2="-81" stroke="#64748B" stroke-width="1.5"/><rect x="${cx - 17}" y="-81" width="34" height="3.5" fill="#64748B"/></g>`;
+    inner += `<rect x="${CX[i]}" y="-78" width="43" height="44" fill="#0A1120" stroke="${FR[i]}" stroke-opacity=".75"/>`;
+    inner += `<rect class="w-cf" x="${CX[i] + 3}" width="37" y="-56" height="22" fill="${FR[i]}" opacity=".72"/>`;
+  }
+  inner += `<rect x="128" y="-33" width="192" height="3" fill="#475569"/><rect class="w-seal" x="128" y="-33.5" width="192" height="4" fill="#34D399" opacity="0"/>`;
+  inner += `<g class="w-floor"><line x1="130" y1="-30" x2="173" y2="-30" stroke="#94A3B8" stroke-width="2"/></g>`;
+  inner += `<line x1="128" y1="-24" x2="327" y2="-15" stroke="#5B6B82" stroke-width="2.5"/>`;
+  inner += `<g class="w-side"><line x1="329" y1="-28" x2="329" y2="-14" stroke="#34D399" stroke-width="2"/></g>`;
+
+  let roof = `<polygon points="94,-246 356,-246 336,-290 114,-290" fill="url(#gPV)" stroke="#2C3E66"/>`;
+  for (let i = 1; i < 8; i++) roof += `<line x1="${f1(94 + i * 262 / 8)}" y1="-246" x2="${f1(114 + i * 222 / 8)}" y2="-290" stroke="#3555A3" stroke-width=".8"/>`;
+  for (let k = 1; k < 3; k++) roof += `<line x1="${f1(94 + k * 20 / 3)}" y1="${f1(-246 - k * 44 / 3)}" x2="${f1(356 - k * 20 / 3)}" y2="${f1(-246 - k * 44 / 3)}" stroke="#3555A3" stroke-width=".8"/>`;
+  roof += `<rect x="92" y="-246" width="266" height="7" fill="#A7B2C1"/><line class="w-pv" x1="94" y1="-246" x2="356" y2="-246" stroke="#34D399" stroke-width="1.6"/>`;
+  roof += `<line x1="346" y1="-290" x2="346" y2="-322" stroke="#94A3B8"/><circle cx="346" cy="-324" r="3" fill="#CBD5E1"/>`;
+
+  o += `<g class="w-device"><rect x="120" y="-240" width="210" height="224" fill="#0B1322"/>
+    <g class="w-inner" opacity="0">${inner}</g>
+    <g class="w-shell"><rect x="120" y="-240" width="210" height="224" fill="url(#gAlu)"/>
+      <rect x="214" y="-176" width="104" height="150" rx="2" fill="none" stroke="#97A3B3"/><line x1="308" y1="-104" x2="308" y2="-92" stroke="#7D8899" stroke-width="2"/>
+      <g stroke="#8C98A9"><line x1="290" y1="-231" x2="290" y2="-221"/><line x1="296" y1="-231" x2="296" y2="-221"/><line x1="302" y1="-231" x2="302" y2="-221"/><line x1="308" y1="-231" x2="308" y2="-221"/><line x1="314" y1="-231" x2="314" y2="-221"/></g></g>
+    <rect x="120" y="-240" width="210" height="224" fill="none" stroke="#5B6B82"/>
+    <rect x="120" y="-16" width="52.5" height="16" fill="#F2C014"/><rect x="172.5" y="-16" width="52.5" height="16" fill="#1D4FD6"/><rect x="225" y="-16" width="52.5" height="16" fill="#2F8F4E"/><rect x="277.5" y="-16" width="52.5" height="16" fill="#8B8B86"/>
+    <rect x="236" y="-206" width="70" height="8" rx="1.5" fill="#05080D"/><line x1="237" y1="-198" x2="305" y2="-198" stroke="#34D399" stroke-width="1.5"/>
+    <rect x="138" y="-220" width="70" height="36" rx="3" fill="#0A1220" stroke="#334155"/>
+    <text class="w-d1" x="173" y="-203" text-anchor="middle" font-size="10" font-weight="500" fill="#F2C014">BEREIT</text>
+    <text class="w-d2" x="173" y="-191" text-anchor="middle" font-size="5.6" fill="#B8C4D3">ein Gegenstand</text>
+    ${roof}</g>`;
+  // Außenrutsche zur Bodenklappe
+  o += `<polygon points="330,-24 507,-7 507,-1 330,-15" fill="#8794A7" stroke="#475569"/>`;
+  // Fahrzeug (Heckschüttung)
+  let wheels = '';
+  for (const x of [862, 1040, 1352]) wheels += `<g transform="translate(${x} -48)"><circle r="46" fill="#090D14" stroke="#334155" stroke-width="2"/><circle r="17" fill="#475569"/><g class="w-spokes"><line x1="-30" y1="0" x2="30" y2="0" stroke="#64748B" stroke-width="2"/><line x1="0" y1="-30" x2="0" y2="30" stroke="#64748B" stroke-width="2"/></g></g>`;
+  o += `<g class="w-truck" transform="translate(1100 0)">
+    <rect x="700" y="-330" width="92" height="258" rx="4" fill="#1A2436" stroke="#3A4A62"/><rect x="688" y="-160" width="16" height="44" fill="#2B3A52"/><line x1="704" y1="-300" x2="790" y2="-300" stroke="#3A4A62"/>
+    <rect x="792" y="-440" width="460" height="350" rx="8" fill="url(#gTruck)" stroke="#6B7A90"/><rect x="792" y="-176" width="460" height="10" fill="#10B981"/>
+    <line x1="907" y1="-432" x2="907" y2="-184" stroke="#94A3B8" opacity=".5"/><line x1="1022" y1="-432" x2="1022" y2="-184" stroke="#94A3B8" opacity=".5"/><line x1="1137" y1="-432" x2="1137" y2="-184" stroke="#94A3B8" opacity=".5"/>
+    <path d="M1258 -92 V-380 H1384 L1444 -262 V-92 Z" fill="#D2DAE4" stroke="#6B7A90"/><path d="M1300 -362 H1378 L1424 -270 H1300 Z" fill="#0E1828"/>
+    <rect x="811" y="-452" width="38" height="12" rx="3" fill="#1E293B"/><circle class="w-beacon" cx="830" cy="-456" r="5" fill="#34D399" opacity=".25"/>
+    <rect x="700" y="-94" width="746" height="22" fill="#0F1724"/>${wheels}</g>`;
+  // Flasche, Sack, Funk
+  o += `<g class="w-bottle" opacity="0"><path d="M-6 -12 Q-6 -16 -3 -18 V-21 H3 V-18 Q6 -16 6 -12 V18 Q6 21 3 21 H-3 Q-6 21 -6 18 Z" fill="#9CC9E8" fill-opacity=".35" stroke="#D7EAF6" stroke-width="1"/><rect x="-6" y="-4" width="12" height="8" fill="#10B981" opacity=".75"/><rect x="-3.5" y="-24" width="7" height="3.5" fill="#E2E8F0"/></g>`;
+  o += `<g class="w-bag" opacity="0"><rect x="-14" y="-8" width="28" height="16" rx="6" fill="#F2C014" stroke="#FFE08A"/><line x1="-12" y1="-4.5" x2="12" y2="-4.5" stroke="#9A7A06"/></g>`;
+  o += `<polyline class="w-sig1" points="448,12" fill="none" stroke="#34D399" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity="0"/><circle class="w-pk1" r="4.5" fill="#ECFDF5" opacity="0"/>`;
+  o += `<g class="w-radio" transform="translate(346 -326)" opacity="0"><path d="M-12 -8 A15 15 0 0 1 12 -8"/><path d="M-22 -16 A28 28 0 0 1 22 -16"/><path d="M-33 -25 A42 42 0 0 1 33 -25"/></g>`;
+  o += `<polyline class="w-sig2" points="346,-326" fill="none" stroke="#34D399" stroke-width="2.4" stroke-dasharray="10 8" stroke-linecap="round" opacity="0"/><circle class="w-pk2" r="5" fill="#ECFDF5" opacity="0"/>`;
+  // Maßlinien
+  o += `<g fill="none" stroke="#64748B" stroke-width="1">
+    <g data-dim="dev" opacity="0"><line x1="96" y1="-240" x2="96" y2="0"/><line x1="90" y1="-240" x2="102" y2="-240"/><line x1="90" y1="0" x2="102" y2="0"/></g>
+    <g data-dim="shaft" opacity="0"><line x1="352" y1="60" x2="352" y2="302"/><line x1="346" y1="302" x2="358" y2="302"/><line x1="346" y1="60" x2="358" y2="60"/></g>
+    <g data-dim="width" opacity="0"><line x1="112" y1="356" x2="676" y2="356"/><line x1="112" y1="350" x2="112" y2="362"/><line x1="676" y1="350" x2="676" y2="362"/></g></g>`;
+  // Callouts (Bildschirmmaß)
+  o += '<g class="w-tags">' + TAGS.map((d, i) => {
+    const dx = d[2], dy = d[3], plain = d[7] === 'plain';
+    const anc = plain ? (dx > 0 ? 'start' : dx < 0 ? 'end' : 'middle') : (dx >= 0 ? 'start' : 'end');
+    const tx = plain ? dx : dx + (dx >= 0 ? 6 : -6);
+    return `<g class="w-tag${plain ? ' plain' : ''}" data-i="${i}" opacity="0" display="none">${plain ? '' : `<line x1="0" y1="0" x2="${dx}" y2="${dy}"/><circle r="2.8"/>`}<text x="${tx}" y="${dy + 3.8}" text-anchor="${anc}">${d[4]}</text></g>`;
+  }).join('') + '</g>';
+  return o;
+}
+const WORLD = worldMarkup();
+
+/* --------------------------------------------------------- geometry -- */
+// Kamera-Keyframes: [t, Mitte x, Mitte y, Breite, Höhe] des Bereichs, der sichtbar bleiben muss.
+const KF = [
+  [0, 280, -250, 640, 780], [1, 300, -270, 560, 700], [1.3, 300, -270, 560, 700],
+  [2, 276, -150, 330, 390], [2.35, 276, -150, 330, 390], [3, 258, -112, 350, 420], [3.1, 258, -112, 350, 420],
+  [3.65, 400, 0, 700, 820], [4, 415, 12, 620, 640], [5, 415, 12, 620, 640],
+  [5.4, 420, -40, 660, 820], [6.2, 520, -110, 860, 1000], [7, 520, -110, 860, 1000], [8, 480, -200, 1200, 1300]
+];
+function camAt(t, sw, sh) {
+  if (reduce) { let b = KF[0]; for (const k of KF) if (Math.abs(k[0] - t) < Math.abs(b[0] - t)) b = k; t = b[0]; }
+  let i = 0; while (i < KF.length - 2 && t > KF[i + 1][0]) i++;
+  const A = KF[i], B = KF[i + 1];
+  const e = B[0] === A[0] ? 1 : sm((t - A[0]) / (B[0] - A[0]));
+  const fa = Math.max(A[3] / sw, A[4] / sh), fb = Math.max(B[3] / sw, B[4] / sh);
+  const k = Math.exp(lerp(Math.log(fa), Math.log(fb), e));
+  const cx = lerp(A[1], B[1], e), cy = lerp(A[2], B[2], e), w = sw * k, h = sh * k;
+  return { x: cx - w / 2, y: cy - h / 2, w, h, k, cx, cy };
+}
+function partial(pts, u) {
+  const seg = []; let L = 0;
+  for (let i = 0; i < pts.length - 1; i++) { const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push(l); L += l; }
+  let rem = L * c01(u); const out = [pts[0]]; let end = pts[0];
+  for (let i = 0; i < seg.length; i++) {
+    if (rem >= seg[i]) { out.push(pts[i + 1]); end = pts[i + 1]; rem -= seg[i]; }
+    else { const r = rem / seg[i]; end = [lerp(pts[i][0], pts[i + 1][0], r), lerp(pts[i][1], pts[i + 1][1], r)]; out.push(end); break; }
+  }
+  return { pts: out.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '), end };
+}
+const SIG1 = [[448, 12], [448, -12], [362, -12], [362, -306], [346, -324]];
+const BAGP = [[.5, 151, -46], [.57, 156, -27], [.65, 318, -19], [.69, 343, -16], [.8, 500, -3], [.84, 520, 16], [.87, 515, 36], [.93, 454, 112], [.98, 448, 0]];
+
+/* ------------------------------------------------------------ state -- */
+function binFill(t) {
+  const f = c01(t - 4), a = c01((t - 5.4) / 1.6);
+  let v = .3 + .08 * sm((f - .95) / .05);
+  if (t > 5.4) v = lerp(.38, .82, sm(a / .4));
+  if (t > 7.05) v = lerp(.82, .06, sm((t - 7.05) / .25));
+  return v;
+}
+
+/* --------------------------------------------------------- attribute cache -- */
+const C = new WeakMap();
+function sa(el, n, v) { let m = C.get(el); if (!m) { m = {}; C.set(el, m); } if (m[n] !== v) { m[n] = v; el.setAttribute(n, v); } }
+const op = (el, v) => sa(el, 'opacity', v < .002 ? '0' : v > .998 ? '1' : v.toFixed(3));
+const tf = (el, v) => sa(el, 'transform', v);
+const rot = (el, a, x, y) => tf(el, `rotate(${a.toFixed(2)} ${x} ${y})`);
+function txt(el, v) { if (el.textContent !== v) el.textContent = v; }
+
+/* --------------------------------------------------------- the world -- */
+function World(host) {
+  host.insertAdjacentHTML('afterbegin', `<svg class="world" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">${WORLD}</svg>`);
+  const svg = host.querySelector('svg.world');
+  const q = s => svg.querySelector(s), qa = s => [...svg.querySelectorAll(s)];
+  const W = {
+    host, svg, w: 0, h: 0, k: 1, dirty: true, vis: true, last: null,
+    far0: q('.w-far0'), far1: q('.w-far1'), mid: q('.w-mid'), pv: q('.w-pv'), batt: q('.w-batt'),
+    rays: q('.w-rays'), ray: qa('.w-ray'), rayB: qa('.w-rayb'),
+    shell: q('.w-shell'), inner: q('.w-inner'), flapL: q('.w-flapL'), flapR: q('.w-flapR'), led: q('.w-led'),
+    laser: q('.w-laser'), fan: q('.w-fan'), beam: q('.w-beam'), box: q('.w-box'), kipp: q('.w-kipp'), spout: q('.w-spout'),
+    cf: qa('.w-cf'), press: qa('.w-press'), seal: q('.w-seal'), floor: q('.w-floor'), side: q('.w-side'),
+    d1: q('.w-d1'), d2: q('.w-d2'), bottle: q('.w-bottle'), bag: q('.w-bag'),
+    cover: qa('.w-cover .cv'), cut: q('.w-cut'), col: q('.w-col'), bf: qa('.w-bf'), blade: q('.w-blade'), chL: q('.w-chL'),
+    ls: q('.w-ls'), sled: q('.w-sled'), pulse: q('.w-pulse'), warn: q('.w-warn'),
+    sig1: q('.w-sig1'), pk1: q('.w-pk1'), radio: q('.w-radio'), sig2: q('.w-sig2'), pk2: q('.w-pk2'),
+    truck: q('.w-truck'), spokes: qa('.w-spokes'), beacon: q('.w-beacon'),
+    dims: Object.fromEntries(qa('[data-dim]').map(g => [g.dataset.dim, g])),
+    tags: qa('.w-tag').map(el => ({ el, line: el.querySelector('line'), text: el.querySelector('text'), tw: 0, key: '' }))
+  };
+  W.bf = W.bf.map(g => ({ g, r: g.querySelector('.w-bfr'), b: g.querySelector('.w-bfb') }));
+  const measure = () => { const w = host.clientWidth, h = host.clientHeight; if (w && h && (w !== W.w || h !== W.h)) { W.w = w; W.h = h; W.dirty = true; } };
+  new ResizeObserver(measure).observe(host); measure();
+  return W;
+}
+
+// Callout bleibt im Bild: Seite wechseln, sonst seitlich verschieben.
+function placeTag(W, T, d, sxp) {
+  if (!T.tw) T.tw = T.text.getComputedTextLength() || 0;
+  const tw = T.tw || d[4].length * 7.4, pad = 8, right = W.w - (W.ruler ? 26 : pad), plain = d[7] === 'plain';
+  let dx = d[2], anchor, tx;
+  if (plain) {
+    const left = dx > 0 ? sxp + dx : dx < 0 ? sxp + dx - tw : sxp + dx - tw / 2;
+    let sh = 0; if (left < pad) sh = pad - left; else if (left + tw > right) sh = right - left - tw;
+    tx = dx + sh; anchor = dx > 0 ? 'start' : dx < 0 ? 'end' : 'middle';
+  } else {
+    const m = Math.max(Math.abs(dx), 24), need = 6 + tw;
+    if (dx >= 0 && sxp + dx + need > right) { const room = right - sxp - need; if (room >= 14) dx = room; else if (sxp - m - need >= pad) dx = -m; }
+    else if (dx < 0 && sxp + dx - need < pad) { const room = sxp - need - pad; if (room >= 14) dx = -room; else if (sxp + m + need <= right) dx = m; }
+    const left = dx >= 0 ? sxp + dx + 6 : sxp + dx - 6 - tw;
+    let sh = 0; if (left < pad) sh = pad - left; else if (left + tw > right) sh = right - left - tw;
+    dx += sh; tx = dx + (dx >= 0 ? 6 : -6); anchor = dx >= 0 ? 'start' : 'end';
+  }
+  const key = tx.toFixed(1) + anchor + dx.toFixed(1);
+  if (key === T.key) return; T.key = key;
+  sa(T.text, 'x', tx.toFixed(1)); sa(T.text, 'text-anchor', anchor);
+  if (T.line) sa(T.line, 'x2', dx.toFixed(1));
+}
+
+function render(W, t, ptr) {
+  if (!W.w || !W.h) return;
+  const c = camAt(t, W.w, W.h); W.k = c.k; W.cam = c;
+  sa(W.svg, 'viewBox', `${c.x.toFixed(1)} ${c.y.toFixed(1)} ${c.w.toFixed(1)} ${c.h.toFixed(1)}`);
+  const dx = c.cx - 290, dy = c.cy + 282, px = (ptr ? ptr.x : 0) * c.k, py = (ptr ? ptr.y : 0) * c.k;
+  const sx = dx * .84 - px * 6, sy0 = dy * .15 - py * 4;
+  tf(W.far0, `translate(${sx.toFixed(1)} ${sy0.toFixed(1)})`);
+  tf(W.far1, `translate(${(dx * .6 - px * 11).toFixed(1)} ${(dy * .4 - py * 7).toFixed(1)})`);
+  tf(W.mid, `translate(${(dx * .3 - px * 18).toFixed(1)} ${(dy * .2 - py * 11).toFixed(1)})`);
+
+  // Sonne, Strahlen aufs Solardach, Akku
+  const rays = (t < 1.5 ? .55 + .45 * sm(t / .9) : 1 - sm((t - 1.5) / .45)) + .55 * sm((t - 7.6) / .4);
+  op(W.rays, c01(rays)); op(W.pv, .35 + .65 * c01(rays));
+  if (rays > .002) {
+    const SX = 470 + sx, SY = -580 + sy0;
+    for (let i = 0; i < 4; i++) {
+      const ex = 150 + i * 55, ey = -262 - i * 4.5, l = Math.hypot(ex - SX, ey - SY), bx = SX + (ex - SX) / l * 48, by = SY + (ey - SY) / l * 48;
+      for (const ln of [W.rayB[i], W.ray[i]]) { sa(ln, 'x1', bx.toFixed(1)); sa(ln, 'y1', by.toFixed(1)); sa(ln, 'x2', ex.toFixed(1)); sa(ln, 'y2', ey.toFixed(1)); }
+    }
+  }
+  const lvl = .42 + .46 * sm((t - .15) / 1.2);
+  tf(W.batt, `translate(146 0) scale(${lvl.toFixed(3)} 1) translate(-146 0)`);
+
+  // Röntgenblick ins Gerät
+  const X = t < 5.2 ? sm((t - 1.45) / .45) : 1 - sm((t - 5.2) / .45);
+  op(W.shell, 1 - .93 * X); op(W.inner, X);
+
+  // ---- Scan (t 2..3)
+  const s = c01(t - 2);
+  const fo = sm((s - .02) / .06) * (1 - sm((s - .15) / .06));
+  rot(W.flapL, 12 + 62 * fo, 237, -196); rot(W.flapR, -12 - 62 * fo, 305, -196);
+  op(W.led, t < 1.9 ? .25 : .25 + .75 * win(s, .16, .62, .04));
+  const L = win(s, .18, .56, .03); op(W.laser, L);
+  if (L > 0) {
+    const sy = (-176 + 40 * tri(c01((s - .18) / .38) * 3)).toFixed(1);
+    sa(W.fan, 'points', `305,-183 230,${sy} 312,${sy}`); sa(W.beam, 'y1', sy); sa(W.beam, 'y2', sy);
+  }
+  op(W.box, win(s, .3, .7, .04));
+  rot(W.kipp, 38 * sm((s - .68) / .06) * (1 - sm((s - .86) / .08)), 229, -132);
+  let sp = s < .6 ? 0 : -58 * sm((s - .6) / .1);
+  if (t > 3.2) sp *= 1 - sm((t - 3.2) / .3);
+  rot(W.spout, sp, 271, -106);
+
+  let B = null;
+  if (t > 1.78 && s < .985) {
+    const o = sm((t - 1.78) / .2) * (1 - sm((s - .93) / .05));
+    let x, y, r;
+    if (s <= 0) { x = 292; y = -223; r = -78; }
+    else if (s < .16) { const e = sm(s / .16); x = lerp(292, 271, e); y = lerp(-223, -155, e); r = lerp(-78, 0, e); }
+    else if (s < .68) { x = 271; y = -155; r = 0; }
+    else if (s < .78) { const e = sm((s - .68) / .1); x = lerp(271, 266, e); y = lerp(-155, -116, e); r = lerp(0, 28, e); }
+    else if (s < .86) { const e = sm((s - .78) / .08); x = lerp(266, 262, e); y = lerp(-116, -96, e); r = lerp(28, 62, e); }
+    else { const u = sm((s - .86) / .12); x = (1 - u) * (1 - u) * 262 + 2 * (1 - u) * u * 205 + u * u * 151; y = (1 - u) * (1 - u) * -96 + 2 * (1 - u) * u * -118 + u * u * -52; r = lerp(62, 90, u); }
+    tf(W.bottle, `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r.toFixed(1)}) scale(.9)`); op(W.bottle, o); B = [x, y];
+  } else op(W.bottle, 0);
+
+  // Display am Gerät
+  let d1 = 'BEREIT', d2 = 'ein Gegenstand', dc = '#F2C014';
+  if (t >= 1.95 && t < 3.4) {
+    if (s >= .64) { d1 = 'GELB ✓'; d2 = 'erkannt · danke'; }
+    else if (s >= .18) { d1 = 'ERKENNUNG'; d2 = 'Kamera · KI'; dc = '#34D399'; }
+  }
+  txt(W.d1, d1); txt(W.d2, d2); sa(W.d1, 'fill', dc);
+
+  // ---- Fächer, Presse, Siegel (t 4..5)
+  const f = c01(t - 4), inFall = t >= 4;
+  let g = .55 + .07 * sm((s - .9) / .1);
+  if (inFall) {
+    if (f < .08) g = .62;
+    else if (f < .2) g = lerp(.62, .96, sm((f - .08) / .12));
+    else if (f < .3) g = lerp(.96, .72, sm((f - .2) / .1));
+    else if (f < .5) g = .72;
+    else g = .04 + .3 * sm((t - 5.3) / 2.5);
+  }
+  [g, .42, .28, .5].forEach((v, i) => { const h = v * 42; sa(W.cf[i], 'y', (-34 - h).toFixed(1)); sa(W.cf[i], 'height', h.toFixed(1)); });
+  const pu = inFall ? c01((f - .2) / .1) : 0;
+  tf(W.press[0], `translate(0 ${(Math.sin(Math.PI * pu) * 17).toFixed(1)})`);
+  op(W.seal, inFall ? win(f, .3, .42, .03) : 0);
+  rot(W.floor, inFall ? 62 * win(f, .5, .62, .03) : 0, 130, -30);
+  rot(W.side, inFall ? -70 * win(f, .6, .71, .03) : 0, 329, -28);
+  rot(W.blade, (t >= 4 && t < 5.3) ? 34 * sm((f - .4) / .08) * (1 - sm((t - 5.1) / .2)) : 0, 520, 33);
+  op(W.chL, inFall && t < 5.2 ? win(f, .42, .98, .04) : 0);
+  op(W.ls, inFall ? win(f, .9, .97, .015) : 0);
+
+  // Sack auf dem Weg
+  const bfill = binFill(t);
+  if (inFall && f >= .5 && f < .995) {
+    let i = 0; while (i < BAGP.length - 2 && f > BAGP[i + 1][0]) i++;
+    const A = BAGP[i], Bp = BAGP[i + 1], u = c01((f - A[0]) / (Bp[0] - A[0]));
+    const by = i + 1 === BAGP.length - 1 ? 274 - bfill * 148 - 8 : Bp[2];
+    const x = lerp(A[1], Bp[1], u), y = lerp(A[2], by, u);
+    let ang = Math.atan2(by - A[2], Bp[1] - A[1]) * 57.3; if (Math.abs(ang) > 55) ang = 6;
+    tf(W.bag, `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+    op(W.bag, 1 - sm((f - .97) / .025));
+  } else op(W.bag, 0);
+
+  // Tonnen im Schacht
+  [bfill, .45].forEach((v, k) => {
+    const h = v * 148, y = 274 - h;
+    sa(W.bf[k].r, 'y', y.toFixed(1)); sa(W.bf[k].r, 'height', h.toFixed(1)); tf(W.bf[k].b, `translate(0 ${y.toFixed(1)})`);
+  });
+
+  // Schnitt öffnet sich (t 3.05..3.65)
+  const rv = sm((t - 3.05) / .6), cy = 6 + 326 * rv;
+  W.cover.forEach(r => { sa(r, 'y', cy.toFixed(1)); sa(r, 'height', Math.max(326 * (1 - rv), 0).toFixed(1)); });
+  sa(W.cut, 'y1', cy.toFixed(1)); sa(W.cut, 'y2', cy.toFixed(1)); op(W.cut, rv > .001 && rv < .999 ? 1 : 0);
+
+  // ---- Füllstand, Meldung, Funk, Fahrzeug, Hubsäule (t 5.4..8)
+  const a = c01((t - 5.4) / 1.6);
+  const alertOn = bfill >= ALERT_AT - .002 && t < 7.05;
+  W.pulse.classList.toggle('on', alertOn);
+  op(W.sled, alertOn ? 1 : .4);
+  const u1 = t < 5.4 ? 0 : sm((a - .42) / .13), fadeSig = 1 - sm((t - 7.3) / .3);
+  if (u1 > 0) { const p = partial(SIG1, u1); sa(W.sig1, 'points', p.pts); sa(W.pk1, 'cx', p.end[0].toFixed(1)); sa(W.pk1, 'cy', p.end[1].toFixed(1)); }
+  op(W.sig1, u1 > 0 ? fadeSig : 0); op(W.pk1, u1 > 0 && u1 < .995 ? 1 : 0);
+  op(W.radio, t < 5.4 ? 0 : win(a, .54, .94, .04) * fadeSig);
+  let tx = 1100 * (1 - sm((a - .58) / .26));
+  if (t < 5.4) tx = 1100;
+  if (t > 7.4) tx = 1300 * sm((t - 7.4) / .5);
+  tf(W.truck, `translate(${tx.toFixed(1)} 0)`);
+  const spin = (-tx / 46 * 57.3).toFixed(1);
+  W.spokes.forEach(sk => tf(sk, `rotate(${spin})`));
+  const u2 = t < 5.4 ? 0 : sm((a - .6) / .16);
+  if (u2 > 0) {
+    const P0 = [346, -326], P2 = [830 + tx, -456], P1 = [(P0[0] + P2[0]) / 2, Math.min(P0[1], P2[1]) - 190], pts = [];
+    for (let i = 0; i <= 36; i++) { const v = i / 36; pts.push([(1 - v) * (1 - v) * P0[0] + 2 * (1 - v) * v * P1[0] + v * v * P2[0], (1 - v) * (1 - v) * P0[1] + 2 * (1 - v) * v * P1[1] + v * v * P2[1]]); }
+    const p = partial(pts, u2); sa(W.sig2, 'points', p.pts); sa(W.pk2, 'cx', p.end[0].toFixed(1)); sa(W.pk2, 'cy', p.end[1].toFixed(1));
+  }
+  op(W.sig2, u2 > 0 ? fadeSig : 0); op(W.pk2, u2 > 0 && u2 < .995 ? 1 : 0);
+  op(W.beacon, a > .76 && t < 7.4 ? 1 : .25);
+  let lift = t < 5.4 ? 0 : t < 7.4 ? sm((a - .86) / .13) : 1 - sm((t - 7.4) / .45);
+  tf(W.col, `translate(0 ${(-280 * lift).toFixed(1)})`);
+  W.warn.classList.toggle('blink', lift > .01 && t < 7.85);
+
+  // Maßlinien und Callouts
+  for (const [key, ws] of DIMS) op(W.dims[key], Math.max(...ws.map(([p, q]) => win(t, p, q, .06))));
+  for (let i = 0; i < TAGS.length; i++) {
+    const d = TAGS[i], T = W.tags[i], el = T.el;
+    let o = win(t, d[5], d[6], .05);
+    if (o <= .002) { if (el.getAttribute('display') !== 'none') { sa(el, 'display', 'none'); sa(el, 'opacity', '0'); } continue; }
+    let ax = d[0], ay = d[1];
+    if (ax === 'bottle') { if (!B) { sa(el, 'display', 'none'); continue; } ax = B[0] + 6; ay = B[1] - 14; }
+    else if (ax === 'truck') { ax = 746 + tx; ay = -330; }
+    else if (ax === 'col') { ax = 520; ay = 288 - 280 * lift; }
+    sa(el, 'display', 'inline'); op(el, o);
+    tf(el, `translate(${ax.toFixed(1)} ${ay.toFixed(1)}) scale(${c.k.toFixed(4)})`);
+    placeTag(W, T, d, (ax - c.x) / c.k);
+  }
+  W.dirty = false;
+  return { c, bfill, lift };
+}
+
+/* ======================================================== CONSOLES ==== */
+const tracks = [...doc.querySelectorAll('[data-track]')].map(el => {
+  const [t0, t1] = el.dataset.t.split(' ').map(Number);
+  const T = {
+    el, kind: el.dataset.track, t0, t1, s: -1, cur: 0, tar: 0, top: 0, h: 0, W: null,
+    stops: el.dataset.stops.split(' ').map(Number),
+    chips: [...el.querySelectorAll('.chips li')].map(li => ({ li, at: +li.dataset.at })),
+    lines: [...el.querySelectorAll('.log li, .fsteps li')].map(li => ({ li, at: +li.dataset.at })),
+    val: el.querySelector('.meter__val'), fill: el.querySelector('.meter__fill'),
+    lbl: el.querySelector('.st-lbl'), prev: el.querySelector('.st-prev'), next: el.querySelector('.st-next'),
+    range: el.querySelector('.st-range'), scene: el.querySelector('[data-scene-track]')
+  };
+  return T;
+});
+
+function setConsole(T, s) {
+  if (Math.abs(T.s - s) < 1e-4) return; T.s = s;
+  let cur = null;
+  T.chips.forEach(c => { const on = c.at <= s + 1e-4; c.li.classList.toggle('on', on); if (on) cur = c; });
+  T.chips.forEach(c => c.li.classList.toggle('cur', c === cur));
+  let lc = null;
+  T.lines.forEach(l => { const on = l.at <= s + 1e-4; l.li.classList.toggle('on', on); l.li.classList.toggle('done', on); if (on) lc = l; });
+  T.lines.forEach(l => { const isCur = l === lc; l.li.classList.toggle('cur', isCur); if (isCur) l.li.classList.remove('done'); });
+  if (T.lbl) txt(T.lbl, (cur || lc) ? (cur ? cur.li.textContent : lc.li.querySelector('h3').textContent) : '');
+  if (T.kind === 'scan') {
+    const v = CONF * sm((s - .44) / .16);
+    txt(T.val, de(v) + ' %'); T.val.classList.toggle('hot', v >= CONF - .05);
+    T.fill.style.transform = `scaleX(${(v / 100).toFixed(4)})`;
+  } else if (T.kind === 'alert') {
+    const v = binFill(T.t0 + s * (T.t1 - T.t0));
+    txt(T.val, Math.round(v * 100) + ' %'); T.val.classList.toggle('hot', v >= ALERT_AT - .002);
+    T.fill.style.transform = `scaleX(${v.toFixed(4)})`;
+  }
+  if (T.range && doc.activeElement !== T.range) T.range.value = Math.round(s * 1000);
+  T.prev.disabled = s <= T.stops[0] + .005;
+  T.next.disabled = s >= .995;
+}
+
+/* ===================================================== DESKTOP STAGE == */
+const stageEl = doc.getElementById('stage');
+let stageW = null;
+const hud = {
+  n: doc.querySelector('.hud-n'), name: doc.querySelector('.hud-name'), lvl: doc.querySelector('.hud-lvl'),
+  fill: doc.querySelector('.hud-fill'), fv: doc.querySelector('.hud-fv'), sim: doc.querySelector('.hud-sim'), ruler: doc.querySelector('.ruler')
+};
+const TICKS = [];
+for (let m = -3; m <= 4; m += .5) {
+  const d = doc.createElement('div'); d.className = 'tk' + (m % 1 ? ' m' : '') + (m === 0 ? ' z' : '');
+  d.innerHTML = m % 1 ? '' : `<span>${m === 0 ? '±0' : (m > 0 ? '+' : '−') + Math.abs(m) + ' m'}</span>`;
+  hud.ruler.appendChild(d); TICKS.push([m, d]);
+}
+const CH_NAMES = ['Oberfläche', 'KI-Scan', 'Untergrund', '80 %-Logistik', 'Business Model'];
+
+let PTS = [[0, 0]], tCur = 0, tTar = 0, primed = false, lastNow = 0;
+const ptr = { x: 0, y: 0 }, ptrT = { x: 0, y: 0 };
+const chapters = [...doc.querySelectorAll('.chapter')];
+const openers = [...doc.querySelectorAll('.opener')].map(el => ({ el, top: 0, h: 0, v: -1 }));
+let chTops = [];
+
+function measure() {
+  const vh = innerHeight, y0 = scrollY;
+  PTS = [[0, 0]];
+  doc.querySelectorAll('[data-t]').forEach(el => {
+    const r = el.getBoundingClientRect(), top = r.top + y0, h = r.height, v = el.dataset.t.split(' ').map(Number);
+    if (el.hasAttribute('data-track')) PTS.push([top, v[0]], [top + Math.max(h - vh, 1), v[1]]);
+    else { PTS.push([top - vh * .5, v[0]]); if (v.length > 1) PTS.push([top + h - vh * .5, v[1]]); }
+  });
+  PTS.sort((p, q) => p[0] - q[0]);
+  tracks.forEach(T => { const r = T.el.getBoundingClientRect(); T.top = r.top + y0; T.h = r.height; });
+  openers.forEach(o => { const r = o.el.getBoundingClientRect(); o.top = r.top + y0; o.h = r.height; });
+  chTops = chapters.map(c => c.getBoundingClientRect().top + y0);
+  apZones();
+}
+function tAt(y) {
+  if (y <= PTS[0][0]) return PTS[0][1];
+  for (let i = 0; i < PTS.length - 1; i++) {
+    const A = PTS[i], B = PTS[i + 1];
+    if (y <= B[0]) return lerp(A[1], B[1], c01((y - A[0]) / Math.max(B[0] - A[0], 1)));
+  }
+  return PTS[PTS.length - 1][1];
+}
+
+function hudUpdate(res, t, ch) {
+  const c = res.c, m = -c.cy / 150;
+  txt(hud.lvl, (m >= 0 ? '+' : '−') + de(Math.abs(m), 2) + ' m');
+  txt(hud.n, String(ch + 1)); txt(hud.name, CH_NAMES[ch]);
+  const showFill = t > 5.25 && t < 7.6;
+  hud.fill.classList.toggle('on', showFill); hud.fill.classList.toggle('hot', res.bfill >= ALERT_AT - .002);
+  txt(hud.fv, Math.round(res.bfill * 100) + ' %');
+  hud.sim.classList.toggle('on', (t > 1.85 && t < 3.1) || (t > 5.3 && t < 7.2));
+  const H = stageW.h;
+  for (const [mm, d] of TICKS) {
+    const yp = (-mm * 150 - c.y) / c.k;
+    if (yp < -20 || yp > H + 20) { if (d.style.display !== 'none') d.style.display = 'none'; continue; }
+    if (d.style.display) d.style.display = '';
+    d.style.transform = `translateY(${(yp - 8).toFixed(1)}px)`;
+  }
+}
+
+/* ======================================================= MOBILE SCENES == */
+const scenes = [];   // statische Kopien: {host, t, W}
+doc.querySelectorAll('[data-scene]').forEach(host => scenes.push({ host, t: +host.dataset.scene, W: null }));
+let io = null;
+function ensureMobile() {
+  if (!io) io = new IntersectionObserver(es => es.forEach(e => { if (e.target._W) { e.target._W.vis = e.isIntersecting; if (e.isIntersecting) e.target._W.dirty = true; } }), { rootMargin: '200px 0px' });
+  scenes.forEach(S => { if (!S.W) { S.W = World(S.host); S.host._W = S.W; io.observe(S.host); } });
+  tracks.forEach(T => { if (!T.W && T.scene) { T.W = World(T.scene); T.scene._W = T.W; io.observe(T.scene); T.W.dirty = true; } });
+}
+function ensureDesk() { if (!stageW) { stageW = World(stageEl); stageW.ruler = true; } }
+
+/* ======================================================= STEP CONTROLS == */
+function goStop(T, dir) {
+  const s = mqDesk.matches ? c01((tCur - T.t0) / (T.t1 - T.t0)) : T.tar;
+  let target;
+  if (dir > 0) target = T.stops.find(v => v > s + .012); else target = [...T.stops].reverse().find(v => v < s - .012);
+  if (target === undefined) target = dir > 0 ? 1 : T.stops[0];
+  if (mqDesk.matches) {
+    const vh = innerHeight;
+    scrollTo({ top: T.top + target * Math.max(T.h - vh, 1) + 2, behavior: reduce ? 'auto' : 'smooth' });
+  } else { T.tar = target; if (reduce) T.cur = target; }
+}
+tracks.forEach(T => {
+  T.prev.addEventListener('click', () => goStop(T, -1));
+  T.next.addEventListener('click', () => goStop(T, 1));
+  if (T.range) T.range.addEventListener('input', () => { T.tar = T.range.value / 1000; if (reduce) T.cur = T.tar; });
+  if (!mqDesk.matches) { T.cur = T.tar = T.stops[0]; }
+  setConsole(T, T.stops[0] > 0 && !mqDesk.matches ? T.stops[0] : 0);
+});
+
+/* ============================================================ DOT NAV == */
+const dots = [...doc.querySelectorAll('.dots a')], nowLbl = doc.querySelector('.dots .now');
+let activeCh = -1;
+function setActive(i) {
+  if (i === activeCh) return; activeCh = i;
+  dots.forEach((d, k) => d.setAttribute('aria-current', k === i ? 'true' : 'false'));
+  txt(nowLbl, dots[i].querySelector('.lbl').textContent);
+}
+function goChapter(i) {
+  const el = chapters[i]; if (!el) return;
+  if (apOn) { apJump(el.getBoundingClientRect().top + scrollY); return; }
+  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+dots.forEach((d, k) => d.addEventListener('click', e => { if (apOn) { e.preventDefault(); goChapter(k); } }));
+addEventListener('keydown', e => {
+  if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+  const tg = e.target; if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
+  if (doc.querySelector('dialog[open]')) return;
+  if (e.code === 'Space' || e.key === ' ') {
+    // Fokussierter Button: Leertaste bleibt seine eigene Aktion (der Autoplay-Button schaltet selbst um).
+    if (tg && tg.closest && tg.closest('button')) return;
+    e.preventDefault(); if (!e.repeat) apToggle(); return;
+  }
+  if (apOn && /^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End)$/.test(e.key)) apPause();
+  const n = parseInt(e.key, 10); if (n >= 1 && n <= 5) { e.preventDefault(); goChapter(n - 1); }
+});
+
+/* ============================================================ AUTOPLAY == */
+// Regie statt Laufband: kurze, schnelle Gleitfahrt zum nächsten Inhalt, dann
+// Halt, so lang wie der Inhalt es braucht. Simulationen laufen langsam Schritt
+// für Schritt, mit längerem Halt an den Schlüsselmomenten. Gesamt etwa AP_TOTAL s.
+const AP_TOTAL = 240;
+const apBtn = doc.querySelector('.ap'), apTime = doc.querySelector('.ap-time'), apProg = doc.querySelector('.ap-prog');
+const EASE = { glide: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, sine: x => (1 - Math.cos(Math.PI * x)) / 2, lin: x => x };
+const PEAK = { scan: { 0.6: 2.4, 1: 1.4 }, fall: { 1: 1.6 }, alert: { 0.4: 2, 1: 1.8 } };
+let apOn = false, apRate = 0, apT = 0, apI = 0, apOv = null, apSet = -1, apMax = 1, apTotal = 1, TL = [], apSec = -1;
+
+function apWeight(el) {
+  let w = (el.textContent.match(/\S+/g) || []).length * .05;
+  if (el.matches('.plate, .viz, .seq')) w += 2.2;
+  if (el.matches('.tbl')) w += el.querySelectorAll('tr').length * .15;
+  if (el.matches('.fractions, .decision, .chain, .verdict')) w += 1;
+  return w;
+}
+function apZones() {
+  const vh = innerHeight, sy = scrollY, desk = mqDesk.matches;
+  apMax = Math.max(doc.documentElement.scrollHeight - vh, 1);
+  // 1) Takte: Überschrift startet einen neuen Takt, sonst sammeln bis ca. ein Bildschirm voll ist
+  const beats = []; let cur = null;
+  doc.querySelectorAll('.hero, .opener, .track, .blk > *, .close-in > *, .foot').forEach(el => {
+    if (!el.getClientRects().length) return;
+    const r = el.getBoundingClientRect(), a = r.top + sy, b = r.bottom + sy;
+    const kind = el.classList.contains('hero') ? 'hero' : desk && el.classList.contains('opener') ? 'opener' : desk && el.classList.contains('track') ? 'track' : 'item';
+    if (kind !== 'item') { beats.push({ kind, el, a, b }); cur = null; return; }
+    if (!cur || el.matches('.hrow, .opener') || b - cur.a > vh * .8) { cur = { kind: 'beat', a, b, w: 0 }; beats.push(cur); }
+    cur.b = Math.max(cur.b, b); cur.w += apWeight(el);
+  });
+  // 2) Zeitleiste aus Gleitfahrten und Halten
+  TL = []; let y = 0;
+  // Nur abwärts: ein Ziel oberhalb der aktuellen Position wird übersprungen, nie zurückgescrollt.
+  const seg = (y1, d, e, hold, minD) => { y1 = clamp(Math.max(y1, y), 0, apMax); TL.push({ d, y0: y, y1, e, hold: !!hold, minD: minD || 0 }); y = y1; };
+  const glide = y1 => { y1 = clamp(y1, 0, apMax); if (y1 - y > 4) seg(y1, clamp(.5 + (y1 - y) / 1800, .7, 1.5), 'glide'); };
+  for (const B of beats) {
+    if (B.kind === 'hero') { seg(0, 1.6, 'lin'); continue; }
+    if (B.kind === 'opener') { glide(B.a - vh * .5); seg(B.b - vh * .5, 3.2, 'sine'); seg(y + 12, 1, 'lin', true); continue; }
+    if (B.kind === 'track') {
+      const T = tracks.find(k => k.el === B.el), span = Math.max(T.h - vh, 1), pk = PEAK[T.kind] || {};
+      glide(T.top); seg(y, .9, 'lin');
+      let prev = 0;
+      for (const st of T.stops) {
+        if (st > prev) seg(T.top + st * span, 1.1 + (st - prev) * 5.5, 'sine');
+        seg(y, pk[st] || 1, 'lin'); prev = Math.max(prev, st);
+      }
+      continue;
+    }
+    const extra = Math.max(0, (B.b - B.a) - vh * .8);
+    glide(B.a - vh * .14);
+    seg(y + Math.max(extra, 14), .9 + B.w, 'lin', true, extra / 120);
+  }
+  glide(apMax);
+  // 3) Nur die Halte auf das Zeitbudget skalieren; Fahrten und Simulationen bleiben gleich
+  let fixed = 0, raw = 0; TL.forEach(S => { if (S.hold) raw += S.d; else fixed += S.d; });
+  const k = clamp((AP_TOTAL - fixed) / Math.max(raw, 1), .45, 2);
+  let t = 0; TL.forEach(S => { if (S.hold) S.d = Math.max(S.d * k, S.minD); S.t0 = t; t += S.d; });
+  apTotal = t; apI = 0;
+  if (apOn) apSync(scrollY);
+  apUi(scrollY, true);
+}
+function apSync(y) {
+  apOv = null;
+  if (y < 2) { apT = 0; apI = 0; return; }
+  const i = TL.findIndex(S => S.y1 > y + 2);
+  if (i < 0) { apT = apTotal; apI = Math.max(TL.length - 1, 0); return; }
+  apI = i; apT = TL[i].t0; apOv = { i, y0: y };
+}
+function apAt(t) {
+  while (apI < TL.length - 1 && t >= TL[apI].t0 + TL[apI].d) apI++;
+  while (apI > 0 && t < TL[apI].t0) apI--;
+  const S = TL[apI]; if (!S) return scrollY;
+  const y0 = apOv && apOv.i === apI ? apOv.y0 : S.y0;
+  return lerp(y0, S.y1, EASE[S.e](c01((t - S.t0) / S.d)));
+}
+function apLeft(y) {
+  if (apOn || apRate > .01) return apTotal - apT;
+  if (y < 2) return apTotal;
+  const i = TL.findIndex(S => S.y1 > y + 2); return i < 0 ? 0 : apTotal - TL[i].t0;
+}
+function apUi(y, force) {
+  const sec = Math.max(0, Math.round(apLeft(y)));
+  if (sec !== apSec || force) { apSec = sec; txt(apTime, Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0')); }
+  apProg.style.strokeDashoffset = (100 - 100 * c01(y / apMax)).toFixed(2);
+}
+function apState(on) {
+  apOn = on; apBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  apBtn.setAttribute('aria-label', on ? 'Autoplay pausieren (Leertaste)' : 'Autoplay starten (Leertaste)');
+}
+function apPlay() {
+  doc.documentElement.style.scrollBehavior = 'auto';
+  if (scrollY >= apMax - 2) scrollTo(0, 0);
+  apSync(scrollY); apSet = scrollY; apState(true);
+}
+function apPause() { apState(false); }
+function apToggle() { if (apOn) apPause(); else apPlay(); }
+function apJump(y) { scrollTo(0, clamp(y, 0, apMax)); apSync(scrollY); apSet = scrollY; }
+function apStep(dt) {
+  if (!apOn && apRate < .01) { if (apRate) { apRate = 0; doc.documentElement.style.scrollBehavior = ''; } return; }
+  if (apSet >= 0 && Math.abs(scrollY - apSet) > 3) apSync(scrollY);   // Scrollleiste o. Ä.: von dort weiter
+  apRate += ((apOn ? 1 : 0) - apRate) * (1 - Math.pow(1 - .12, dt / 16.7));
+  apT = Math.min(apT + dt / 1000 * apRate, apTotal);
+  scrollTo(0, apAt(apT)); apSet = scrollY;
+  if (apT >= apTotal) { apRate = 0; apPause(); doc.documentElement.style.scrollBehavior = ''; }
+}
+apBtn.addEventListener('click', apToggle);
+addEventListener('wheel', () => { if (apOn) apPause(); }, { passive: true });
+addEventListener('touchstart', e => { if (apOn && !(e.target.closest && e.target.closest('.dots'))) apPause(); }, { passive: true });
+tracks.forEach(T => [T.prev, T.next].forEach(b => b.addEventListener('click', () => { if (apOn) apPause(); }, true)));
+// Nach einem Mausklick behält ein Button nicht den Fokus, damit die Leertaste Autoplay steuert.
+doc.addEventListener('pointerup', e => { const b = e.target.closest && e.target.closest('button'); if (b && e.pointerType === 'mouse') setTimeout(() => b.blur(), 0); });
+
+/* ================================================================ LOOP == */
+stageEl.addEventListener('pointermove', e => {
+  if (!fine.matches || reduce) return;
+  const r = stageEl.getBoundingClientRect();
+  ptrT.x = clamp((e.clientX - r.left) / r.width * 2 - 1, -1, 1); ptrT.y = clamp((e.clientY - r.top) / r.height * 2 - 1, -1, 1);
+});
+stageEl.addEventListener('pointerleave', () => { ptrT.x = 0; ptrT.y = 0; });
+
+function frame(now) {
+  const dt = Math.min(now - (lastNow || now), 64); lastNow = now;
+  apStep(dt);
+  const vh = innerHeight, y = scrollY;
+  apUi(y);
+  // aktives Kapitel
+  let ch = 0; for (let i = 0; i < chTops.length; i++) if (y + vh * .42 >= chTops[i]) ch = i;
+  setActive(ch);
+  // Kapitel-Linien
+  openers.forEach(o => { const v = c01((y - (o.top - vh * .5)) / Math.max(o.h, 1)); if (Math.abs(v - o.v) > .001) { o.v = v; o.el.style.setProperty('--op', v.toFixed(3)); } });
+
+  if (mqDesk.matches) {
+    ensureDesk();
+    tTar = tAt(y);
+    if (!primed || reduce) { tCur = tTar; primed = true; }
+    else { const d = tTar - tCur; tCur = Math.abs(d) < 1e-4 ? tTar : tCur + d * (1 - Math.pow(1 - .13, dt / 16.7)); }
+    const kp = 1 - Math.pow(1 - .08, dt / 16.7);
+    ptr.x += (ptrT.x - ptr.x) * kp; ptr.y += (ptrT.y - ptr.y) * kp;
+    const key = tCur.toFixed(5) + '|' + ptr.x.toFixed(3) + '|' + ptr.y.toFixed(3) + '|' + ch;
+    if (stageW.dirty || key !== stageW.last) {
+      stageW.last = key;
+      const res = render(stageW, tCur, ptr);
+      if (res) hudUpdate(res, tCur, ch);
+      tracks.forEach(T => setConsole(T, c01((tCur - T.t0) / (T.t1 - T.t0))));
+    }
+  } else {
+    ensureMobile();
+    scenes.forEach(S => { if (S.W.vis && S.W.dirty) render(S.W, S.t, null); });
+    tracks.forEach(T => {
+      if (Math.abs(T.tar - T.cur) > 1e-4) { T.cur += (T.tar - T.cur) * (1 - Math.pow(1 - .12, dt / 16.7)); if (Math.abs(T.tar - T.cur) < 1e-4) T.cur = T.tar; T.W && (T.W.dirty = true); }
+      if (T.W && T.W.vis && T.W.dirty) render(T.W, T.t0 + T.cur * (T.t1 - T.t0), null);
+      setConsole(T, T.cur);
+    });
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ======================================================= PLATE REVEAL == */
+const pio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('drawn'); pio.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px', threshold: .01 });
+doc.querySelectorAll('.plate').forEach(p => pio.observe(p));
+
+/* ============================================================ LIGHTBOX == */
+const lb = doc.querySelector('.lb'), lbBody = lb.querySelector('.lb-body'), lbT = lb.querySelector('#lb-t');
+doc.addEventListener('click', e => {
+  const b = e.target.closest('[data-zoom]'); if (!b) return;
+  const holder = b.closest('.plate, .shot'); const src = holder && (holder.querySelector('svg.doc') || holder.querySelector('img'));
+  if (!src) return;
+  const node = src.cloneNode(true); node.removeAttribute('loading');
+  lbBody.replaceChildren(node); txt(lbT, b.dataset.zoom); lb.showModal();
+});
+lb.querySelector('.lb-x').addEventListener('click', () => lb.close());
+lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
+lb.addEventListener('close', () => lbBody.replaceChildren());
+lb.addEventListener('toggle', () => { if (lb.open && apOn) apPause(); });
+
+/* ================================================================ BOOT == */
+function relayout() {
+  measure();
+  const all = [stageW, ...scenes.map(S => S.W), ...tracks.map(T => T.W)].filter(Boolean);
+  all.forEach(W => { W.dirty = true; W.last = null; W.tags.forEach(T => { T.tw = 0; T.key = ''; }); });
+  tracks.forEach(T => { T.s = -1; });
+}
+addEventListener('resize', relayout);
+mqDesk.addEventListener('change', () => { primed = false; relayout(); });
+new ResizeObserver(() => measure()).observe(doc.querySelector('.content'));
+if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(relayout);
+addEventListener('load', relayout);
+measure();
+window.ScrollCraft && ScrollCraft.mount(doc.body);
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

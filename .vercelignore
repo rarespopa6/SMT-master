@@ -1,0 +1,7 @@
+# Nur die Seite ausliefern: index.html + assets/
+.claude
+.idea
+.vscode
+BRIEF.md
+node_modules
+*.log
