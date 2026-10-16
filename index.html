@@ -383,6 +383,221 @@ tfoot td{border-top:1px solid var(--line-strong);border-bottom:0;color:var(--sc-
 svg.doc .halo{paint-order:stroke;stroke:#0E1729;stroke-width:3px;stroke-linejoin:round}
 .world .vs{vector-effect:none}
 
+
+/* ================================================================== PITCH ==== */
+/* Acht Kapitel = acht Sprecher. Farben aus dem rumänischen Trenncode, für dunklen Grund aufgehellt. */
+.content{container:doc / inline-size}
+.pk{--rot:#F0645A;--gelb:#F2C014;--blau:#5B8DEF;--gruen:#36B37E;--grau:#9A9A94;--ink:var(--sc-ink);--ink-2:var(--sc-ink-soft);--rule:var(--line-strong);--wash:#17223A;--paper:#0F172A;
+  position:relative;display:grid;gap:1.4rem;min-width:0;padding-top:clamp(4.5rem,9vw,7rem)}
+.tmk{position:absolute;left:0;width:1px;height:0;pointer-events:none}
+.tmk.a{top:0}.tmk.b{bottom:64px}
+.pk-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5rem 1.3rem;align-items:start;padding-top:1.1rem;border-top:1px solid var(--line)}
+.pk-num{font-family:var(--sc-font-display);font-weight:800;font-stretch:112%;font-size:clamp(3.4rem,2rem + 3.6vw,5.6rem);line-height:.82;letter-spacing:-.05em;color:var(--c)}
+.pk-speaker{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-bottom:.75rem}
+.pk-who{font-weight:650;font-size:1rem;color:var(--sc-ink);margin-right:.2rem}
+.pk-pill{font-family:var(--sc-font-mono);font-size:.68rem;letter-spacing:.05em;color:var(--sc-ink-soft);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:.18rem .5rem}
+.pk-head h2{font-family:var(--sc-font-display);font-weight:720;font-stretch:104%;font-size:clamp(1.8rem,1rem + 2.3vw,3.1rem);letter-spacing:-.035em;line-height:1.02;margin:0;color:var(--sc-ink);text-wrap:balance;hyphens:auto}
+.pk-claim{margin-top:.8rem;font-size:clamp(1.02rem,.96rem + .3vw,1.18rem);line-height:1.55;color:var(--body);max-width:56ch;text-wrap:pretty}
+.p-panel{background:linear-gradient(180deg,#101A2E,#0D1526);border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(1rem,2vw,1.4rem);min-width:0;box-shadow:var(--sc-e1)}
+.p-panel h3{font-family:var(--sc-font-display);font-weight:650;font-size:1.12rem;letter-spacing:-.01em;margin:0 0 .9rem;color:var(--sc-ink)}
+.p-grid2,.p-grid3{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
+.p-gap{margin-top:.4rem}
+@container doc (min-width:740px){.p-grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.p-grid3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.p-note{font-size:.84rem;line-height:1.5;color:var(--ink-faint);margin-top:.75rem;max-width:68ch}
+.pk > .p-note{margin-top:0}
+.p-big{font-family:var(--sc-font-display);font-weight:760;font-size:clamp(2.2rem,1.6rem + 2vw,3.4rem);line-height:1;letter-spacing:-.03em;color:var(--sc-ink);font-variant-numeric:tabular-nums}
+.p-stat{display:flex;flex-direction:column;gap:.35rem}
+.p-lab{font-size:.88rem;color:var(--sc-ink-soft);line-height:1.45}
+.p-mono{font-variant-numeric:tabular-nums}
+.p-btnrow{display:flex;flex-wrap:wrap;gap:.5rem}
+.p-btn{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--sc-ink);border-radius:var(--r);padding:.5rem .9rem;font:550 .9rem var(--sc-font-text);min-height:40px;cursor:pointer;transition:background-color 140ms var(--sc-ease-out),border-color 140ms var(--sc-ease-out),transform 120ms var(--sc-ease-out)}
+.p-btn:active{transform:translateY(1px) scale(.98)}
+.p-btn.on{background:var(--sc-accent);border-color:var(--sc-accent);color:var(--sc-accent-ink)}
+@media (hover:hover) and (pointer:fine){.p-btn:not(.on):hover{border-color:var(--sc-ink-soft);background:rgba(148,163,184,.08)}}
+.p-trk{height:22px;background:#1A2539;border-radius:6px;overflow:hidden;position:relative}
+.p-fill{height:100%;width:0;border-radius:6px;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.p-cmp{display:grid;gap:.8rem}
+.p-cmp .p-row{display:grid;grid-template-columns:5.5rem minmax(0,1fr) 4rem;gap:.7rem;align-items:center;font-size:.92rem;color:var(--body)}
+.p-hbars{display:grid;gap:.55rem}
+.p-hb{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 3.6rem;gap:.6rem;align-items:center;font-size:.86rem;color:var(--body)}
+.p-hb .p-trk{height:14px}
+.p-hb .p-v{font-family:var(--sc-font-mono);text-align:right;color:var(--sc-ink)}
+.p-hb b{color:var(--sc-ink);font-weight:600}
+/* KI-Scan */
+.p-scan{display:grid;gap:1.1rem;grid-template-columns:minmax(0,1fr)}
+@container doc (min-width:740px){.p-scan{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}}
+.p-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+.p-items button{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--sc-ink);border-radius:10px;padding:.55rem .7rem;text-align:left;font:500 .88rem var(--sc-font-text);cursor:pointer;min-height:42px;transition:border-color 140ms var(--sc-ease-out),background-color 140ms var(--sc-ease-out)}
+.p-items button.on{border-color:var(--sc-accent);background:rgba(16,185,129,.1)}
+@media (hover:hover) and (pointer:fine){.p-items button:not(.on):hover{border-color:var(--sc-ink-soft)}}
+.p-chamber{border:1px dashed #475569;border-radius:12px;padding:.8rem .9rem;margin-top:.8rem;min-height:92px}
+.p-conf{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.6rem;align-items:center;font-size:.84rem;margin-top:.6rem;color:var(--sc-ink-soft)}
+.p-conf .p-trk{height:10px;overflow:visible}
+.p-th{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--sc-ink);left:85%}
+.p-bins{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;align-items:end}
+.p-bin{border-radius:10px 10px 6px 6px;padding:.6rem .5rem;color:#fff;min-height:160px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:transform .25s var(--sc-ease-out)}
+.p-lvl{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.25);transition:height .5s var(--sc-ease-out)}
+.p-bt{position:relative;font-weight:700;font-size:.92rem}
+.p-bd{position:relative;font-size:.72rem;line-height:1.3}
+.p-bc{position:relative;font-family:var(--sc-font-mono);font-size:1.3rem;font-weight:600}
+.p-bin.hit{transform:translateY(-6px)}
+.p-bin.gelb{background:#F2C014;color:#14171C}.p-bin.gelb .p-lvl{background:rgba(0,0,0,.14)}
+.p-bin.blau{background:#1D4FD6}.p-bin.gruen{background:#23804A}.p-bin.grau{background:#6B7280}
+.p-verdict{margin-top:.7rem;font-size:.92rem;line-height:1.5;color:var(--body);min-height:2.8em}
+.p-verdict b{color:var(--sc-ink)}
+/* Woche und Kunden */
+.p-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.35rem;margin-top:.7rem}
+.p-day{border:1px solid var(--line);border-radius:8px;padding:.45rem .2rem;text-align:center;font-size:.72rem;color:var(--sc-ink-soft)}
+.p-truck{height:20px;width:20px;margin:.35rem auto 0;border-radius:5px;background:#1A2539;transition:background-color .25s var(--sc-ease-out)}
+.p-day.go .p-truck{background:var(--sc-accent)}
+.p-seg{display:grid;gap:.7rem;align-content:start}
+.p-segcard{appearance:none;width:100%;text-align:left;border:1px solid var(--line);border-radius:var(--r);padding:.9rem 1rem;background:linear-gradient(180deg,#101A2E,#0D1526);color:var(--sc-ink);cursor:pointer;font:inherit;transition:border-color 140ms var(--sc-ease-out)}
+.p-segcard[aria-expanded="true"]{border-color:var(--sc-accent)}
+.p-top{display:flex;justify-content:space-between;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+.p-segcard h3{font-family:var(--sc-font-display);font-weight:650;font-size:1.05rem;margin:0}
+.p-tag{font-family:var(--sc-font-mono);font-size:.66rem;padding:.15rem .45rem;border-radius:var(--r-sm);background:#1A2539;color:var(--sc-ink-soft);white-space:nowrap}
+.p-segcard dl{display:grid;grid-template-columns:6.5rem minmax(0,1fr);gap:.35rem .8rem;margin:.75rem 0 0;font-size:.86rem}
+.p-segcard dt{color:var(--sc-ink-soft)}
+.p-segcard dd{margin:0;color:var(--body)}
+.p-seg .p-note{margin-top:0}
+/* Markt und Akzeptanz */
+.p-versus{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.p-vbox{border-radius:var(--r);padding:.9rem 1rem;background:#16213A}
+.p-vbox.hot{background:rgba(240,100,90,.13);box-shadow:inset 0 0 0 1px rgba(240,100,90,.35)}
+.p-vbox .p-big{font-size:clamp(2rem,1.5rem + 1.4vw,2.8rem)}
+.p-vbox.hot .p-big{color:#FF8A80}
+.p-steps{display:grid;grid-template-columns:minmax(0,1fr);gap:.7rem}
+@container doc (min-width:640px){.p-steps{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.p-step{border-radius:var(--r);padding:1rem;border:1px solid var(--line);background:linear-gradient(180deg,#101A2E,#0D1526)}
+.p-ok{font-family:var(--sc-font-mono);font-size:.72rem;font-weight:600;letter-spacing:.08em}
+.p-step.yes .p-ok{color:var(--gruen)}
+.p-step.no{border-color:rgba(240,100,90,.6)}
+.p-step.no .p-ok{color:var(--rot)}
+.p-step .p-big{margin:.35rem 0 .3rem}
+.p-scale{position:relative;height:72px;margin-top:.8rem}
+.p-axis{position:absolute;left:0;right:0;top:32px;height:4px;background:#1A2539;border-radius:2px}
+.p-band{position:absolute;top:24px;height:20px;background:var(--gruen);opacity:.8;border-radius:4px}
+.p-mk{position:absolute;top:12px;width:3px;height:44px;border-radius:2px}
+.p-ml{position:absolute;top:-6px;font-size:.7rem;transform:translateX(-50%);white-space:nowrap;font-family:var(--sc-font-mono)}
+.p-tick{position:absolute;top:54px;font-size:.66rem;color:var(--ink-faint);transform:translateX(-50%);font-family:var(--sc-font-mono)}
+/* Pilotjahr */
+.p-tl{overflow-x:auto}
+.p-tl-in{min-width:540px}
+.p-tl-months{display:grid;grid-template-columns:7.5rem repeat(12,minmax(0,1fr));font-family:var(--sc-font-mono);font-size:.68rem;color:var(--ink-faint);border-bottom:1px solid var(--line);padding-bottom:.35rem}
+.p-tl-months span{text-align:center}
+.p-tl-row{display:grid;grid-template-columns:7.5rem repeat(12,minmax(0,1fr));align-items:center;min-height:42px;border-bottom:1px solid var(--line)}
+.p-nm{font-size:.84rem;font-weight:600;padding-right:.5rem;color:var(--sc-ink)}
+.p-tl-bar{appearance:none;height:26px;border-radius:6px;border:0;font:600 .72rem var(--sc-font-text);color:#fff;text-align:left;padding:0 .5rem;white-space:nowrap;overflow:hidden;cursor:pointer}
+.p-tl-bar.on{outline:2px solid var(--sc-ink);outline-offset:2px}
+.p-tl-detail{margin-top:.9rem;padding:.9rem 1rem;border-radius:var(--r);background:#16213A;min-height:84px}
+.p-tl-detail h3{font-family:var(--sc-font-display);font-size:1.02rem;margin:0 0 .35rem;color:var(--sc-ink)}
+.p-tl-detail p{color:var(--body);font-size:.92rem;line-height:1.5}
+.p-tl-detail .p-note{margin-top:.4rem}
+/* Kosten */
+.p-switch{appearance:none;display:inline-flex;align-items:center;gap:.8rem;border:1px solid var(--line-strong);border-radius:999px;padding:.45rem .5rem .45rem 1rem;background:#16213A;color:var(--body);font:400 .9rem var(--sc-font-text);cursor:pointer;text-align:left;transition:border-color 140ms var(--sc-ease-out)}
+.p-switch b{color:var(--sc-ink)}
+.p-knob{flex:none;width:46px;height:26px;border-radius:999px;background:#2A3850;position:relative;transition:background-color .2s var(--sc-ease-out)}
+.p-knob::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#E8EEF6;transition:transform .2s var(--sc-ease-out)}
+.p-switch[aria-pressed="true"]{border-color:var(--sc-accent)}
+.p-switch[aria-pressed="true"] .p-knob{background:var(--sc-accent)}
+.p-switch[aria-pressed="true"] .p-knob::after{transform:translateX(20px)}
+.p-kpis{display:grid;grid-template-columns:minmax(0,1fr);gap:.7rem;margin-top:1rem}
+@container doc (min-width:640px){.p-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.p-kpi{border:1px solid var(--line);border-radius:var(--r);padding:.85rem .95rem;background:#0E1626;min-width:0}
+.p-kpi .p-v{font-family:var(--sc-font-display);font-weight:760;font-size:clamp(1.2rem,.85rem + 1vw,1.7rem);line-height:1.1;white-space:nowrap;color:var(--sc-ink);font-variant-numeric:tabular-nums}
+.p-kpi .p-v.pos{color:var(--accent-hi)}
+.p-kpi .p-v.neg{color:#FF8A80}
+.p-was{font-family:var(--sc-font-mono);font-size:.76rem;color:var(--ink-faint);text-decoration:line-through;min-height:1.15em}
+.p-kpi:has(> .p-was){display:flex;flex-direction:column}.p-kpi > .p-was{margin-top:auto}
+.p-stack{display:flex;height:38px;border-radius:8px;overflow:hidden;margin-top:.6rem}
+.p-stack div{display:flex;align-items:center;padding:0 .6rem;font-size:.78rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;transition:flex-grow .6s var(--sc-ease-out)}
+.p-legend{display:flex;flex-wrap:wrap;gap:.8rem;font-size:.78rem;color:var(--sc-ink-soft);margin-top:.5rem}
+.p-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.35rem;vertical-align:middle}
+/* Finanzierung */
+.p-rev{display:grid;grid-template-columns:minmax(0,1fr);gap:.7rem}
+@container doc (min-width:640px){.p-rev{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.p-revc{border-radius:var(--r);padding:1rem;border:1px solid var(--line);background:linear-gradient(180deg,#101A2E,#0D1526);position:relative;overflow:hidden}
+.p-revc::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--c)}
+.p-price{font-family:var(--sc-font-display);font-weight:780;font-size:2.1rem;color:var(--sc-ink);margin:.2rem 0;font-variant-numeric:tabular-nums}
+.p-m{font-size:.84rem;color:var(--sc-ink-soft)}
+.p-sl{display:grid;grid-template-columns:7rem minmax(0,1fr) 2.5rem;gap:.7rem;align-items:center;font-size:.9rem;margin-top:.6rem;color:var(--body)}
+.p-sl input{width:100%;accent-color:var(--sc-accent)}
+.p-sl output{font-family:var(--sc-font-mono);font-weight:600;text-align:right;color:var(--sc-ink)}
+.p-res{display:grid;grid-template-columns:minmax(0,1fr);gap:.7rem;margin-top:.9rem}
+@container doc (min-width:900px){.p-res{grid-template-columns:1fr 1fr}}
+.p-fund{display:flex;height:56px;border-radius:10px;overflow:hidden;margin-top:.7rem;border:1px solid var(--line)}
+.p-fund div{display:flex;flex-direction:column;justify-content:center;padding:0 .55rem;font-size:.7rem;color:#fff;min-width:max-content;overflow:hidden;white-space:nowrap}
+.p-fund div b{font-family:var(--sc-font-mono);font-size:.76rem;color:inherit}
+.p-fund .locked{background:repeating-linear-gradient(135deg,#2A3850 0 8px,#223047 8px 16px);color:var(--sc-ink-soft)}
+.p-ms{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.8rem}
+/* Kreislauf und Schluss */
+.p-chain{display:grid;grid-template-columns:minmax(0,1fr);gap:1.2rem;align-items:center}
+@container doc (min-width:760px){.p-chain{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.p-chain svg{width:100%;max-width:440px;height:auto;display:block;margin:0 auto}
+.p-chain svg .node{cursor:pointer;outline:none}
+.p-chain svg .node:focus-visible circle{stroke-width:7}
+.p-chain svg text{font-family:var(--sc-font-text);fill:var(--sc-ink)}
+.p-cdet{border-radius:var(--r);background:#16213A;padding:1.1rem 1.2rem;min-height:220px}
+.p-cdet h3{font-family:var(--sc-font-display);font-size:1.3rem;margin:.3rem 0 .7rem;color:var(--sc-ink)}
+.p-cdet dl{display:grid;gap:.55rem;margin:0}
+.p-cdet dt{font-family:var(--sc-font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+.p-cdet dd{margin:0;color:var(--body);font-size:.92rem;line-height:1.5}
+.p-eyebrow{font-family:var(--sc-font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.p-impact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+@container doc (min-width:760px){.p-impact{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.p-impact .p-big{font-size:clamp(1.8rem,1.3rem + 1.4vw,2.6rem)!important}
+.p-close{border-radius:var(--r-lg);background:radial-gradient(120% 120% at 0% 0%,rgba(16,185,129,.16),transparent 60%),#0E1626;border:1px solid rgba(16,185,129,.3);padding:clamp(1.6rem,4vw,2.6rem) clamp(1.2rem,3vw,2rem);text-align:center;box-shadow:var(--sc-e3)}
+.p-close h2{font-family:var(--sc-font-display);font-weight:780;font-stretch:112%;font-size:clamp(2rem,1.2rem + 3vw,3.6rem);letter-spacing:-.045em;line-height:.98;margin:.4rem 0 0;color:var(--sc-ink)}
+.p-close p{margin:.8rem auto 0;font-size:1.1rem;color:var(--body);max-width:44ch}
+.p-ask{margin-top:1.1rem;display:inline-block;font-family:var(--sc-font-display);font-weight:780;font-size:clamp(1.3rem,1rem + 1vw,1.8rem);background:#F2C014;color:#14171C;padding:.35rem 1rem;border-radius:var(--r-sm)}
+.p-fig{margin:0;display:grid;gap:.5rem}
+.p-fig figcaption{font-size:.86rem;line-height:1.5;color:var(--sc-ink-soft)}
+.keys{font-size:.78rem;color:var(--ink-faint);line-height:1.9;max-width:60ch}
+kbd{font-family:var(--sc-font-mono);font-size:.7rem;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:5px;padding:.05rem .35rem;background:#121B2E;color:var(--sc-ink)}
+/* Fragen */
+.p-drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);z-index:80;background:#0B1220;border-left:1px solid var(--line-strong);transform:translateX(102%);transition:transform .28s var(--sc-ease-drawer);display:flex;flex-direction:column;box-shadow:var(--sc-e3);padding-bottom:env(safe-area-inset-bottom,0px)}
+.p-drawer.open{transform:none}
+.p-drawer > header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.2rem;border-bottom:1px solid var(--line)}
+.p-drawer h2{font-family:var(--sc-font-display);font-size:1.4rem;margin:0;color:var(--sc-ink)}
+.p-filters{display:flex;flex-wrap:wrap;gap:.35rem;padding:.8rem 1.2rem;border-bottom:1px solid var(--line)}
+.p-filters button{appearance:none;border:1px solid var(--line-strong);background:transparent;color:var(--sc-ink-soft);border-radius:var(--r-sm);padding:.3rem .6rem;font:500 .8rem var(--sc-font-text);cursor:pointer;min-height:32px}
+.p-filters button.on{background:var(--sc-accent);border-color:var(--sc-accent);color:var(--sc-accent-ink)}
+.p-qa{overflow-y:auto;padding:.4rem 1.2rem 1.5rem}
+.p-qa details{border-bottom:1px solid var(--line);padding:.8rem 0}
+.p-qa summary{cursor:pointer;font-weight:600;list-style:none;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;color:var(--sc-ink)}
+.p-qa summary::-webkit-details-marker{display:none}
+.p-qa .w{font-family:var(--sc-font-mono);font-size:.7rem;font-weight:500;color:var(--accent-hi)}
+.p-qa details p{margin-top:.5rem;color:var(--body);line-height:1.6;font-size:.94rem}
+/* Sprecher-Zeit im HUD */
+.hud-timer{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--sc-font-mono);font-size:.78rem;color:var(--sc-ink-soft);margin-top:.2rem}
+.hud-timer[hidden]{display:none}
+.hud-timer svg{width:18px;height:18px;transform:rotate(-90deg)}
+.hud-timer circle{fill:none;stroke-width:3}
+.hud-timer circle:first-child{stroke:var(--line-strong)}
+.hud-timer .ht-fg{stroke:var(--accent-hi);stroke-dasharray:100;stroke-dashoffset:100}
+.hud-timer .ht-t{color:var(--sc-ink);font-weight:500}
+.hud-timer.over .ht-fg{stroke:var(--bad)}
+.hud-timer.over .ht-t{color:var(--bad)}
+/* Szenenwechsel der Welt zwischen Sprechern */
+.stage .world{transition:opacity .18s ease}
+.stage.cut .world{opacity:0}
+/* Navigation: Sprecher 1–8, Technik A–E, Fragen */
+.dots .dn{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #64748B;font-family:var(--sc-font-mono);font-size:.62rem;color:var(--sc-ink-soft);transition:background-color 180ms var(--sc-ease-out),border-color 180ms var(--sc-ease-out),color 180ms var(--sc-ease-out)}
+.dots a[aria-current="true"] .dn{background:var(--sc-accent);border-color:var(--sc-accent);color:var(--sc-accent-ink)}
+.qa-btn{position:relative;display:grid;place-items:center;width:36px;height:34px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sc-ink-soft);font:600 .9rem var(--sc-font-mono);cursor:pointer}
+.qa-btn[aria-expanded="true"]{color:var(--accent-hi)}
+@media (min-width:1024px){
+  .dots a{height:30px}
+  .qa-btn .lbl{right:calc(100% + 10px);transform:translateX(6px)}
+  .qa-btn:hover .lbl,.qa-btn:focus-visible .lbl{opacity:1;transform:none}
+}
+@media (max-width:1023.98px){
+  .dots{max-width:calc(100vw - 20px);overflow-x:auto;scrollbar-width:none}
+  .dots .lbl{display:none}
+  .dots a{width:34px;height:40px;flex:none}
+  .qa-btn{flex:none}
+}
+
 /* --------------------------------------------- technical drawings ---- */
 .plate{position:relative;border:1px solid var(--line);border-radius:var(--r);overflow-x:auto;overflow-y:hidden;background-color:var(--plate);background-image:linear-gradient(rgba(148,163,184,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.045) 1px,transparent 1px);background-size:24px 24px;box-shadow:var(--sc-e2)}
 .plate > svg.doc{display:block;width:100%;height:auto}
@@ -524,13 +739,29 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   </button>
   <span class="ap-time" aria-hidden="true">4:00</span>
   <span class="ap-sep" aria-hidden="true"></span>
-  <a href="#k1" data-k="0"><span class="dot"></span><span class="lbl">1. Oberfläche</span></a>
-  <a href="#k2" data-k="1"><span class="dot"></span><span class="lbl">2. KI-Scan</span></a>
-  <a href="#k3" data-k="2"><span class="dot"></span><span class="lbl">3. Untergrund</span></a>
-  <a href="#k4" data-k="3"><span class="dot"></span><span class="lbl">4. 80 %-Logistik</span></a>
-  <a href="#k5" data-k="4"><span class="dot"></span><span class="lbl">5. Business Model</span></a>
-  <span class="now" aria-hidden="true">1. Oberfläche</span>
+  <a href="#s1" data-k="0"><span class="dn">1</span><span class="lbl">1 · Denisa · Problem</span></a>
+  <a href="#s2" data-k="1"><span class="dn">2</span><span class="lbl">2 · Sarah · Kunden</span></a>
+  <a href="#s3" data-k="2"><span class="dn">3</span><span class="lbl">3 · Paula · Markt</span></a>
+  <a href="#s4" data-k="3"><span class="dn">4</span><span class="lbl">4 · Malina · Akzeptanz</span></a>
+  <a href="#s5" data-k="4"><span class="dn">5</span><span class="lbl">5 · Alexia · Pilotjahr</span></a>
+  <a href="#s6" data-k="5"><span class="dn">6</span><span class="lbl">6 · Andreea · Kosten</span></a>
+  <a href="#s7" data-k="6"><span class="dn">7</span><span class="lbl">7 · Rareș · Finanzierung</span></a>
+  <a href="#s8" data-k="7"><span class="dn">8</span><span class="lbl">8 · Alesia · Kreislauf</span></a>
+  <span class="ap-sep" aria-hidden="true"></span>
+  <a href="#k1" data-k="8"><span class="dot"></span><span class="lbl">Technik A · Oberfläche</span></a>
+  <a href="#k2" data-k="9"><span class="dot"></span><span class="lbl">Technik B · KI-Scan</span></a>
+  <a href="#k3" data-k="10"><span class="dot"></span><span class="lbl">Technik C · Untergrund</span></a>
+  <a href="#k4" data-k="11"><span class="dot"></span><span class="lbl">Technik D · 80 %-Logistik</span></a>
+  <a href="#k5" data-k="12"><span class="dot"></span><span class="lbl">Technik E · Business Model</span></a>
+  <button class="qa-btn" type="button" aria-controls="p-drawer" aria-expanded="false" aria-label="Harte Fragen öffnen (F)"><span aria-hidden="true">?</span><span class="lbl">Fragen · F</span></button>
+  <span class="now" aria-hidden="true">Start</span>
 </nav>
+
+<aside class="p-drawer" id="p-drawer" aria-label="Fragen und Antworten" aria-hidden="true">
+  <header><h2>Harte Fragen</h2><button class="st-btn p-qaclose" type="button">Schließen <kbd>Esc</kbd></button></header>
+  <div class="p-filters" id="p-qaFilters"></div>
+  <div class="p-qa" id="p-qaList"></div>
+</aside>
 
 <div class="page">
 <div class="split">
@@ -539,8 +770,9 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   <div class="stage-col" aria-hidden="true">
     <div class="stage" id="stage">
       <div class="hud">
-        <p class="hud-k">SMT Urban · Schnitt</p>
-        <p class="hud-ch"><i class="hud-n">1</i><span class="hud-name">Oberfläche</span></p>
+        <p class="hud-k">Investor-Pitch</p>
+        <p class="hud-ch"><i class="hud-n"></i><span class="hud-name">Smart Mülltonne</span></p>
+        <div class="hud-timer" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8"/><circle class="ht-fg" cx="10" cy="10" r="8" pathLength="100"/></svg><span class="ht-t">0:00</span><span>/ 1:00</span></div>
       </div>
       <div class="hud-b">
         <div class="hud-row"><span>Niveau</span><b class="hud-lvl">+1,90 m</b></div>
@@ -555,14 +787,12 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   <!-- ============================================== DOCUMENT ========== -->
   <main class="content" id="inhalt">
 
-  <!-- ========================================== 1 · OBERFLÄCHE ======= -->
-  <section id="k1" class="chapter" aria-label="1. Oberfläche">
-
+  <!-- ========================================== PITCH ================ -->
     <header class="hero">
       <div class="scene scene--hero" data-scene="0.62"></div>
       <div class="hero-top">
         <div>FABIZ · ASE Bukarest<br>Antreprenoriat social<br>Accenture Circular Value Chain</div>
-        <div class="date">Produktdesign<br>Stand 15.10.2026</div>
+        <div class="date">Investor-Pitch<br>Oktober 2026</div>
       </div>
       <div class="hero-main">
         <h1 class="h1"><span class="ln"><span style="--i:0">Smart</span></span><span class="ln"><span style="--i:1">Müll&shy;tonne</span></span></h1>
@@ -570,10 +800,279 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
           <p class="sub-t"><span style="--i:0">Sortiert.</span><span style="--i:1">Gepresst.</span><span style="--i:2">Versenkt.</span></p>
           <div class="blocks" aria-hidden="true"><i style="--i:0;height:44px;background:var(--gelb)"></i><i style="--i:1;height:66px;background:var(--blau)"></i><i style="--i:2;height:52px;background:var(--gruen)"></i><i style="--i:3;height:34px;background:var(--grau)"></i><i style="--i:4;height:70px;background:var(--sc-accent)"></i></div>
         </div>
-        <p class="lede">Zwei Produkte auf einer Technik. <strong>SMT Urban</strong> steht im öffentlichen Raum, daneben eine versenkte Hubsäule mit vier Standardtonnen. <strong>SMT Indoor</strong> steht in Gebäuden. Beide erkennen jeden Einwurf per Kamera, sortieren ihn in vier Farben, pressen, versiegeln und melden, wann geleert werden muss. Geleert wird mit den Müllfahrzeugen, die Bukarest schon hat.</p>
-        <p class="team">Paula Bratu · Andreea Olaru · Sarah Riesz · Rareș Popa · Denisa Schiopăta · Malina Pop · Alexia Beșe · Alesia</p>
+        <p class="lede">Die Mülltonne, die selbst trennt, presst und meldet, wann sie voll ist. Als Abo für Stadt und Handel, gebaut als Sozialunternehmen in Bukarest.</p>
+        <p class="team">Denisa · Sarah · Paula · Malina · Alexia · Andreea · Rareș · Alesia</p>
+        <p class="keys">Präsentieren: <kbd>→</kbd> nächstes Kapitel · <kbd>←</kbd> zurück · <kbd>1</kbd>–<kbd>8</kbd> Sprecher · <kbd>Leertaste</kbd> Autoplay · <kbd>F</kbd> Fragen · <kbd>T</kbd> Zeit neu starten</p>
       </div>
     </header>
+
+  <!-- ========================================== 1 · DENISA · PROBLEM ===== -->
+  <section class="chapter pk" id="s1" data-n="1" data-name="Denisa · Problem" style="--c:var(--rot)" aria-label="1. Denisa · Problem" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="0" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">1</div><div>
+    <div class="pk-speaker"><span class="pk-who">Denisa</span><span class="pk-pill">Kapitel 1 und 3</span><span class="pk-pill">60 s</span></div>
+    <h2>Ein Eimer für alles. Und Müllberge im Herăstrău.</h2>
+    <p class="pk-claim">2022 wurden zwei Institutionen der Stadt wegen Müllbergen im Parcul Regele Mihai I mit je 50.000 Lei bestraft. Das Problem ist der Moment des Einwurfs.</p>
+  </div></div>
+  <div class="p-grid2">
+    <div class="p-panel">
+      <h3>Recycelter Siedlungsabfall pro Kopf, 2022</h3>
+      <div class="p-cmp" id="p-cmp">
+        <div class="p-row"><span>Rumänien</span><div class="p-trk"><div class="p-fill" style="background:var(--rot);width:0" data-w="14.5"></div></div><span class="p-mono">36 kg</span></div>
+        <div class="p-row"><span>EU-Schnitt</span><div class="p-trk"><div class="p-fill" style="background:var(--ink);width:0" data-w="100"></div></div><span class="p-mono">249 kg</span></div>
+      </div>
+      <p class="p-note">Quelle: Eurostat über Energynomics. Rumänien recycelt von allen EU-Staaten am wenigsten.</p>
+    </div>
+    <div class="p-panel">
+      <h3>Alle Bauteile gibt es. Ihre Verbindung nicht.</h3>
+      <div class="p-hbars" style="font-size:14px">
+        <div class="p-hb" style="grid-template-columns:1.4fr repeat(3,1fr)"><b>Lösung</b><b>Sortiert</b><b>Presst</b><b>Alte Fahrzeuge</b></div>
+        <div class="p-hb" style="grid-template-columns:1.4fr repeat(3,1fr)"><span>Parkeimer</span><span>–</span><span>–</span><span>ja</span></div>
+        <div class="p-hb" style="grid-template-columns:1.4fr repeat(3,1fr)"><span>Bigbelly</span><span>–</span><span>ja</span><span>ja</span></div>
+        <div class="p-hb" style="grid-template-columns:1.4fr repeat(3,1fr)"><span>Bin-e</span><span>ja</span><span>ja</span><span>nur Gebäude</span></div>
+        <div class="p-hb" style="grid-template-columns:1.4fr repeat(3,1fr)"><span>Unterflur</span><span>–</span><span>–</span><span>Kran</span></div>
+        <div class="p-hb" style="grid-template-columns:1.4fr repeat(3,1fr);font-weight:700"><span>SMT Urban</span><span style="color:var(--gruen)">4 Farben</span><span style="color:var(--gruen)">ja</span><span style="color:var(--gruen)">240-l-Tonnen</span></div>
+      </div>
+      <p class="p-note">Architektonische Innovation (Henderson &amp; Clark, 1990): bewährte Komponenten, neu verbunden.</p>
+    </div>
+  </div>
+
+  <div class="p-panel" style="margin-top:28px" data-t="1.8 3">
+    <h3>Probier es aus: KI-Scan</h3>
+    <div class="p-scan">
+      <div>
+        <p style="font-size:15px;color:var(--ink-2)">Wähle einen Gegenstand. Die Kamera erkennt ihn in unter 2 Sekunden. Unter dem festgelegten Sicherheitswert gilt: <b style="color:var(--ink)">Unsicher heißt Grau.</b></p>
+        <div class="p-items" id="p-items" style="margin-top:12px"></div>
+        <div class="p-chamber" aria-live="polite">
+          <div style="font-size:13px;color:var(--ink-2)">Erkennungskammer</div>
+          <div id="p-scanName" style="font-weight:700;font-size:18px;margin-top:4px">Bereit</div>
+          <div class="p-conf"><span>Sicherheit</span><div class="p-trk"><div class="p-fill" id="p-confFill" style="width:0;background:var(--ink)"></div><div class="p-th" title="Sicherheitswert"></div></div><span class="p-mono" id="p-confVal">–</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="p-bins" id="p-bins">
+          <div class="p-bin gelb" data-f="gelb"><div class="p-lvl" style="height:0"></div><div class="p-bt">Gelb</div><div class="p-bd">Kunststoff und Metall · gepresst</div><div class="p-bc">0</div></div>
+          <div class="p-bin blau" data-f="blau"><div class="p-lvl" style="height:0"></div><div class="p-bt">Blau</div><div class="p-bd">Papier und Karton · gepresst</div><div class="p-bc">0</div></div>
+          <div class="p-bin gruen" data-f="gruen"><div class="p-lvl" style="height:0"></div><div class="p-bt">Grün</div><div class="p-bd">Glas · nicht gepresst</div><div class="p-bc">0</div></div>
+          <div class="p-bin grau" data-f="grau"><div class="p-lvl" style="height:0"></div><div class="p-bt">Grau</div><div class="p-bd">Rest und alles Unsichere</div><div class="p-bc">0</div></div>
+        </div>
+        <p class="p-verdict" id="p-verdict">Jeder Einwurf landet im Fach seiner Farbe, nach dem rumänischen Farbcode.</p>
+      </div>
+    </div>
+    <p class="p-note">Simulation mit Beispielwerten. Die echte Erkennungsgenauigkeit messen wir im Labortest (Monat 3) und im Indoor-Pilot (ab Monat 5).</p>
+  </div>
+    <i class="tmk b" data-t="3" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 2 · SARAH · KUNDEN ===== -->
+  <section class="chapter pk" id="s2" data-n="2" data-name="Sarah · Kunden" style="--c:var(--gelb)" aria-label="2. Sarah · Kunden" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="5.3" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">2</div><div>
+    <div class="pk-speaker"><span class="pk-who">Sarah</span><span class="pk-pill">Kapitel 2 und 4</span><span class="pk-pill">60 s</span></div>
+    <h2>Trennen ohne Nachdenken. Leeren nur bei Bedarf.</h2>
+    <p class="pk-claim">Wir verkaufen keine Tonne, sondern eine funktionierende getrennte Sammlung: für zwei zahlende Kunden und einen Partner.</p>
+  </div></div>
+  <div class="p-grid2">
+    <div class="p-panel" data-t="5.4 7">
+      <h3>Leerungen pro Woche an einem Standort</h3>
+      <div class="p-btnrow" role="group" aria-label="Vergleich">
+        <button class="p-btn on" id="p-wkToday" aria-pressed="true">Heute: Parkeimer</button>
+        <button class="p-btn" id="p-wkSmt" aria-pressed="false">Mit SMT Urban</button>
+      </div>
+      <div class="p-week" id="p-week"></div>
+      <div style="display:flex;gap:28px;margin-top:18px;flex-wrap:wrap">
+        <div class="p-stat"><span class="p-big p-mono" id="p-wkNum">7</span><span class="p-lab">Leerungen pro Woche</span></div>
+        <div class="p-stat"><span class="p-big">40–60</span><span class="p-lab">Parkeimer passen gepresst in ein Gerät</span></div>
+      </div>
+      <p class="p-note">Leerung ab ca. 80 % Füllstand je Tonne. Ziel: 2 statt 7 Leerungen, also rund 71 % weniger.</p>
+    </div>
+    <div class="p-seg" id="p-seg"></div>
+  </div>
+    <i class="tmk b" data-t="7" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 3 · PAULA · MARKT ===== -->
+  <section class="chapter pk" id="s3" data-n="3" data-name="Paula · Markt" style="--c:var(--blau)" aria-label="3. Paula · Markt" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="8" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">3</div><div>
+    <div class="pk-speaker"><span class="pk-who">Paula</span><span class="pk-pill">Kapitel 8</span><span class="pk-pill">60 s</span></div>
+    <h2>Die Hürde ist der Preis, nicht die Technik.</h2>
+    <p class="pk-claim">Befragung im Oktober 2026: 51 Entscheider, u. a. von Google, PwC, Kaufland und aus Bezirksrathäusern.</p>
+  </div></div>
+  <div class="p-grid2">
+    <div class="p-panel">
+      <h3>Hauptprobleme heute</h3>
+      <div class="p-hbars" data-bars='[["Falsche Mülltrennung",70.6],["Mangelndes Problembewusstsein",47.1],["Überfüllte Behälter",45.1],["Zu wenig Platz",33.3],["Unangenehme Gerüche",31.4]]' data-color="var(--blau)"></div>
+      <p class="p-note">Mehrfachauswahl, n = 51. Zufriedenheit mit der heutigen Sammlung: 3,27 von 5.</p>
+    </div>
+    <div class="p-panel">
+      <h3>Was die Einführung bremst</h3>
+      <div class="p-versus">
+        <div class="p-vbox hot"><div class="p-big">54,9 %</div><div class="p-lab">fürchten die Anschaffungskosten</div></div>
+        <div class="p-vbox"><div class="p-big">13,7 %</div><div class="p-lab">zweifeln an der Technik</div></div>
+      </div>
+      <div class="p-hbars" style="margin-top:16px" data-bars='[["Fehlender Platz / Infrastruktur",49.0],["Fehlendes Budget",45.1],["Wartungskosten",41.2],["Interne Genehmigungen",33.3]]' data-color="var(--rot)"></div>
+      <div style="display:flex;gap:14px;align-items:baseline;margin-top:18px;flex-wrap:wrap"><span class="p-big" style="font-size:44px">86,3 %</span><span class="p-lab" style="color:var(--ink-2)">erwarten Wachstum des Marktes in Rumänien in 5 Jahren</span></div>
+    </div>
+  </div>
+  <p class="p-note">Ehrlich: 51 Antworten sind nicht repräsentativ. Den Nachweis liefern zehn Gespräche mit Filial- und Facility-Leitungen und vier unterschriebene Indoor-Abos bis Monat 4.</p>
+    <i class="tmk b" data-t="8" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 4 · MALINA · AKZEPTANZ ===== -->
+  <section class="chapter pk" id="s4" data-n="4" data-name="Malina · Akzeptanz" style="--c:var(--gruen)" aria-label="4. Malina · Akzeptanz" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="8" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">4</div><div>
+    <div class="pk-speaker"><span class="pk-who">Malina</span><span class="pk-pill">Kapitel 9</span><span class="pk-pill">60 s</span></div>
+    <h2>98 % wollen sie. Kaufen kann sie kaum jemand.</h2>
+    <p class="pk-claim">Verstehen, wollen, bezahlen: Die dritte Stufe bricht. Die Befragten liefern die Lösung selbst.</p>
+  </div></div>
+  <div class="p-steps">
+    <div class="p-step yes"><div class="p-ok">✓ VERSTEHEN</div><div class="p-big" style="font-size:44px">45,1 %</div><div class="p-lab">haben das Konzept vollkommen verstanden, weitere 27,5 % in hohem Maße</div></div>
+    <div class="p-step yes"><div class="p-ok">✓ WOLLEN</div><div class="p-big" style="font-size:44px">98 %</div><div class="p-lab">finden die automatische Sortierung nützlich</div></div>
+    <div class="p-step no"><div class="p-ok">✗ BEZAHLEN</div><div class="p-big" style="font-size:44px">21,6 %</div><div class="p-lab">würden mehr als 5.000 € pro Gerät ausgeben</div></div>
+  </div>
+  <div class="p-grid2 p-gap">
+    <div class="p-panel">
+      <h3>Zahlungsbereitschaft vs. Gerätekosten</h3>
+      <div class="p-scale" id="p-scale"></div>
+      <p class="p-note">Grün: Median-Korridor der Zahlungsbereitschaft (3.000–4.999 €). Ein Direktverkauf der Urban-Variante ist unrealistisch.</p>
+    </div>
+    <div class="p-panel">
+      <h3>Bevorzugtes Modell</h3>
+      <div class="p-hbars" data-bars='[["Abonnement mit Wartung",49.0],["Pilot mit Kaufoption",39.2],["Leasing",21.6],["Direktkauf",19.6],["Miete",13.7]]' data-color="var(--gruen)"></div>
+      <p class="p-note">Je 49 % knüpfen den Kauf an Pilotergebnisse, nachgewiesene Einsparungen und garantierte Wartung. Das sind Risikofragen. Darum: Product-as-a-Service.</p>
+    </div>
+  </div>
+    <i class="tmk b" data-t="8" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 5 · ALEXIA · PILOTJAHR ===== -->
+  <section class="chapter pk" id="s5" data-n="5" data-name="Alexia · Pilotjahr" style="--c:var(--grau)" aria-label="5. Alexia · Pilotjahr" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="3.95" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">5</div><div>
+    <div class="pk-speaker"><span class="pk-who">Alexia</span><span class="pk-pill">Kapitel 5 und 6</span><span class="pk-pill">60 s</span></div>
+    <h2>Indoor zuerst: Geld und Daten ab Monat 5.</h2>
+    <p class="pk-claim">Vier SMT Indoor laufen 8 Monate in Handelsfilialen, die erste SMT Urban 6 Monate im Parcul Regele Mihai I. Klicke eine Phase an.</p>
+  </div></div>
+  <div class="p-panel" data-t="4 5">
+    <div class="p-tl"><div class="p-tl-in" id="p-tl"></div></div>
+    <div class="p-tl-detail" id="p-tlDetail" aria-live="polite"></div>
+  </div>
+  <div class="p-grid2" style="margin-top:28px">
+    <figure class="p-fig"><div class="shot"><img src="assets/schema-normal.jpg" width="2400" height="1500" alt="Schnitt im Normalbetrieb: Weg eines Gegenstands vom Einwurf über Presse, Siegelbalken und Rutsche bis in die Tonne" loading="lazy" decoding="async"><button class="zoom" type="button" title="Vergrößern" data-zoom="Schema · Normalbetrieb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button></div><figcaption>Normalbetrieb: vom Einwurf bis in die Tonne, in zehn Schritten.</figcaption></figure>
+    <figure class="p-fig"><div class="shot"><img src="assets/viz-leeren.jpg" width="1400" height="875" alt="Hubsäule angehoben, vier farbige 240-Liter-Tonnen auf Gehwegniveau, ein Mitarbeiter daneben" loading="lazy" decoding="async"><button class="zoom" type="button" title="Vergrößern" data-zoom="Beim Leeren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button></div><figcaption>Leeren: Zwei Spindeln heben vier Standardtonnen. Kein Kran, kein Hydrauliköl.</figcaption></figure>
+  </div>
+    <i class="tmk b" data-t="5" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 6 · DIANA · KOSTEN ===== -->
+  <section class="chapter pk" id="s6" data-n="6" data-name="Andreea · Kosten" style="--c:var(--gelb)" aria-label="6. Andreea · Kosten" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="3" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">6</div><div>
+    <div class="pk-speaker"><span class="pk-who">Andreea</span><span class="pk-pill">Kapitel 10</span><span class="pk-pill">60 s</span></div>
+    <h2>62.054,50 € im ersten Jahr. Mit der Stadt weniger.</h2>
+    <p class="pk-claim">Kostenplan aus 28 Positionen, berechnet mit recherchierten Marktpreisen. Netto, ohne MwSt.</p>
+  </div></div>
+  <div class="p-panel" data-t="3.05 3.9">
+    <button class="p-switch" id="p-prim" aria-pressed="false"><span><b>Szenario Primărie</b> · die Stadt baut den Schacht als Sachbeitrag (4.344 €)</span><span class="p-knob" aria-hidden="true"></span></button>
+    <div class="p-kpis">
+      <div class="p-kpi"><div class="p-lab">Kosten Jahr 1</div><div class="p-was" id="p-cWas1"></div><div class="p-v p-mono" id="p-cTot">62.054,50 €</div></div>
+      <div class="p-kpi"><div class="p-lab">Einmalkosten je SMT Urban</div><div class="p-was" id="p-cWas2"></div><div class="p-v p-mono" id="p-cUrb">17.440,50 €</div></div>
+      <div class="p-kpi"><div class="p-lab">Amortisation je SMT Urban</div><div class="p-was" id="p-cWas3"></div><div class="p-v p-mono" id="p-cPay">36,1 Mon.</div></div>
+    </div>
+    <div style="margin-top:22px">
+      <div style="font-size:14px;font-weight:600">Woraus die Kosten von Jahr 1 bestehen</div>
+      <div class="p-stack" id="p-stack"></div>
+      <div class="p-legend"><span><i style="background:var(--ink)"></i>Eigene Arbeit des Teams</span><span><i style="background:var(--blau)"></i>Externe Ausgaben</span></div>
+    </div>
+    <div class="p-grid3" style="margin-top:22px">
+      <div class="p-stat"><span class="p-big p-mono" style="font-size:34px">3.844,75 €</span><span class="p-lab">Einmalkosten je SMT Indoor</span></div>
+      <div class="p-stat"><span class="p-big p-mono" style="font-size:34px">15.186 €</span><span class="p-lab">laufende Kosten pro Jahr ab Jahr 2</span></div>
+      <div class="p-stat"><span class="p-big p-mono" style="font-size:34px">27.005 €</span><span class="p-lab">Fixkosten in Jahr 1, variabel 35.049,50 €</span></div>
+    </div>
+    <p class="p-note">Vor der Bestellung holen wir je zwei Angebote für Gehäuse, Mechatronik und Schacht ein. Mehrkosten bis 4.546 € deckt die Liquiditätsreserve.</p>
+  </div>
+  <figure class="p-fig" style="margin-top:28px"><div class="shot"><img src="assets/viz-schnitt.jpg" width="1400" height="875" alt="Schnitt durch den Boden: Betonschacht neben der Tonne, darin Tonnen und Spindeln" loading="lazy" decoding="async"><button class="zoom" type="button" title="Vergrößern" data-zoom="Im Schnitt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="sr">Vergrößern</span></button></div><figcaption>Der Schacht: im Szenario Primărie baut und besitzt ihn die Stadt.</figcaption></figure>
+    <i class="tmk b" data-t="3.9" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 7 · RAREȘ · FINANZIERUNG ===== -->
+  <section class="chapter pk" id="s7" data-n="7" data-name="Rareș · Finanzierung" style="--c:var(--blau)" aria-label="7. Rareș · Finanzierung" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="8" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">7</div><div>
+    <div class="pk-speaker"><span class="pk-who">Rareș</span><span class="pk-pill">Kapitel 11 und 12</span><span class="pk-pill">60 s</span></div>
+    <h2>Wir suchen 30.000 €. Die zweite Hälfte erst nach dem Beweis.</h2>
+    <p class="pk-claim">Drei Erlösquellen, ein Abo-Modell, das mit jedem Gerät besser wird.</p>
+  </div></div>
+  <div class="p-rev">
+    <div class="p-revc" style="--c:var(--gruen)"><div class="p-m">Stadt · SMT Urban</div><div class="p-price p-mono">390 €</div><div class="p-m">pro Monat, 60 Monate</div></div>
+    <div class="p-revc" style="--c:var(--gelb)"><div class="p-m">Sponsor · Partnerfläche</div><div class="p-price p-mono">250 €</div><div class="p-m">pro Monat, senkt den Preis für die Stadt</div></div>
+    <div class="p-revc" style="--c:var(--blau)"><div class="p-m">Handel · SMT Indoor</div><div class="p-price p-mono">189 €</div><div class="p-m">pro Monat, 36 Monate</div></div>
+  </div>
+  <div class="p-grid2" style="margin-top:28px">
+    <div class="p-panel">
+      <h3>Flotte simulieren</h3>
+      <div class="p-sl"><label for="p-nU">SMT Urban</label><input type="range" id="p-nU" min="0" max="12" value="1"><output id="p-oU" for="p-nU">1</output></div>
+      <div class="p-sl"><label for="p-nI">SMT Indoor</label><input type="range" id="p-nI" min="0" max="30" value="4"><output id="p-oI" for="p-nI">4</output></div>
+      <div class="p-res">
+        <div class="p-kpi"><div class="p-lab">Operatives Ergebnis pro Jahr</div><div class="p-v p-mono" id="p-rOp">+1.566 €</div><div class="p-lab">Deckungsbeiträge minus 11.370 € Fixkosten</div></div>
+        <div class="p-kpi"><div class="p-lab">nach Abschreibung der Geräte</div><div class="p-v p-mono" id="p-rDep">–</div><div class="p-lab" id="p-rBe">Break-even ab 4,93 Urban-Äquivalenten</div></div>
+      </div>
+      <p class="p-note">Startwert = Pilotflotte (1 Urban, 4 Indoor). Deckungsbeitrag: Urban 483 €, Indoor 148,75 € pro Monat. Abschreibung über die Vertragslaufzeit (60 bzw. 36 Monate). Rechnet mit dem Schalter aus Kapitel 6.</p>
+    </div>
+    <div class="p-panel">
+      <h3>Finanzierung des Pilotjahres</h3>
+      <div class="p-fund" id="p-fund"></div>
+      <div class="p-legend" style="margin-top:10px"><span>Bedarf: Anlaufverlust 52.166,50 € · Mittel 56.712,50 € · Reserve 4.546 €</span></div>
+      <div class="p-ms">
+        <button class="p-btn" id="p-msBtn" aria-pressed="false">Meilenstein: Funktionstest bestanden + 4 Indoor-Abos</button>
+      </div>
+      <p class="p-note" id="p-msNote">Tranche 2 (15.000 €) ist gesperrt, bis der Prototyp den Funktionstest besteht und die Indoor-Abos unterschrieben sind (Monat 4–5).</p>
+      <p class="p-note">Wandeldarlehen eines Impact-Investors. Kein Bankkredit: +1.566 € pro Jahr reichen nicht für eine Tilgung. Plan B ohne Tranche 2: nur Indoor, Urban ein Jahr später.</p>
+    </div>
+  </div>
+    <i class="tmk b" data-t="8" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== 8 · ALESIA · KREISLAUF ===== -->
+  <section class="chapter pk" id="s8" data-n="8" data-name="Alesia · Kreislauf" style="--c:var(--gruen)" aria-label="8. Alesia · Kreislauf" data-sc-in data-sc-stagger="50">
+    <i class="tmk a" data-t="8" aria-hidden="true"></i>
+    <div class="pk-head"><div class="pk-num">8</div><div>
+    <div class="pk-speaker"><span class="pk-who">Alesia</span><span class="pk-pill">Kapitel 7 und 13</span><span class="pk-pill">60 s</span></div>
+    <h2>Das Gerät bleibt unseres. Darum bauen wir es für die Ewigkeit.</h2>
+    <p class="pk-claim">Kreislaufwirtschaft als Geschäftsmodell, entlang aller sieben Glieder der Accenture Circular Value Chain. Klicke ein Glied an.</p>
+  </div></div>
+  <div class="p-chain">
+    <svg id="p-chainSvg" viewBox="0 0 460 460" role="group" aria-label="Accenture Circular Value Chain, sieben Glieder"></svg>
+    <div class="p-cdet" id="p-cdet" aria-live="polite"></div>
+  </div>
+  <div class="p-impact">
+    <div class="p-stat"><span class="p-big p-mono" style="font-size:44px">24,1 t</span><span class="p-lab">sortenreine Wertstoffe pro Jahr mit der Pilotflotte</span></div>
+    <div class="p-stat"><span class="p-big p-mono" style="font-size:44px">−71 %</span><span class="p-lab">Leerungen je Urban-Standort</span></div>
+    <div class="p-stat"><span class="p-big p-mono" style="font-size:44px">≥ 90 %</span><span class="p-lab">des Gewinns bleiben im sozialen Zweck (Legea 219/2015)</span></div>
+    <div class="p-stat"><span class="p-big p-mono" style="font-size:44px">0 kWh</span><span class="p-lab">Netzstrom im Alltag, Solar 300 W + Akku 2,56 kWh</span></div>
+  </div>
+  <div class="p-close">
+    <div class="p-eyebrow" style="color:#AEB4BF">Smart Mülltonne</div>
+    <h2>Sortiert. Gepresst. Versenkt.</h2>
+    <p>Mit Ihrer Investition wird der Herăstrău zum Vorbild für Bukarest und für Rumänien.</p>
+    <div class="p-ask">30.000 € · in zwei Tranchen</div>
+  </div>
+    <i class="tmk b" data-t="8" aria-hidden="true"></i>
+  </section>
+
+  <!-- ========================================== TECHNIK A · OBERFLÄCHE == -->
+  <section id="k1" class="chapter" data-n="A" data-name="Oberfläche" aria-label="Technik A · Oberfläche">
+    <header class="opener" data-t="0 .2">
+      <div class="opener-k"><span class="kick">Technik A · Produktdesign, Stand 15.10.2026</span></div>
+      <h2 class="opener-title">Technik im Detail</h2>
+      <div class="opener-rule"></div>
+      <p class="opener-list">Oberfläche · KI-Scan · Untergrund · 80 %-Logistik · Business Model</p>
+      <p class="lede">Zwei Produkte auf einer Technik. <strong>SMT Urban</strong> steht im öffentlichen Raum, daneben eine versenkte Hubsäule mit vier Standardtonnen. <strong>SMT Indoor</strong> steht in Gebäuden. Beide erkennen jeden Einwurf per Kamera, sortieren ihn in vier Farben, pressen, versiegeln und melden, wann geleert werden muss. Geleert wird mit den Müllfahrzeugen, die Bukarest schon hat.</p>
+      <p class="team">Paula Bratu · Andreea Olaru · Sarah Riesz · Rareș Popa · Denisa Schiopăta · Malina Pop · Alexia Beșe · Alesia</p>
+    </header>
+
 
     <section class="blk" data-sc-in data-sc-stagger="60">
       <div class="hrow"><h2 class="h2">So sieht es aus</h2><span class="kick">Visualisierung · Parcul Regele Mihai I</span></div>
@@ -655,9 +1154,9 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   </section>
 
   <!-- ========================================== 2 · KI-SCAN ========== -->
-  <section id="k2" class="chapter" aria-label="2. KI-Scan">
+  <section id="k2" class="chapter" data-n="B" data-name="KI-Scan" aria-label="Technik B · KI-Scan">
     <header class="opener" data-t="1.3 2">
-      <div class="opener-k"><span class="kick">Kapitel 2</span></div>
+      <div class="opener-k"><span class="kick">Technik B</span></div>
       <h2 class="opener-title">KI-Scan</h2>
       <div class="opener-rule"></div>
       <p class="opener-list">Einwurf · Fraktionen · Innenleben · Ablauf</p>
@@ -831,9 +1330,9 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   </section>
 
   <!-- ========================================== 3 · UNTERGRUND ======= -->
-  <section id="k3" class="chapter" aria-label="3. Untergrund">
+  <section id="k3" class="chapter" data-n="C" data-name="Untergrund" aria-label="Technik C · Untergrund">
     <header class="opener" data-t="3 3.65">
-      <div class="opener-k"><span class="kick">Kapitel 3</span></div>
+      <div class="opener-k"><span class="kick">Technik C</span></div>
       <h2 class="opener-title">Untergrund</h2>
       <div class="opener-rule"></div>
       <p class="opener-list">SMT Urban · Weg eines Sacks · Probier es aus · Sicher und sauber</p>
@@ -1159,9 +1658,9 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   </section>
 
   <!-- ========================================== 4 · LOGISTIK ========= -->
-  <section id="k4" class="chapter" aria-label="4. 80 %-Logistik">
+  <section id="k4" class="chapter" data-n="D" data-name="80 %-Logistik" aria-label="Technik D · 80 %-Logistik">
     <header class="opener" data-t="5 5.4">
-      <div class="opener-k"><span class="kick">Kapitel 4</span></div>
+      <div class="opener-k"><span class="kick">Technik D</span></div>
       <h2 class="opener-title">80 %-Logistik</h2>
       <div class="opener-rule"></div>
       <p class="opener-list">Füllstand · Meldung · Route · Entleerung</p>
@@ -1301,9 +1800,9 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
   </section>
 
   <!-- ========================================== 5 · BUSINESS MODEL === -->
-  <section id="k5" class="chapter" aria-label="5. Business Model">
+  <section id="k5" class="chapter" data-n="E" data-name="Business Model" aria-label="Technik E · Business Model">
     <header class="opener" data-t="7 8">
-      <div class="opener-k"><span class="kick">Kapitel 5</span></div>
+      <div class="opener-k"><span class="kick">Technik E</span></div>
       <h2 class="opener-title">Business Model</h2>
       <div class="opener-rule"></div>
       <p class="opener-list">SMT Indoor · Vergleich · Komponenten · Pilot · Pitch · Kreislauf · Logikprüfung · Sensoren · Kosten · Machbarkeit · Fahrplan</p>
@@ -1602,7 +2101,7 @@ svg.doc .ink,svg.doc .ink text{fill:#111}
     </div>
   </div>
   <footer class="foot">
-    <div class="kick">Smart Mülltonne · Produktdesign · FABIZ 2026</div>
+    <div class="kick">Smart Mülltonne · Antreprenoriat social · FABIZ, ASE Bukarest · 2026<br>Alle Beträge netto, Stand Kostenplan 15.10.2026</div>
     <a href="#k1">Nach oben</a>
     <div class="k" aria-hidden="true">SM</div>
   </footer>
@@ -1653,6 +2152,7 @@ const COL = { gelb: '#F2C014', blau: '#3B6BF0', gruen: '#2FA35E', grau: '#8B8B86
 const HUB = 225, HR = 73.5;            // Drehkopf-Achse, Radius bis Fachmitte (Fächer 2 × 2)
 const PIV = 520, TR = 73.5;            // Schwenkarm der Schale, Arm ca. 0,47 m
 const LIFT = 238;                      // Hubweg: Tonnen auf Gehwegniveau
+let PRIM = false;                      // Szenario Primărie (Pitch, Kapitel 6): die Stadt baut den Schacht
 
 // Callouts: [x, y, dx, dy, Text, t0, t1, art]. Anker in Weltkoordinaten, Versatz in Bildschirm-Pixeln.
 // Anker 'bottle' / 'head' / 'press' / 'tray' / 'truck' / 'col' folgen Objekten.
@@ -1671,7 +2171,7 @@ const TAGS = [
   [279, -172, 46, -22, 'dahinter Grün / Grau', 2.9, 3.3],
   [140, -166, -44, -30, 'Folienrolle', 3.98, 4.1],
   ['press', 0, -48, -24, 'Presse am Drehkopf', 4.2, 4.33],
-  [224, -161, 46, -34, 'Siegelbalken', 4.29, 4.42],
+  [224, -161, 112, -20, 'Siegelbalken', 4.29, 4.42],
   ['tray', 0, 52, 26, 'Schwenkschale', 4.38, 4.52],
   [174, -82, -44, 30, 'Fachboden', 4.49, 4.6],
   [329, -34, 34, -40, 'Seitenklappe', 4.58, 4.68],
@@ -1691,7 +2191,8 @@ const TAGS = [
   [96, -131, -10, 0, '1,75 m', 7.7, 99, 'plain'],
   [352, 170, -10, 0, '2,0 m', 7.7, 99, 'plain'],
   [394, 356, 0, 22, 'ca. 3,4 m', 7.7, 99, 'plain'],
-  [-21, -470, 34, -30, 'Parkbeleuchtung', 7.7, 99]
+  [-21, -470, 34, -30, 'Parkbeleuchtung', 7.7, 99],
+  [676, 300, 34, 46, 'Szenario Primărie: die Stadt baut den Schacht · 4.344 €', 2.9, 4.2, 'prim']
 ];
 const DIMS = [['dev', [[-1, 1.5], [7.7, 99]]], ['shaft', [[3.6, 5.15], [7.7, 99]]], ['width', [[7.7, 99]]]];
 
@@ -1770,6 +2271,7 @@ function worldMarkup() {
   o += `<polygon points="331,-46 376,14 376,40 331,-20" fill="#8794A7" stroke="#475569"/>`;
   o += `<g class="w-chend"><polygon points="374,16 498,32 498,42 374,38" fill="#8794A7" stroke="#475569"/><circle cx="376" cy="27" r="3" fill="#CBD5E1"/></g>`;
   // Erdabdeckung, öffnet sich in Kapitel 3
+  o += `<rect class="w-shi" x="358" y="-10" width="324" height="330" rx="4" fill="#10B981" fill-opacity=".07" stroke="#34D399" stroke-width="2" stroke-dasharray="8 6" opacity="0"/>`;
   o += `<g class="w-cover"><rect class="cv" x="336" y="6" width="356" height="326" fill="url(#gSoil)"/><rect class="cv" x="336" y="6" width="356" height="326" fill="url(#pSoil)"/>
     <line class="w-cut" x1="336" y1="6" x2="692" y2="6" stroke="#34D399" stroke-width="1.5" opacity="0"/></g>`;
 
@@ -1953,7 +2455,7 @@ function World(host) {
     arm: q('.w-arm'), prod: q('.w-prod'), plate: q('.w-plate'), spout: q('.w-spout'), outlet: q('.w-outlet'),
     cf: qa('.w-cf'), seal: q('.w-seal'), floor: q('.w-floor'), side: q('.w-side'),
     d1: q('.w-d1'), d2: q('.w-d2'), bottle: q('.w-bottle'), bag: q('.w-bag'),
-    cover: qa('.w-cover .cv'), cut: q('.w-cut'), col: q('.w-col'), bf: qa('.w-bf'), chend: q('.w-chend'),
+    cover: qa('.w-cover .cv'), cut: q('.w-cut'), shi: q('.w-shi'), col: q('.w-col'), bf: qa('.w-bf'), chend: q('.w-chend'),
     tarm: q('.w-tarm'), tray: q('.w-tray'), tfloor: q('.w-tfloor'), rfid: q('.w-rfid'), tof: q('.w-tof'),
     ls: q('.w-ls'), pulse: q('.w-pulse'), warn: q('.w-warn'),
     sig1: q('.w-sig1'), pk1: q('.w-pk1'), radio: q('.w-radio'), sig2: q('.w-sig2'), pk2: q('.w-pk2'),
@@ -2140,11 +2642,14 @@ function render(W, t, ptr) {
   op(W.beacon, a > .76 && t < 7.4 ? 1 : .25);
   W.warn.classList.toggle('blink', lift > .01 && t < 7.85);
 
+  op(W.shi, PRIM && t > 2.9 && t < 4.2 ? 1 : 0);
+
   // Maßlinien und Callouts
   for (const [key, ws] of DIMS) op(W.dims[key], Math.max(...ws.map(([p, q]) => win(t, p, q, .06))));
   for (let i = 0; i < TAGS.length; i++) {
     const d = TAGS[i], T = W.tags[i], el = T.el;
-    const o = win(t, d[5], d[6], .05);
+    let o = win(t, d[5], d[6], .05);
+    if (d[7] === 'prim' && !PRIM) o = 0;
     if (o <= .002) { if (el.getAttribute('display') !== 'none') { sa(el, 'display', 'none'); sa(el, 'opacity', '0'); } continue; }
     let ax = d[0], ay = d[1];
     if (ax === 'bottle') { if (!B) { sa(el, 'display', 'none'); continue; } ax = B[0] + 6; ay = B[1] - 14; }
@@ -2204,6 +2709,7 @@ const stageEl = doc.getElementById('stage');
 let stageW = null;
 const hud = {
   n: doc.querySelector('.hud-n'), name: doc.querySelector('.hud-name'), lvl: doc.querySelector('.hud-lvl'),
+  k: doc.querySelector('.hud-k'), timer: doc.querySelector('.hud-timer'), tt: doc.querySelector('.ht-t'), tfg: doc.querySelector('.ht-fg'),
   fill: doc.querySelector('.hud-fill'), fv: doc.querySelector('.hud-fv'), sim: doc.querySelector('.hud-sim'), ruler: doc.querySelector('.ruler')
 };
 const TICKS = [];
@@ -2212,9 +2718,8 @@ for (let m = -3; m <= 4; m += .5) {
   d.innerHTML = m % 1 ? '' : `<span>${m === 0 ? '±0' : (m > 0 ? '+' : '−') + Math.abs(m) + ' m'}</span>`;
   hud.ruler.appendChild(d); TICKS.push([m, d]);
 }
-const CH_NAMES = ['Oberfläche', 'KI-Scan', 'Untergrund', '80 %-Logistik', 'Business Model'];
 
-let PTS = [[0, 0]], tCur = 0, tTar = 0, primed = false, lastNow = 0;
+let PTS = [[0, 0]], tCur = 0, tTar = 0, primed = false, lastNow = 0, cutting = false, tm0 = 0, tmCh = -2;
 const ptr = { x: 0, y: 0 }, ptrT = { x: 0, y: 0 };
 const chapters = [...doc.querySelectorAll('.chapter')];
 const openers = [...doc.querySelectorAll('.opener')].map(el => ({ el, top: 0, h: 0, v: -1 }));
@@ -2246,7 +2751,9 @@ function tAt(y) {
 function hudUpdate(res, t, ch) {
   const c = res.c, m = -c.cy / 150;
   txt(hud.lvl, (m >= 0 ? '+' : '−') + de(Math.abs(m), 2) + ' m');
-  txt(hud.n, String(ch + 1)); txt(hud.name, CH_NAMES[ch]);
+  const C = chapters[ch];
+  if (!C) { txt(hud.k, 'Investor-Pitch'); txt(hud.n, ''); txt(hud.name, 'Smart Mülltonne'); }
+  else { txt(hud.k, C.classList.contains('pk') ? 'Pitch · Kapitel ' + C.dataset.n + ' von 8' : 'Technik · Schnitt'); txt(hud.n, C.dataset.n); txt(hud.name, C.dataset.name); }
   const showFill = t > 5.25 && t < 7.6;
   hud.fill.classList.toggle('on', showFill); hud.fill.classList.toggle('hot', res.bfill >= ALERT_AT - .002);
   txt(hud.fv, Math.round(res.bfill * 100) + ' %');
@@ -2296,9 +2803,10 @@ let activeCh = -1;
 function setActive(i) {
   if (i === activeCh) return; activeCh = i;
   dots.forEach((d, k) => d.setAttribute('aria-current', k === i ? 'true' : 'false'));
-  txt(nowLbl, dots[i].querySelector('.lbl').textContent);
+  txt(nowLbl, i < 0 ? 'Start' : dots[i].querySelector('.lbl').textContent);
 }
 function goChapter(i) {
+  if (i < 0) { if (apOn) apJump(0); else scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); return; }
   const el = chapters[i]; if (!el) return;
   if (apOn) { apJump(el.getBoundingClientRect().top + scrollY); return; }
   el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
@@ -2308,20 +2816,26 @@ addEventListener('keydown', e => {
   if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
   const tg = e.target; if (tg && (tg.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))) return;
   if (doc.querySelector('dialog[open]')) return;
+  if (e.key === 'Escape') { if (qaOpen()) toggleQA(false); return; }
+  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleQA(); return; }
+  if (qaOpen()) return;
+  if (e.key === 't' || e.key === 'T') { tm0 = performance.now(); return; }
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goChapter(activeCh + 1); return; }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goChapter(activeCh - 1); return; }
   if (e.code === 'Space' || e.key === ' ') {
     // Fokussierter Button: Leertaste bleibt seine eigene Aktion (der Autoplay-Button schaltet selbst um).
-    if (tg && tg.closest && tg.closest('button')) return;
+    if (tg && tg.closest && tg.closest('button, summary, [role="button"]')) return;
     e.preventDefault(); if (!e.repeat) apToggle(); return;
   }
-  if (apOn && /^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End)$/.test(e.key)) apPause();
-  const n = parseInt(e.key, 10); if (n >= 1 && n <= 5) { e.preventDefault(); goChapter(n - 1); }
+  if (apOn && /^(ArrowUp|ArrowDown|Home|End)$/.test(e.key)) apPause();
+  const n = parseInt(e.key, 10); if (n >= 1 && n <= 8) { e.preventDefault(); goChapter(n - 1); }
 });
 
 /* ============================================================ AUTOPLAY == */
 // Regie statt Laufband: kurze, schnelle Gleitfahrt zum nächsten Inhalt, dann
 // Halt, so lang wie der Inhalt es braucht. Simulationen laufen langsam Schritt
 // für Schritt, mit längerem Halt an den Schlüsselmomenten. Gesamt etwa AP_TOTAL s.
-const AP_TOTAL = 240;
+const AP_TOTAL = 420;
 const apBtn = doc.querySelector('.ap'), apTime = doc.querySelector('.ap-time'), apProg = doc.querySelector('.ap-prog');
 const EASE = { glide: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2, sine: x => (1 - Math.cos(Math.PI * x)) / 2, lin: x => x };
 const PEAK = { scan: { 0.6: 2.4, 1: 1.4 }, fall: { 1: 1.6 }, alert: { 0.4: 2, 1: 1.8 } };
@@ -2339,12 +2853,12 @@ function apZones() {
   apMax = Math.max(doc.documentElement.scrollHeight - vh, 1);
   // 1) Takte: Überschrift startet einen neuen Takt, sonst sammeln bis ca. ein Bildschirm voll ist
   const beats = []; let cur = null;
-  doc.querySelectorAll('.hero, .opener, .track, .blk > *, .close-in > *, .foot').forEach(el => {
+  doc.querySelectorAll('.hero, .opener, .track, .pk > :not(.tmk), .blk > *, .close-in > *, .foot').forEach(el => {
     if (!el.getClientRects().length) return;
     const r = el.getBoundingClientRect(), a = r.top + sy, b = r.bottom + sy;
     const kind = el.classList.contains('hero') ? 'hero' : desk && el.classList.contains('opener') ? 'opener' : desk && el.classList.contains('track') ? 'track' : 'item';
     if (kind !== 'item') { beats.push({ kind, el, a, b }); cur = null; return; }
-    if (!cur || el.matches('.hrow, .opener') || b - cur.a > vh * .8) { cur = { kind: 'beat', a, b, w: 0 }; beats.push(cur); }
+    if (!cur || el.matches('.hrow, .opener, .pk-head') || b - cur.a > vh * .8) { cur = { kind: 'beat', a, b, w: 0 }; beats.push(cur); }
     cur.b = Math.max(cur.b, b); cur.w += apWeight(el);
   });
   // 2) Zeitleiste aus Gleitfahrten und Halten
@@ -2442,9 +2956,18 @@ function frame(now) {
   apStep(dt);
   const vh = innerHeight, y = scrollY;
   apUi(y);
-  // aktives Kapitel
-  let ch = 0; for (let i = 0; i < chTops.length; i++) if (y + vh * .42 >= chTops[i]) ch = i;
+  // aktives Kapitel (-1 = Start) und Sprechzeit im Pitch
+  let ch = -1; for (let i = 0; i < chTops.length; i++) if (y + vh * .42 >= chTops[i]) ch = i;
   setActive(ch);
+  if (ch !== tmCh) { tmCh = ch; tm0 = now; }
+  const isP = ch >= 0 && chapters[ch].classList.contains('pk');
+  if (hud.timer.hidden === isP) hud.timer.hidden = !isP;
+  if (isP) {
+    const sec = Math.max(0, Math.floor((now - tm0) / 1000));
+    txt(hud.tt, Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'));
+    hud.timer.classList.toggle('over', sec > 60);
+    hud.tfg.style.strokeDashoffset = (100 - 100 * Math.min(sec, 60) / 60).toFixed(1);
+  }
   // Kapitel-Linien
   openers.forEach(o => { const v = c01((y - (o.top - vh * .5)) / Math.max(o.h, 1)); if (Math.abs(v - o.v) > .001) { o.v = v; o.el.style.setProperty('--op', v.toFixed(3)); } });
 
@@ -2452,6 +2975,12 @@ function frame(now) {
     ensureDesk();
     tTar = tAt(y);
     if (!primed || reduce) { tCur = tTar; primed = true; }
+    else if (cutting) { /* Szenenwechsel läuft */ }
+    else if (Math.abs(tTar - tCur) > 1.2) {
+      // Sprung zwischen zwei Sprechern: kurz ausblenden statt durch alle Zwischenzustände zu spulen
+      cutting = true; stageEl.classList.add('cut');
+      setTimeout(() => { tCur = tTar = tAt(scrollY); if (stageW) stageW.last = null; cutting = false; stageEl.classList.remove('cut'); }, 190);
+    }
     else { const d = tTar - tCur; tCur = Math.abs(d) < 1e-4 ? tTar : tCur + d * (1 - Math.pow(1 - .13, dt / 16.7)); }
     const kp = 1 - Math.pow(1 - .08, dt / 16.7);
     ptr.x += (ptrT.x - ptr.x) * kp; ptr.y += (ptrT.y - ptr.y) * kp;
@@ -2473,6 +3002,208 @@ function frame(now) {
   }
   requestAnimationFrame(frame);
 }
+
+/* =========================================================== PITCH == */
+// Die acht Pitch-Kapitel: Interaktionen aus dem Pitch, im dunklen Design.
+// Der Schalter "Szenario Primărie" markiert zusätzlich den Schacht in der Welt.
+const pq = s => doc.querySelector(s), pqa = s => [...doc.querySelectorAll(s)];
+const eur = (x, dec) => { const d = dec === undefined ? (Math.round(x * 100) % 100 ? 2 : 0) : dec; return x.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }) + ' €'; };
+const sign = x => (x >= 0 ? '+' : '−') + eur(Math.abs(Math.round(x)), 0);
+const LIGHT = '#CBD5E1';   // ersetzt "Tinte" aus dem hellen Original
+const P_ITEMS = [["PET-Flasche","gelb",97],["Getränkedose","gelb",95],["Pizzakarton","blau",91],["Bierflasche","gruen",98],["Kaffeebecher, beschichtet","gelb",62],["Unklarer Gegenstand","blau",41]];
+const P_SEG = [
+ {n:"Stadt und Parkverwaltung",tag:"B2G · SMT Urban",rows:[["Wer","Primăria Capitalei, ALPAB"],["Problem","Überquellende Eimer, Strafen, niedrige Recyclingquote"],["Was zählt","Keine Anfangsinvestition, vorhandene Fahrzeuge, Daten für Berichte"],["Preis","390 €/Monat, 60 Monate"],["Pilot","1 Gerät ab Monat 7"]]},
+ {n:"Handel",tag:"B2B · SMT Indoor",rows:[["Wer","Kaufland, Lidl, Mega Image, Profi"],["Problem","Fehlwürfe in Kundenbereichen, ESG-Nachweise, wenig Platz"],["Was zählt","Planbare Kosten, kein Mehraufwand für das Personal"],["Preis","189 €/Monat, 36 Monate; Partnerfläche 250 €/Monat"],["Pilot","4 Geräte ab Monat 5"]]},
+ {n:"Entsorger",tag:"Partner, kein Zahler",rows:[["Wer","z. B. Blue Planet, Sektor 1"],["Problem","Leerfahrten nach festem Plan"],["Was zählt","240-l-Standardtonnen, Heckschüttung, Routen"],["Rolle","Leert SMT Urban mit vorhandenen Fahrzeugen"],["Pilot","ab Monat 7"]]}];
+const P_TL = [
+ {n:"Vorbereitung",a:1,b:4,c:"var(--ink)",d:"Prototyp bauen und testen, KI mit eigenen Fotos trainieren (260 h), CE-Prüfung, Gründung als Sozialunternehmen, Finanzierung sichern.",k:"Nachweis: Funktionstest bestanden, CE-Akte, Finanzierungszusagen."},
+ {n:"Genehmigung und Bau",a:3,b:6,c:"var(--grau)",d:"Absichtserklärung der Stadt (Monat 3), Genehmigung, Schacht (ggf. durch die Primărie), Hubsäule mit zwei Spindeln.",k:"Nachweis: Baugenehmigung und Abnahme."},
+ {n:"Stufe 1: Indoor",a:5,b:12,c:"var(--blau)",d:"4 × SMT Indoor in Handelsfilialen im Abo, 8 Betriebsmonate. Keine Bauarbeiten, Einnahmen ab dem ersten Monat.",k:"Messgrößen: Erkennungsgenauigkeit, Störungen, Abo-Einnahmen."},
+ {n:"Stufe 2: Urban",a:7,b:12,c:"var(--gruen)",d:"1 × SMT Urban im Parcul Regele Mihai I, 6 Betriebsmonate. Leerung durch den Entsorger mit vorhandenen Fahrzeugen.",k:"Messgrößen: Leerungen pro Woche, kg je Fraktion, Energiebilanz im Winter."},
+ {n:"Auswertung",a:12,b:12,c:"var(--gelb)",d:"Pilotbericht für Primărie, Händler und Investoren. Danach Stufe 3: automatische Versiegelung und weitere Standorte.",k:"Entscheidung über Folgeverträge."}];
+const P_CH = [
+ ["Produktdesign","Modular, verschraubt statt verklebt; eine Plattform für zwei Produkte; eine Presse statt drei; Standardteile.","Teile einzeln tausch- und reparierbar, weniger Material.","Anteil einzeln tauschbarer Module, Reparaturzeit je Modul"],
+ ["Beschaffung","Recycling-Aluminium von Alro Slatina (Urban), verzinkter Stahl von ArcelorMittal Galați (Indoor), Säcke aus recyceltem LDPE.","Sekundärrohstoffe statt Primärmaterial, kurze Wege.","Rezyklatanteil je Gerät, Anteil rumänischer Lieferanten"],
+ ["Produktion","Blechverarbeiter in Bukarest, Endmontage in der Partnerwerkstatt, Betonfertigschacht statt Ortbeton.","Lokale Wertschöpfung, weniger Zement vor Ort.","Montagestunden je Gerät (Plan: 60 h Urban, 30 h Indoor)"],
+ ["Logistik","Leerung nach Füllstand mit vorhandenen Fahrzeugen und Routenplanung.","Weniger Fahrten und Emissionen.","Leerungen pro Woche (Ziel: 2 statt 7)"],
+ ["Vertrieb und Marketing","Product-as-a-Service: Das Gerät bleibt unser Eigentum.","Anreiz, langlebige und reparierbare Geräte zu bauen.","Vertragslaufzeit 60 bzw. 36 Monate, Verfügbarkeit"],
+ ["Nutzung","Solarstrom mit LiFePO4-Akku, Fernwartung, Software-Updates, Modultausch, Sortierung an der Quelle.","Sortenreine Wertstoffe statt Mischmüll.","Tonnen Wertstoffe pro Jahr (Ziel: 24,1 t), Anteil Grau"],
+ ["Rücknahme und Recycling","Demontage durch Ateliere Fără Frontiere; Aluminium an Alro, Elektronik und Akkus an GreenWEEE, Kunststoffe an Romcarbon.","Geschlossener Materialkreislauf und soziale Arbeitsplätze.","Anteil wiederverwendeter Module; Rückstellung ab Jahr 1"]];
+const P_QA = [
+ ["Denisa","Wie genau ist eure KI?","Gemessen ist sie noch nicht, das sagen wir offen. Unter dem festgelegten Sicherheitswert geht alles in Grau: Ein Fehler senkt höchstens die Quote, nie die Reinheit der Wertstoffe. Labortest in Monat 3, Feldtest im Indoor-Pilot ab Monat 5."],
+ ["Denisa","Funktioniert Solar im Winter?","Der Bedarf liegt bei rund 235 Wh pro Tag, der Akku mit 2,56 kWh überbrückt etwa eine Woche. Im Winter lädt die Parkbeleuchtung nachts nach."],
+ ["Sarah","Warum soll die Stadt 390 € im Monat zahlen?","Ein Gerät ersetzt rund zehn Parkeimer und spart fünf von sieben Leerungen pro Woche. Eine einzige Strafe von 50.000 Lei (rund 9.400 €) entspricht etwa 24 Monatsraten. Der Sponsor zahlt 250 € mit, ohne ihn wären es 640 €."],
+ ["Sarah","Bigbelly kostet im Leasing ca. 76 $ im Monat. Warum seid ihr teurer?","Bigbelly presst nur: keine Sortierung, keine Unterflurlagerung, keine Daten je Fraktion. Wir liefern sortenreine Wertstoffe und übernehmen Wartung, Säcke und Rücknahme."],
+ ["Sarah","Wer leert die Tonnen im Park?","Der Entsorger mit seinen normalen Fahrzeugen, 240-Liter-Standardtonnen, keine Umrüstung. Welcher Entsorger im Park zuständig ist, klären wir mit Sektor 1 und ALPAB; das ist noch offen."],
+ ["Paula","51 Antworten sind nicht repräsentativ.","Richtig, das schreiben wir selbst. Die Umfrage hat Hypothesen geprüft. Der Beweis sind zehn Gespräche mit Filial- und Facility-Leitungen und vier unterschriebene Indoor-Abos bis Monat 4."],
+ ["Malina","Warum verkauft ihr die Geräte nicht einfach?","Der Median der Zahlungsbereitschaft liegt bei 3.000–4.999 €, ein Urban kostet 17.440,50 €. 49 % wollen ein Abo, nur 19,6 % einen Kauf."],
+ ["Malina","Datenschutz: eine Kamera im Park?","Die Kamera blickt nur in die geschlossene Erkennungskammer, nie auf Menschen. Für die Datenschutz-Folgenabschätzung sind 645 € eingeplant."],
+ ["Alexia","Ihr habt keinen Prototyp. Wie wollt ihr das bauen?","Alle Komponenten sind Standardteile von Lieferanten in Rumänien. Monat 1–4 sind für Prototyp und Tests reserviert, und die zweite Tranche fließt erst nach bestandenem Funktionstest."],
+ ["Alexia","Was passiert, wenn ein Gerät ausfällt?","Fehler melden sich selbst, Module sind einzeln tauschbar. Fällt die KI aus, geht alles in Grau, die Tonne bleibt nutzbar."],
+ ["Andreea","Eure Kosten sind nur geschätzt.","Sie beruhen auf recherchierten Marktpreisen mit Quellen in der Stückliste. Vor der Bestellung holen wir je zwei Angebote für Gehäuse, Mechatronik und Schacht ein; Mehrkosten bis 4.546 € deckt die Reserve."],
+ ["Andreea","Warum ist der Verlust im ersten Jahr so hoch?","Entwicklung, Prototyp und CE-Prüfung fallen nur einmal an, und die Geräte laufen erst 6 bzw. 8 Monate. Ab Jahr 2 sinken die Kosten auf 15.186 € und die Flotte trägt sich operativ."],
+ ["Andreea","Was, wenn die Stadt den Vertrag kündigt?","Das Gerät bleibt unser Eigentum und kann an einen anderen Standort. Im Szenario Primărie gehört der Schacht ohnehin der Stadt; unser Risiko pro Standort sinkt auf 13.096,50 €."],
+ ["Rareș","Warum sollte ein Investor einem Sozialunternehmen Geld geben?","Wir sprechen gezielt Impact-Investoren an, denen messbare Wirkung wichtig ist. Das Wandeldarlehen wird bei einer Anschlussfinanzierung in Anteile gewandelt; jedes weitere Urban-Gerät bringt 5.796 € Deckungsbeitrag im Jahr."],
+ ["Rareș","Und wenn ihr keinen Investor findet?","Dann starten wir nur mit Indoor: Jedes Gerät trägt mit 148,75 € im Monat seine Kosten selbst. Parallel: Schacht als Sachbeitrag der Primărie und der nächste Aufruf „Proof of Concept“ in Bukarest-Ilfov (50.000–200.000 €)."],
+ ["Rareș","Ihr arbeitet ein Jahr unbezahlt. Ist das realistisch?","22.712,50 € sind rund 1.975 Stunden, also knapp 5 Stunden pro Woche und Person. Ab Jahr 2 ist die Arbeit des Teams in den laufenden Kosten enthalten und wird bezahlt."],
+ ["Rareș","Die Flotte schreibt nach Abschreibung Verluste. Warum sagt ihr, sie trägt sich?","Operativ deckt die Pilotflotte ab Jahr 2 alle laufenden Kosten (+1.566 €). Inklusive Abschreibung der Geräte liegt der Break-even bei 4,93 Urban-Äquivalenten, im Szenario Primărie bei 3,58. Deshalb ist Wachstum Teil des Plans."],
+ ["Alesia","Was ist mit Vandalismus?","Gehäuse aus Recycling-Aluminium mit Anti-Graffiti-Schutz, Klappe ohne Griffe und Hebelpunkte, Zugang nur per NFC, Erschütterungssensor. Dazu eine Versicherung von 1.320 € im Jahr."],
+ ["Alesia","Werfen die Leute mehr weg, weil die KI ohnehin trennt?","Das ist der Rebound-Effekt, und wir planen dagegen: Das Display zeigt, wie viele Wertstoffe gerettet wurden, und wir machen Workshops in Schulen in Sektor 1."],
+ ["Alesia","Was hindert einen Großen daran, euch zu kopieren?","Die Technik allein ist kopierbar, unser Modell nicht so schnell: Verträge über 60 Monate, der erste Standort mit der Stadt, Partner von Lieferung bis Recycling und die Daten aus dem Pilot."]];
+
+// Balken füllen sich, sobald sie ins Bild kommen
+const barIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.querySelectorAll('.p-fill[data-w]').forEach(f => { f.style.width = f.dataset.w + '%'; });
+  barIO.unobserve(e.target);
+}), { threshold: .2 });
+pqa('.p-hbars[data-bars]').forEach(box => {
+  const data = JSON.parse(box.dataset.bars);
+  box.innerHTML = data.map(([l, v]) => `<div class="p-hb"><span>${l}</span><div class="p-trk"><div class="p-fill" style="width:0;background:${box.dataset.color}" data-w="${v}"></div></div><span class="p-v">${v.toLocaleString('de-DE', { minimumFractionDigits: 1 })} %</span></div>`).join('');
+});
+pqa('#p-cmp, .p-hbars[data-bars]').forEach(b => barIO.observe(b));
+
+// 1 · KI-Scan
+const P_NAMES = { gelb: 'Gelb', blau: 'Blau', gruen: 'Grün', grau: 'Grau' };
+const pCnt = { gelb: 0, blau: 0, gruen: 0, grau: 0 };
+let pScanning = false;
+P_ITEMS.forEach(([n], i) => {
+  const b = doc.createElement('button'); b.type = 'button'; b.textContent = n;
+  b.addEventListener('click', () => pScan(i, b)); pq('#p-items').appendChild(b);
+});
+function pScan(i, btn) {
+  if (pScanning) return; pScanning = true;
+  pqa('#p-items button').forEach(b => b.classList.remove('on')); btn.classList.add('on');
+  const [n, f, c] = P_ITEMS[i], fill = pq('#p-confFill');
+  pq('#p-scanName').textContent = n + ' · wird erkannt …'; fill.style.transition = 'none'; fill.style.width = '0'; pq('#p-confVal').textContent = '…';
+  setTimeout(() => { fill.style.transition = 'width .7s cubic-bezier(.2,.7,.2,1)'; fill.style.width = c + '%'; fill.style.background = c >= 85 ? 'var(--gruen)' : 'var(--rot)'; }, 30);
+  setTimeout(() => {
+    const target = c >= 85 ? f : 'grau';
+    pq('#p-confVal').textContent = c + ' %'; pq('#p-scanName').textContent = n + (c >= 85 ? ' · erkannt' : ' · unsicher'); pCnt[target]++;
+    const bin = pq(`.p-bin[data-f="${target}"]`);
+    bin.querySelector('.p-bc').textContent = pCnt[target]; bin.querySelector('.p-lvl').style.height = Math.min(100, pCnt[target] * 16) + '%';
+    bin.classList.add('hit'); setTimeout(() => bin.classList.remove('hit'), 350);
+    pq('#p-verdict').innerHTML = c >= 85
+      ? `<b>${P_NAMES[target]}</b>. ${target === 'gruen' ? 'Glas wird nicht gepresst, sondern gedämpft abgelegt.' : 'Der Drehkopf lenkt es ins Fach, die Presse verdichtet in der Einwurfpause.'}`
+      : `<b>Grau.</b> Die KI ist sich nur zu ${c} % sicher, vermutet aber ${P_NAMES[f]}. Lieber Restmüll als eine verunreinigte Wertstoffcharge.`;
+    pScanning = false;
+  }, 900);
+}
+
+// 2 · Leerungen pro Woche und Kundensegmente
+const P_DAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+function pWeek(smt) {
+  pq('#p-week').innerHTML = P_DAYS.map((d, i) => `<div class="p-day ${(smt ? (i === 1 || i === 4) : true) ? 'go' : ''}">${d}<div class="p-truck"></div></div>`).join('');
+  pq('#p-wkNum').textContent = smt ? '2' : '7';
+  pq('#p-wkToday').classList.toggle('on', !smt); pq('#p-wkSmt').classList.toggle('on', smt);
+  pq('#p-wkToday').setAttribute('aria-pressed', !smt); pq('#p-wkSmt').setAttribute('aria-pressed', smt);
+}
+pq('#p-wkToday').addEventListener('click', () => pWeek(false)); pq('#p-wkSmt').addEventListener('click', () => pWeek(true)); pWeek(false);
+pq('#p-seg').innerHTML = P_SEG.map((s, i) => `<button type="button" class="p-segcard" aria-expanded="${i === 0}" data-i="${i}"><div class="p-top"><h3>${s.n}</h3><span class="p-tag">${s.tag}</span></div><dl ${i === 0 ? '' : 'hidden'}>${s.rows.map(r => `<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl></button>`).join('') + '<p class="p-note">Büros, Universitäten und Wohnanlagen folgen, wenn der Pilot Referenzen liefert.</p>';
+pqa('.p-segcard').forEach(b => b.addEventListener('click', () => {
+  pqa('.p-segcard').forEach(o => { const on = o === b; o.setAttribute('aria-expanded', on); o.querySelector('dl').hidden = !on; });
+}));
+
+// 4 · Zahlungsbereitschaft gegen Gerätekosten (0 bis 20.000 €)
+(function () {
+  const max = 20000, px = v => v / max * 100, s = pq('#p-scale');
+  s.innerHTML = `<div class="p-axis"></div><div class="p-band" style="left:${px(3000)}%;width:${px(2000)}%"></div>` +
+    [[3844.75, 'Indoor 3.844,75 €', 'var(--blau)'], [17440.5, 'Urban 17.440,50 €', 'var(--rot)']].map(([v, l, c]) => `<div class="p-mk" style="left:${px(v)}%;background:${c}"></div><div class="p-ml" style="left:${Math.min(px(v), 86)}%;color:${c}">${l}</div>`).join('') +
+    [0, 5000, 10000, 15000, 20000].map(v => `<div class="p-tick" style="left:${Math.max(4, Math.min(96, px(v)))}%">${v / 1000}k</div>`).join('');
+})();
+
+// 5 · Zeitplan des Pilotjahres
+const tlCol = c => c === 'var(--ink)' ? LIGHT : c;
+const tlInk = c => (c === 'var(--ink)' || c === 'var(--gelb)') ? '#14171C' : '#fff';
+pq('#p-tl').innerHTML = `<div class="p-tl-months"><span></span>${Array.from({ length: 12 }, (_, i) => `<span>M${i + 1}</span>`).join('')}</div>` +
+  P_TL.map((r, i) => `<div class="p-tl-row"><span class="p-nm">${r.n}</span><button type="button" class="p-tl-bar" data-i="${i}" style="grid-column:${r.a + 1} / ${r.b + 2};background:${tlCol(r.c)};color:${tlInk(r.c)}" aria-label="${r.n}, Monat ${r.a} bis ${r.b}">M${r.a}${r.b > r.a ? '–' + r.b : ''}</button></div>`).join('');
+function pTl(i) {
+  const r = P_TL[i];
+  pqa('.p-tl-bar').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+  pq('#p-tlDetail').innerHTML = `<h3>${r.n} · Monat ${r.a}${r.b > r.a ? '–' + r.b : ''}</h3><p>${r.d}</p><p class="p-note">${r.k}</p>`;
+}
+pqa('.p-tl-bar').forEach(b => b.addEventListener('click', () => pTl(+b.dataset.i))); pTl(2);
+
+// 6 · Kosten, Szenario Primărie
+function pCosts() {
+  const p = PRIM;
+  pq('#p-prim').setAttribute('aria-pressed', p);
+  pq('#p-cTot').textContent = p ? '57.710,50 €' : '62.054,50 €'; pq('#p-cWas1').textContent = p ? '62.054,50 €' : '';
+  pq('#p-cUrb').textContent = p ? '13.096,50 €' : '17.440,50 €'; pq('#p-cWas2').textContent = p ? '17.440,50 €' : '';
+  pq('#p-cPay').textContent = p ? '27,1 Mon.' : '36,1 Mon.'; pq('#p-cWas3').textContent = p ? '36,1 Mon.' : '';
+  const ext = p ? 34998 : 39342, int = 22712.5;
+  pq('#p-stack').innerHTML = `<div style="flex-grow:${int};background:${LIGHT};color:#14171C">${eur(int)}</div><div style="flex-grow:${ext};background:var(--blau)">${eur(ext)}</div>`;
+  if (stageW) { stageW.last = null; stageW.dirty = true; }
+  pFleet();
+}
+pq('#p-prim').addEventListener('click', () => { PRIM = !PRIM; pCosts(); });
+
+// 7 · Flotte und Finanzierung
+function pFleet() {
+  const u = +pq('#p-nU').value, i = +pq('#p-nI').value;
+  pq('#p-oU').textContent = u; pq('#p-oI').textContent = i;
+  const op = u * 483 * 12 + i * 148.75 * 12 - 11370;
+  const capU = PRIM ? 13096.5 : 17440.5, dep = op - u * capU / 60 * 12 - i * 3844.75 / 36 * 12;
+  const ro = pq('#p-rOp'), rd = pq('#p-rDep');
+  ro.textContent = sign(op); ro.className = 'p-v p-mono ' + (op >= 0 ? 'pos' : 'neg');
+  rd.textContent = sign(dep); rd.className = 'p-v p-mono ' + (dep >= 0 ? 'pos' : 'neg');
+  pq('#p-rBe').textContent = 'Break-even ab ' + (PRIM ? '3,58' : '4,93') + ' Urban-Äquivalenten' + (PRIM ? ' (Szenario Primărie)' : '');
+}
+pq('#p-nU').addEventListener('input', pFleet); pq('#p-nI').addEventListener('input', pFleet);
+let pMs = false;
+function pFund() {
+  const parts = [['Eigenleistung Team', 22712.5, LIGHT, '#14171C'], ['Einlage Gründer', 4000, 'var(--grau)', '#14171C'], ['Tranche 1', 15000, 'var(--blau)', '#fff'], ['Tranche 2', 15000, pMs ? 'var(--gruen)' : null, '#fff']];
+  pq('#p-fund').innerHTML = parts.map(([l, v, c, ink]) => `<div style="flex:${v} 1 0;${c ? 'background:' + c + ';color:' + ink : ''}" class="${c ? '' : 'locked'}" title="${l}: ${eur(v)}"><span>${l}${c ? '' : ' · gesperrt'}</span><b>${eur(v)}</b></div>`).join('');
+  pq('#p-msBtn').classList.toggle('on', pMs); pq('#p-msBtn').setAttribute('aria-pressed', pMs);
+  pq('#p-msNote').textContent = pMs ? 'Meilenstein erreicht: Tranche 2 finanziert den Urban-Pilot ab Monat 7.' : 'Tranche 2 (15.000 €) ist gesperrt, bis der Prototyp den Funktionstest besteht und die Indoor-Abos unterschrieben sind (Monat 4–5).';
+}
+pq('#p-msBtn').addEventListener('click', () => { pMs = !pMs; pFund(); }); pFund(); pCosts();
+
+// 8 · Accenture Circular Value Chain
+const P_CC = ['var(--ink)', 'var(--grau)', 'var(--blau)', 'var(--gelb)', 'var(--rot)', 'var(--gruen)', 'var(--gruen)'];
+(function () {
+  const svg = pq('#p-chainSvg'), cx = 230, cy = 230, R = 165;
+  let h = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#1A2539" stroke-width="10"/>`;
+  h += `<text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="15" font-weight="700">Circular</text><text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="15" font-weight="700">Value Chain</text><text x="${cx}" y="${cy + 32}" text-anchor="middle" font-size="12" style="fill:var(--ink-2)">Accenture · 7 Glieder</text>`;
+  P_CH.forEach((c, i) => {
+    const a = -Math.PI / 2 + i * 2 * Math.PI / 7, x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+    const words = c[0].split(' '), l1 = words.length > 2 ? words.slice(0, 1).join(' ') : words[0], l2 = words.length > 2 ? words.slice(1).join(' ') : (words[1] || '');
+    h += `<g class="node" tabindex="0" role="button" data-i="${i}" aria-label="${i + 1} ${c[0]}"><circle cx="${x}" cy="${y}" r="34" fill="#0F172A" stroke="${P_CC[i]}" stroke-width="4"/><text x="${x}" y="${y - 6}" text-anchor="middle" font-family="Geist Mono, monospace" font-size="15" font-weight="600">${i + 1}</text><text x="${x}" y="${y + 10}" text-anchor="middle" font-size="9.5" font-weight="600">${l1}</text><text x="${x}" y="${y + 21}" text-anchor="middle" font-size="9.5" font-weight="600">${l2}</text></g>`;
+  });
+  svg.innerHTML = h;
+  const show = i => {
+    const c = P_CH[i];
+    svg.querySelectorAll('.node circle').forEach((n, j) => { n.setAttribute('r', j === i ? 40 : 34); n.setAttribute('fill', j === i ? '#17223A' : '#0F172A'); });
+    pq('#p-cdet').innerHTML = `<div class="p-eyebrow">Glied ${i + 1} von 7</div><h3>${c[0]}</h3><dl><dt>Unsere Entscheidung</dt><dd>${c[1]}</dd><dt>Wirkung</dt><dd>${c[2]}</dd><dt>Kennzahl im Pilot</dt><dd>${c[3]}</dd></dl>`;
+  };
+  svg.querySelectorAll('.node').forEach(g => {
+    g.addEventListener('click', () => show(+g.dataset.i));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); show(+g.dataset.i); } });
+  });
+  show(4);
+})();
+
+// Fragen-Leiste (Taste F)
+const qaDrawer = pq('#p-drawer'), qaBtn = pq('.qa-btn');
+const QA_WHO = ['Alle', ...new Set(P_QA.map(q => q[0]))];
+let qaFilt = 'Alle';
+function renderQA() {
+  pq('#p-qaFilters').innerHTML = QA_WHO.map(w => `<button type="button" class="${w === qaFilt ? 'on' : ''}" data-w="${w}">${w}</button>`).join('');
+  pqa('#p-qaFilters button').forEach(b => b.addEventListener('click', () => { qaFilt = b.dataset.w; renderQA(); }));
+  pq('#p-qaList').innerHTML = P_QA.filter(q => qaFilt === 'Alle' || q[0] === qaFilt).map(q => `<details><summary><span>${q[1]}</span><span class="w">${q[0]}</span></summary><p>${q[2]}</p></details>`).join('');
+}
+renderQA();
+function qaOpen() { return qaDrawer.classList.contains('open'); }
+function toggleQA(force) {
+  const open = force === undefined ? !qaOpen() : force;
+  qaDrawer.classList.toggle('open', open); qaDrawer.setAttribute('aria-hidden', !open); qaDrawer.inert = !open;
+  qaBtn.setAttribute('aria-expanded', open);
+  if (open) { if (apOn) apPause(); const b = qaDrawer.querySelector('.p-qaclose'); b && b.focus({ preventScroll: true }); }
+}
+qaDrawer.inert = true;
+qaBtn.addEventListener('click', () => toggleQA());
+pq('.p-qaclose').addEventListener('click', () => toggleQA(false));
+
 
 /* =========================================================== SPIEL == */
 // "Probier es aus": Draufsicht mit Fächern 2 × 2, Drehkopf, Rutsche und Schwenkschale.
